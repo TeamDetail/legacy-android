@@ -6,3 +6,5 @@ import androidx.compose.ui.graphics.Color
 val Black = Color(0xFF232424)
 val White = Color(0xFFFFFFFF)
 val Label = Color(0xFFF5F5F5)
+
+val Netural80 = Color(0xFFB0B2B4)

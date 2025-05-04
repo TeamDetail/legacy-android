@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Label
+import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
 
 @Composable
@@ -63,7 +65,7 @@ fun LoginScreen(modifier: Modifier = Modifier,
                     text = "지역 문화 유산을 쉽게, 레거시",
                     style = TextStyle(
                         fontSize = 18.sp,
-                        color = Black,
+                        color = White,
                         textAlign = TextAlign.Center,
                     )
                 )
@@ -85,33 +87,61 @@ fun LoginScreen(modifier: Modifier = Modifier,
                     modifier = Modifier
                         .width(321.dp)
                         .height(54.dp)
-                        .background(Black, shape = RoundedCornerShape(size = 16.dp))
-                        .align(Alignment.CenterHorizontally),
+                        .background(Black, shape = RoundedCornerShape(16.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.facebook),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .width(30.dp)
-                            .height(30.dp)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(31.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.facebook),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(30.dp)
+                                .height(30.dp)
+                        )
 
-                    Text(
-                        text = "FaceBook 로그인",
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            lineHeight = 24.sp,
-                            fontWeight = FontWeight(500),
-                            color = Label,
-                            textAlign = TextAlign.Center,
-                        ),
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                        Text(
+                            text = "FaceBook 로그인",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                lineHeight = 24.sp,
+                                fontWeight = FontWeight(500),
+                                color = Label,
+                                textAlign = TextAlign.Center,
+                            ),
+                        )
+                    }
                 }
 
             }
+        }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(top = 800.dp)
+        ) {
+            Text(
+                text = "서비스 약관",
+                style = TextStyle(
+                    color = Netural80
+                )
+            )
+            Text(
+                text = " · ",
+                style = TextStyle(
+                    color = Netural80
+                )
+            )
+            Text(
+                text = "개인정보처리방침",
+                style = TextStyle(
+                    color = Netural80
+                )
+            )
         }
     }
 }
