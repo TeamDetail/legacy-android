@@ -2,10 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android") version "2.52"
     id("kotlin-kapt")
 }
-
 android {
     namespace = "com.legacy.legacy_android"
     compileSdk = 35
@@ -44,8 +43,8 @@ android {
 dependencies {
     val nav_version = "2.8.9"
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation ("com.google.dagger:hilt-android:2.40.5")
-//    kapt ("com.google.dagger:hilt-compiler:2.40.5")
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
