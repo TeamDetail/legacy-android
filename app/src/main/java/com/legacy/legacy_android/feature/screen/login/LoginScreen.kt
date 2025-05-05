@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Netural80
@@ -33,6 +34,7 @@ import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier,
+                viewModel: LoginViewModel = hiltViewModel(),
                 onMoveScreen: (String) -> Unit = {},
                 ) {
     Box(modifier = Modifier.fillMaxSize()) {

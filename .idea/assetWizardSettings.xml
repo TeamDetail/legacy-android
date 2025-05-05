@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="logo" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/app/src/main/res/drawable/logo.svg" />
+                            <entry key="outputName" value="trophy" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/app/src/main/res/drawable/trophy.svg" />
                           </map>
                         </option>
                       </PersistentState>
