@@ -17,7 +17,17 @@ class HomeViewModel @Inject constructor(
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
 
     private val _currentLocation = mutableStateOf<LatLng?>(null)
+    private val _isTabClicked = mutableStateOf<Boolean>(false)
     val currentLocation: State<LatLng?> = _currentLocation
+
+    fun setTabClicked(): Boolean {
+        _isTabClicked.value = !_isTabClicked.value
+        return _isTabClicked.value
+    }
+
+    fun getTabClicked(): Boolean{
+        return _isTabClicked.value
+    }
 
     init {
         fetchLocation()
