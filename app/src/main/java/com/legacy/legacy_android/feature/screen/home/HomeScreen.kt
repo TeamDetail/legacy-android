@@ -72,7 +72,9 @@ fun HomeScreen(
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
             ),
-            uiSettings = MapUiSettings(myLocationButtonEnabled = true),
+            uiSettings = MapUiSettings(
+                myLocationButtonEnabled = false,
+                zoomControlsEnabled = false ),
         )
     }
 }

@@ -30,6 +30,7 @@ import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier,
@@ -68,6 +69,8 @@ fun LoginScreen(modifier: Modifier = Modifier,
                         fontSize = 18.sp,
                         color = White,
                         textAlign = TextAlign.Center,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Medium
                     )
                 )
             }
@@ -81,7 +84,8 @@ fun LoginScreen(modifier: Modifier = Modifier,
                     style = TextStyle(
                         fontSize = 15.sp,
                         color = White,
-                        fontWeight = FontWeight(700),
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Bold
                     )
                 )
                 Box(
@@ -108,7 +112,8 @@ fun LoginScreen(modifier: Modifier = Modifier,
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 lineHeight = 24.sp,
-                                fontWeight = FontWeight(500),
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Medium,
                                 color = Label,
                                 textAlign = TextAlign.Center,
                             ),
@@ -128,19 +133,28 @@ fun LoginScreen(modifier: Modifier = Modifier,
             Text(
                 text = "서비스 약관",
                 style = TextStyle(
-                    color = Netural80
+                    color = Netural80,
+                            fontFamily = pretendard,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
                 )
             )
             Text(
                 text = " · ",
                 style = TextStyle(
-                    color = Netural80
+                    color = Netural80,
+                            fontFamily = pretendard,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
                 )
             )
             Text(
                 text = "개인정보처리방침",
                 style = TextStyle(
-                    color = Netural80
+                    color = Netural80,
+                    fontFamily = pretendard,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
                 )
             )
         }
