@@ -14,6 +14,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application){
+
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
 
     private val _currentLocation = mutableStateOf<LatLng?>(null)

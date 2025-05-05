@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,26 +35,31 @@ import java.util.Locale
 
 @Composable
 fun InfoBar(
-    name : String,
-    level : Number,
-    money : Number,
-    isTabClicked : Boolean,
-    setTabClicked : ()-> Boolean
-){
-    Box (
+    name: String,
+    level: Number,
+    money: Number,
+    isTabClicked: Boolean,
+    setTabClicked: () -> Boolean
+) {
+    Box(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .height(50.dp)
+            .height(70.dp)
             .background(Background_Normal, shape = RoundedCornerShape(size = 20.dp))
-    ){
-        Row (
+    ) {
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .padding(start = 12.dp, end = 12.dp)
-                .fillMaxWidth()){
-            // 서버 값 들어오면 여기다가 프로필 넣기
-            Column {
+                .fillMaxWidth()
+        ) {
+            // 여기에 프로필 추가해야함
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.fillMaxHeight()
+            ) {
                 Text(
                     text = name,
                     color = Label,
@@ -62,7 +67,7 @@ fun InfoBar(
                         fontSize = 15.sp,
                         fontFamily = pretendard,
                         fontWeight = FontWeight.Bold
-                        )
+                    )
                 )
                 Text(
                     text = "LV. ${level.toString()}",
@@ -74,18 +79,19 @@ fun InfoBar(
                     )
                 )
             }
-            Row (
+
+            Row(
                 modifier = Modifier
                     .padding(start = 12.dp, top = 8.dp, end = 12.dp, bottom = 8.dp)
                     .background(Fill_Normal, shape = RoundedCornerShape(size = 12.dp)),
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
                 verticalAlignment = Alignment.CenterVertically
-                ){
+            ) {
                 Image(
                     painter = painterResource(R.drawable.coin),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(60.dp)
+                        .size(40.dp)
                 )
                 Text(
                     text = NumberFormat.getNumberInstance(Locale.US).format(money).toString(),
@@ -96,6 +102,7 @@ fun InfoBar(
                     )
                 )
             }
+
             Image(
                 painter = painterResource(
                     if (isTabClicked) R.drawable.vector else R.drawable.tab

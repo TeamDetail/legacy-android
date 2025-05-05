@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
 import com.legacy.legacy_android.res.component.bars.InfoBar
+import com.legacy.legacy_android.res.component.bars.NavBar
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -76,6 +78,14 @@ fun HomeScreen(
                 myLocationButtonEnabled = false,
                 zoomControlsEnabled = false ),
         )
+        Box(
+            modifier = Modifier
+                .align(androidx.compose.ui.Alignment.BottomCenter)
+                .padding(bottom = 40.dp)
+                .zIndex(7f)
+        ) {
+            NavBar()
+        }
     }
 }
 
