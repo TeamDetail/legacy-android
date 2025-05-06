@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Anternative
@@ -102,18 +105,35 @@ fun InfoBar(
                     )
                 )
             }
-
-            Image(
-                painter = painterResource(
-                    if (isTabClicked) R.drawable.vector else R.drawable.tab
-                ),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
-                    .size(50.dp)
-                    .padding(12.dp)
-                    .background(Fill_Normal, shape = RoundedCornerShape(size = 12.dp))
-                    .clickable { setTabClicked() }
-            )
+                    .zIndex(10f)
+                    .wrapContentSize(Alignment.TopEnd)
+            ) {
+
+                Image(
+                    painter = painterResource(
+                        if (isTabClicked) R.drawable.vector else R.drawable.tab
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(12.dp)
+                        .background(Fill_Normal, shape = RoundedCornerShape(size = 12.dp))
+                        .clickable { setTabClicked() }
+                )
+                if (isTabClicked) {
+                    DropdownMenu (
+                        expanded = isTabClicked,
+                        onDismissRequest = { setTabClicked() },
+                        modifier = Modifier
+                            .zIndex(11f)
+                            .background(Background_Normal)
+                    ) {
+                        OptionBar()
+                    }
+                }
+            }
         }
-    }
+        }
 }

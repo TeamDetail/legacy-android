@@ -52,7 +52,7 @@ fun NavBar() {
                         .fillMaxHeight()
                         .clickable { Nav.setNavStatus(item.id) },
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center // 세로로 중앙 정렬
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Image(
                         modifier = Modifier

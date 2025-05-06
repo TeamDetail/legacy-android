@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="vector" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/app/src/main/res/drawable/vector.svg" />
+                            <entry key="outputName" value="setting" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/app/src/main/res/drawable/setting.svg" />
                           </map>
                         </option>
                       </PersistentState>
