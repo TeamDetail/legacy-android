@@ -57,32 +57,42 @@ fun InfoBar(
                 .padding(start = 12.dp, end = 12.dp)
                 .fillMaxWidth()
         ) {
-            // 여기에 프로필 추가해야함
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                Text(
-                    text = name,
-                    color = Label,
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Bold
-                    )
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier
+                .fillMaxHeight()) {
+                Image(
+                    modifier = Modifier
+                        .size(40.dp),
+                    painter = painterResource(R.drawable.temp_profile),
+                    contentDescription = null
                 )
-                Text(
-                    text = "LV. ${level.toString()}",
-                    color = Label_Anternative,
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Bold
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    Text(
+                        text = name,
+                        color = Label,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
+                    Text(
+                        text = "LV. ${level.toString()}",
+                        color = Label_Anternative,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
-
             Row(
                 modifier = Modifier
                     .padding(start = 12.dp, top = 8.dp, end = 12.dp, bottom = 8.dp)

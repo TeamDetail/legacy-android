@@ -7,6 +7,11 @@ val Black = Color(0xFF232424)
 val White = Color(0xFFFFFFFF)
 val Primary = Color(0xFFA05AE8)
 
+val Blue_Natural = Color(0xFF5B96C7)
+
+val Purple_Natural = Color(0xFFA980CF)
+
+
 val Fill_Normal = Color(0xFF232424)
 
 val Label = Color(0xFFF5F5F5)
