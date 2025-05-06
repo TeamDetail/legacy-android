@@ -78,9 +78,8 @@ fun QuizBox(
                 ){
                     Box(
                         modifier = Modifier
-                            .border(border = BorderStroke(4.dp, Fill_Normal))
+                            .border(border = BorderStroke(4.dp, Fill_Normal), shape = RoundedCornerShape(12.dp))
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(12.dp))
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -94,7 +93,8 @@ fun QuizBox(
                                 text = "앙기모띠",
                                 color = Label,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                modifier = Modifier
                             )
                         }
                     }
@@ -103,20 +103,19 @@ fun QuizBox(
                     modifier = Modifier
                         .border(border = BorderStroke(4.dp, Fill_Normal))
                         .padding(4.dp)
-                        .clip(shape = RoundedCornerShape(12.dp))
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .background(Fill_Normal)
-                            .border(border = BorderStroke(1.dp, Blue_Natural))
+                            .border(border = BorderStroke(1.dp, Blue_Natural), shape = RoundedCornerShape(12.dp))
                             .padding(vertical = 4.dp, horizontal = 40.dp)
                     ) {
                         Text(
                             textAlign = TextAlign.Center,
                             text = buildAnnotatedString {
                                 append("힌트 확인하기\n")
-                                withStyle (style = SpanStyle(color = Yellow)) { // 예: 노란색
+                                withStyle (style = SpanStyle(color = Yellow)) {
                                     append("(크레딧 3000필요)")
                                 }
                             },

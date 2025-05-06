@@ -53,13 +53,15 @@ fun HomeScreen(
     LaunchedEffect(currentLocation) {
         if (currentLocation != null) {
             val cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                CameraPosition.fromLatLngZoom(currentLocation, 25f)
+                CameraPosition.fromLatLngZoom(currentLocation, 20f)
             )
             cameraPositionState.animate(cameraUpdate)
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier
+        .fillMaxSize()
+        .zIndex(99f)) {
         // InfoBar
         Row (
             horizontalArrangement = Arrangement.Center,
@@ -84,8 +86,7 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .fillMaxSize()
                 .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
-                .zIndex(100f)
-
+                .zIndex(500f)
         ){
             QuizBox(name = "대구소프트웨어마이스트고등학겨")
         }
