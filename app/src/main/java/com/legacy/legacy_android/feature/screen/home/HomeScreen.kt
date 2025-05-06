@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.feature.screen.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +31,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.bars.InfoBar
+import com.legacy.legacy_android.res.component.bars.NavBar
+import com.legacy.legacy_android.res.component.quiz.QuizBox
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -55,6 +60,7 @@ fun HomeScreen(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
+        // InfoBar
         Row (
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -70,6 +76,20 @@ fun HomeScreen(
                 setTabClicked = { viewModel.setTabClicked() }
             )
         }
+
+        // QuizBox
+        Box(
+            contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize()
+                .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
+                .zIndex(100f)
+
+        ){
+            QuizBox(name = "대구소프트웨어마이스트고등학겨")
+        }
+        // 구글맵
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -80,19 +100,15 @@ fun HomeScreen(
                 myLocationButtonEnabled = false,
                 zoomControlsEnabled = false ),
         )
+        // NavBar
         Box(
             modifier = Modifier
                 .align(androidx.compose.ui.Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .zIndex(7f)
         ) {
-//            NavBar()
-            AdventureInfo(
-                name = "대구소프트웨어마이스터고등학교",
-                loc = LatLng (35.8576, 128.5747),
-                info = "대구소프트웨어마이스터고등학교는 세상을 이롭게 하는 개발자 육성을 위한 학교입니다.",
-                tags = listOf("IT", "마이스터", "대구", "고등학교"),
-            )
+            NavBar()
+//            AdventureInfo(name = "대구소프트웨어마이스터고등학교", loc = LatLng (35.8576, 128.5747), info = "대구소프트웨어마이스터고등학교는 세상을 이롭게 하는 개발자 육성을 위한 학교입니다.", tags = listOf("IT", "마이스터", "대구", "고등학교"))
         }
     }
 }

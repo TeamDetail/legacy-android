@@ -24,11 +24,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.model.LatLng
+import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Blue_Natural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Anternative
+import com.legacy.legacy_android.ui.theme.Line_Natural
 import com.legacy.legacy_android.ui.theme.Purple_Natural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
@@ -128,8 +130,9 @@ fun AdventureInfo(
                 ) {
                     Image(
                         modifier = Modifier
+                            .border(1.dp, color = Background_Normal)
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp)),
+                            .background(color = Purple_Natural),
                         painter = painterResource(R.drawable.schoo_img),
                         contentDescription = null
                     )
