@@ -22,6 +22,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label_Strong
@@ -29,10 +31,9 @@ import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
-fun NavBar() {
+fun NavBar(navHostController: NavHostController) {
     val navList = Nav.navList
     val selectedId = Nav.getNavStatus()
-
     Box(
         modifier = Modifier
             .fillMaxWidth(0.95f)
@@ -50,7 +51,9 @@ fun NavBar() {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .clickable { Nav.setNavStatus(item.id) },
+                        .clickable {
+                            Nav.setNavStatus(item.id)
+                            navHostController.navigate(item.onClick.name) },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {

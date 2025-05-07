@@ -2,6 +2,7 @@ package com.legacy.legacy_android.feature.screen.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.legacy.legacy_android.ScreenNavigate
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Netural80
@@ -33,10 +36,11 @@ import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier,
-                viewModel: LoginViewModel = hiltViewModel(),
-                onMoveScreen: (String) -> Unit = {},
-                ) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel(),
+    navHostController: NavHostController
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -88,11 +92,13 @@ fun LoginScreen(modifier: Modifier = Modifier,
                         fontWeight = FontWeight.Bold
                     )
                 )
+
                 Box(
                     modifier = Modifier
                         .width(321.dp)
                         .height(54.dp)
-                        .background(Black, shape = RoundedCornerShape(16.dp)),
+                        .background(Black, shape = RoundedCornerShape(16.dp))
+                        .clickable{navHostController.navigate(ScreenNavigate.HOME.name)},
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -134,7 +140,7 @@ fun LoginScreen(modifier: Modifier = Modifier,
                 text = "서비스 약관",
                 style = TextStyle(
                     color = Netural80,
-                            fontFamily = pretendard,
+                    fontFamily = pretendard,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                 )
@@ -143,7 +149,7 @@ fun LoginScreen(modifier: Modifier = Modifier,
                 text = " · ",
                 style = TextStyle(
                     color = Netural80,
-                            fontFamily = pretendard,
+                    fontFamily = pretendard,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                 )

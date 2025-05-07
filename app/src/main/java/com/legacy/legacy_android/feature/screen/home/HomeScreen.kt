@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -41,7 +42,7 @@ import com.legacy.legacy_android.res.component.quiz.QuizBox
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    onMoveScreen: (String) -> Unit = {},
+    navHostController: NavHostController
 ) {
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -80,16 +81,16 @@ fun HomeScreen(
         }
 
         // QuizBox
-        Box(
-            contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize()
-                .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
-                .zIndex(500f)
-        ){
-            QuizBox(name = "대구소프트웨어마이스트고등학겨")
-        }
+//        Box(
+//            contentAlignment = Alignment.Center,
+//                    modifier = Modifier
+//                .fillMaxWidth()
+//                .fillMaxSize()
+//                .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
+//                .zIndex(500f)
+//        ){
+//            QuizBox(name = "대구소프트웨어마이스트고등학겨")
+//        }
         // 구글맵
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -108,7 +109,7 @@ fun HomeScreen(
                 .padding(bottom = 40.dp)
                 .zIndex(7f)
         ) {
-            NavBar()
+            NavBar(navHostController = navHostController)
 //            AdventureInfo(name = "대구소프트웨어마이스터고등학교", loc = LatLng (35.8576, 128.5747), info = "대구소프트웨어마이스터고등학교는 세상을 이롭게 하는 개발자 육성을 위한 학교입니다.", tags = listOf("IT", "마이스터", "대구", "고등학교"))
         }
     }

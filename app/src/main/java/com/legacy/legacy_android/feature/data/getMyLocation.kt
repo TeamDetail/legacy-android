@@ -13,8 +13,11 @@ import com.google.android.gms.maps.model.LatLng
 @Composable
 fun getMyLocation(): State<LatLng?> {
     val context = LocalContext.current
-    val fusedLocationClient = remember {
-        LocationServices.getFusedLocationProviderClient(context)
+    //외부에서 주입받아 쓰셈 직접 생성하면 오류발생 가능성 30000%
+    val fusedLocationClient by remember {
+        mutableStateOf(
+            LocationServices.getFusedLocationProviderClient(context)
+        )
     }
 
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
