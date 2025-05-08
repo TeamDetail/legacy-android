@@ -54,7 +54,7 @@ fun HomeScreen(
     LaunchedEffect(currentLocation) {
         if (currentLocation != null) {
             val cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                CameraPosition.fromLatLngZoom(currentLocation, 20f)
+                CameraPosition.fromLatLngZoom(currentLocation, 17f)
             )
             cameraPositionState.animate(cameraUpdate)
         }
@@ -63,6 +63,7 @@ fun HomeScreen(
     Box(modifier = modifier
         .fillMaxSize()
         .zIndex(99f)) {
+
         // InfoBar
         Row (
             horizontalArrangement = Arrangement.Center,
@@ -105,7 +106,7 @@ fun HomeScreen(
         // NavBar
         Box(
             modifier = Modifier
-                .align(androidx.compose.ui.Alignment.BottomCenter)
+                .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .zIndex(7f)
         ) {

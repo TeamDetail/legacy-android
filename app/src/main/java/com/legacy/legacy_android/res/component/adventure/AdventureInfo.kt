@@ -29,9 +29,8 @@ import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Blue_Natural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Anternative
-import com.legacy.legacy_android.ui.theme.Line_Natural
-import com.legacy.legacy_android.ui.theme.Purple_Natural
+import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Purple_Netural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.ui.theme.pretendard
@@ -81,7 +80,7 @@ fun AdventureInfo(
                     ) {
                         Text(
                             text = "선택한 블록",
-                            color = Label_Anternative,
+                            color = Label_Alternative,
                             style = TextStyle(
                                 fontWeight = FontWeight.Medium,
                                 fontFamily = pretendard,
@@ -103,7 +102,7 @@ fun AdventureInfo(
                     ) {
                         Text(
                             text = "유적지 정보",
-                            color = Label_Anternative,
+                            color = Label_Alternative,
                             style = TextStyle(
                                 fontWeight = FontWeight.Medium,
                                 fontFamily = pretendard,
@@ -132,7 +131,7 @@ fun AdventureInfo(
                         modifier = Modifier
                             .border(1.dp, color = Background_Normal)
                             .fillMaxSize()
-                            .background(color = Purple_Natural),
+                            .background(color = Purple_Netural),
                         painter = painterResource(R.drawable.schoo_img),
                         contentDescription = null
                     )
@@ -146,7 +145,7 @@ fun AdventureInfo(
                         tags?.forEach { item ->
                             Box(
                                 modifier = Modifier
-                                    .background(Purple_Natural, shape = RoundedCornerShape(24.dp))
+                                    .background(Purple_Netural, shape = RoundedCornerShape(24.dp))
                             ) {
                                 Text(
                                     text = item,

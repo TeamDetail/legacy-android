@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Anternative
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow
 import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.ui.theme.pretendard
@@ -84,7 +84,7 @@ fun InfoBar(
                     )
                     Text(
                         text = "LV. ${level.toString()}",
-                        color = Label_Anternative,
+                        color = Label_Alternative,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = pretendard,

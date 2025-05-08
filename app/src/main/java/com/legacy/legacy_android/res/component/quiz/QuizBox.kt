@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.ui.theme.Blue_Natural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Anternative
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow
 
@@ -59,7 +59,7 @@ fun QuizBox(
                 )
                 Text(
                     text = name,
-                    color = Label_Anternative,
+                    color = Label_Alternative,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp
                 )
