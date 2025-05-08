@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,28 +22,36 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.title.TitleBox
-import com.legacy.legacy_android.ui.theme.Background_Normal
+import com.legacy.legacy_android.ui.theme.Background_Alternative
 
 @Composable
 fun AchieveScreen(
     modifier: Modifier = Modifier,
     viewModel: AchieveViewModel = hiltViewModel(),
     navHostController: NavHostController){
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(Background_Alternative)
+    ){
+        InfoBar()
+        Column (
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Background_Normal)
+                .padding(vertical = 40.dp, horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+            Spacer(
                 modifier = Modifier
-                    .padding(vertical = 40.dp, horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState())
+                    .height(70.dp)
+            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                InfoBar()
+
                 TitleBox(title = "도전과제", image = R.drawable.medal)
             }
+        }
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
