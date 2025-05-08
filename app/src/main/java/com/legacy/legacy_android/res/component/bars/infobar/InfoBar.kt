@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +35,7 @@ import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.res.component.bars.OptionBar
+import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow
@@ -68,7 +70,9 @@ fun InfoBar(
                 modifier = Modifier.fillMaxHeight()
             ) {
                 Image(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(999.dp)),
                     painter = painterResource(R.drawable.temp_profile),
                     contentDescription = null
                 )

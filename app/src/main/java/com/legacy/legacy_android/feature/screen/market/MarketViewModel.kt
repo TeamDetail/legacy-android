@@ -14,12 +14,14 @@ class MarketViewModel @Inject constructor(
     private var _marketStatus by mutableStateOf(true)
     val marketStatus: Boolean get() = _marketStatus
 
-    var currentTime by mutableStateOf(System.currentTimeMillis())
-        private set
 
     fun setMarketStatus(value: Boolean) {
         _marketStatus = value
     }
+
+    val packList = listOf("카드 팩", "크레딧 충전")
+
+    var packStatus by mutableStateOf(0)
 
     var timeUntilMidnight by mutableStateOf(getTimeUntilMidnightFormatted())
         private set

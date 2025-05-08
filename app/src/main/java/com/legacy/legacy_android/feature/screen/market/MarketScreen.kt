@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,9 +27,12 @@ import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.marketItem.MarketInfo
 import com.legacy.legacy_android.res.component.marketItem.PackWrap
 import com.legacy.legacy_android.res.component.marketItem.Packs
-import com.legacy.legacy_android.res.component.marketItem.StatusButton
+import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Background_Alternative
+import com.legacy.legacy_android.ui.theme.Line_Natural
+import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.Red_Normal
 import kotlinx.coroutines.delay
 
 @Composable
@@ -62,30 +64,29 @@ fun MarketScreen(modifier: Modifier = Modifier,
             Column (
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-
                 TitleBox(title = "상점", image = R.drawable.shop)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    StatusButton(
-                        value = viewModel.marketStatus,
-                        setValue = { viewModel.setMarketStatus(true) },
-                        text = "카드 팩"
-                    )
-                    StatusButton(
-                        value = !viewModel.marketStatus,
-                        setValue = { viewModel.setMarketStatus(false) },
-                        text = "크레딧 충전"
-                    )
+                    viewModel.packList.forEachIndexed { index, item ->
+                        StatusButton(
+                            selectedValue = viewModel.packStatus,
+                            onClick = { viewModel.packStatus = index },
+                            text = item,
+                            id = index,
+                            selectedColor = Primary,
+                            nonSelectedColor = Line_Natural
+                        )
+                    }
                 }
                 MarketInfo(quantity = 3, magnification = 1.75, time = viewModel.timeUntilMidnight)
                 Column(
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     // 팩 파는 구간
-                    PackWrap(title = "앤더슨팩", newList = Packs.bluePackList)
-                    PackWrap(title = "코팩", newList = Packs.purplePackList)
-                    PackWrap(title = "여드름팩", newList = Packs.redPackList)
+                    PackWrap(newList = Packs.bluePackList)
+                    PackWrap(newList = Packs.purplePackList)
+                    PackWrap(newList = Packs.redPackList)
                 }
             }
             Spacer(

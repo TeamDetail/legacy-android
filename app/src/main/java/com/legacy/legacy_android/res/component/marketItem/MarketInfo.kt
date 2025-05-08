@@ -40,7 +40,6 @@ fun MarketInfo(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -61,25 +60,20 @@ fun MarketInfo(
                 fontSize = 22.sp
             )
             Text(
-                textAlign = TextAlign.Center,
                 text = buildAnnotatedString {
                     append("현재 가격 배율\n")
-                    withStyle(style = SpanStyle(color = Yellow_Netural, fontSize = 28.sp)) {
+                    withStyle(style = SpanStyle(color = Yellow_Netural, fontSize = 28.sp, fontWeight = FontWeight.Bold)) {
                         append("${magnification}배")
                     }
+                    withStyle (style = SpanStyle()){
+                        append("  카드팩은 하루 동안, 구매 시마다 가격이 상승합니다.")
+                    }
+
                 },
-                color = Label,
-                fontWeight = FontWeight.Bold,
+                color = Label_Alternative,
+                fontWeight = FontWeight.Medium,
                 fontFamily = pretendard,
                 fontSize = 12.sp
-            )
-            Text(
-                text = "카드팩은 하루 동안, \n구매 시마다 가격이 상승합니다.",
-                color = Label_Alternative,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
             )
             Box (
                 modifier = Modifier
