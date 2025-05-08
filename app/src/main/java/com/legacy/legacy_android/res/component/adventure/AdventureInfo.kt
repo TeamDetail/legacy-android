@@ -44,7 +44,7 @@ fun AdventureInfo(
     ){
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.95f)
+            .fillMaxWidth()
             .background(Black, shape = RoundedCornerShape(size=12.dp))
             .height(300.dp)
             .padding(12.dp)

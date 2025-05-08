@@ -10,16 +10,6 @@ class HomeViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application){
 
-    private val _isTabClicked = mutableStateOf<Boolean>(false)
-
-    fun setTabClicked(): Boolean {
-        _isTabClicked.value = !_isTabClicked.value
-        return _isTabClicked.value
-    }
-
-    fun getTabClicked(): Boolean{
-        return _isTabClicked.value
-    }
 
 
 }

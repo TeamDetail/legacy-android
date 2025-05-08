@@ -1,10 +1,10 @@
 package com.legacy.legacy_android.feature.screen.home
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,16 +23,13 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
-import com.legacy.legacy_android.res.component.adventure.AdventureInfo
-import com.legacy.legacy_android.res.component.bars.InfoBar
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
-import com.legacy.legacy_android.res.component.quiz.QuizBox
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -63,22 +59,15 @@ fun HomeScreen(
     Box(modifier = modifier
         .fillMaxSize()
         .zIndex(99f)) {
-
         // InfoBar
         Row (
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .offset(y = 50.dp)
+                .absoluteOffset(0.dp, 30.dp)
                 .zIndex(5f)) {
-            InfoBar(
-                name = "박재민",
-                level = 99,
-                money = 6506246420,
-                isTabClicked = viewModel.getTabClicked(),
-                setTabClicked = { viewModel.setTabClicked() }
-            )
+            InfoBar()
         }
 
         // QuizBox

@@ -36,7 +36,7 @@ fun NavBar(navHostController: NavHostController) {
     val selectedId = Nav.getNavStatus()
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.95f)
+            .fillMaxWidth()
             .height(70.dp)
             .background(Background_Normal, shape = RoundedCornerShape(size = 20.dp))
     ) {

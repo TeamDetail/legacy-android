@@ -31,6 +31,7 @@ import com.legacy.legacy_android.ui.theme.pretendard
 fun MarketInfo(
     quantity: Int,
     magnification: Double,
+    time: String
 ) {
     Box(
         modifier = Modifier
@@ -90,7 +91,7 @@ fun MarketInfo(
                     text = buildAnnotatedString {
                         append("초기화까지 ")
                         withStyle(style = SpanStyle(color = Purple_Netural )) {
-                            append("21:30:44")
+                            append(time.toString())
                         }
                     },
                     color = Label_Netural,

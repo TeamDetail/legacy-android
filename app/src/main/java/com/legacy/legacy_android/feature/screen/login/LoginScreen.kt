@@ -114,7 +114,7 @@ fun LoginScreen(
                         )
 
                         Text(
-                            text = "FaceBook 로그인",
+                            text = "카카오톡 로그인",
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 lineHeight = 24.sp,
