@@ -41,15 +41,15 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Image(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             painter = painterResource(R.drawable.bg),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
         )
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
                 .fillMaxWidth(),
@@ -61,7 +61,7 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    modifier = Modifier
+                    modifier = modifier
                         .width(274.dp)
                         .height(103.dp),
                     painter = painterResource(R.drawable.logo),
@@ -94,7 +94,7 @@ fun LoginScreen(
                 )
 
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .width(321.dp)
                         .height(54.dp)
                         .background(Black, shape = RoundedCornerShape(16.dp))
@@ -108,7 +108,7 @@ fun LoginScreen(
                         Image(
                             painter = painterResource(R.drawable.facebook),
                             contentDescription = null,
-                            modifier = Modifier
+                            modifier = modifier
                                 .width(30.dp)
                                 .height(30.dp)
                         )
@@ -130,9 +130,9 @@ fun LoginScreen(
             }
         }
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.Center)
                 .padding(top = 800.dp)
         ) {

@@ -62,7 +62,7 @@ fun HomeScreen(
         // InfoBar
         Row (
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .absoluteOffset(0.dp, 30.dp)
@@ -73,7 +73,7 @@ fun HomeScreen(
         // QuizBox
 //        Box(
 //            contentAlignment = Alignment.Center,
-//                    modifier = Modifier
+//                    modifier = modifier
 //                .fillMaxWidth()
 //                .fillMaxSize()
 //                .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
@@ -83,7 +83,7 @@ fun HomeScreen(
 //        }
         // 구글맵
         GoogleMap(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,

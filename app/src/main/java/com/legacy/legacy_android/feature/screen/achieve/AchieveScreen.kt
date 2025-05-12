@@ -30,19 +30,19 @@ fun AchieveScreen(
     viewModel: AchieveViewModel = hiltViewModel(),
     navHostController: NavHostController){
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Background_Alternative)
     ){
         InfoBar()
         Column (
-            modifier = Modifier
+            modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(
-                modifier = Modifier
+                modifier = modifier
                     .height(70.dp)
             )
             Column(
@@ -53,7 +53,7 @@ fun AchieveScreen(
             }
         }
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 40.dp)
                         .zIndex(7f)

@@ -34,14 +34,14 @@ fun TrialScreen(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
+            modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             TitleBox(title = "시련", image = R.drawable.fight)
         }
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .zIndex(7f)

@@ -37,7 +37,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MarketScreen(modifier: Modifier = Modifier,
-                viewModel: MarketViewModel = hiltViewModel(),
+                 viewModel: MarketViewModel = hiltViewModel(),
                  navHostController: NavHostController
 ) {
     LaunchedEffect(Unit) {
@@ -48,18 +48,18 @@ fun MarketScreen(modifier: Modifier = Modifier,
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Background_Alternative)
     ){
         InfoBar()
         Column (
-            modifier = Modifier
+            modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier
+            Spacer(modifier = modifier
                 .height(70.dp))
             Column (
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -90,13 +90,13 @@ fun MarketScreen(modifier: Modifier = Modifier,
                 }
             }
             Spacer(
-                modifier = Modifier
+                modifier = modifier
                     .height(100.dp)
             )
         }
         // NavBar
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .zIndex(7f)

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
@@ -38,27 +38,29 @@ fun RankingScreen(
     navHostController: NavHostController
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Background_Alternative)
     ) {
         InfoBar()
         Column(
-            modifier = Modifier
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(
-                modifier = Modifier
+                modifier = modifier
                     .height(70.dp)
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
             TitleBox(title = "랭킹", image = R.drawable.trophy)
                 Row(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -92,16 +94,29 @@ fun RankingScreen(
                     }
                 }
                 // 여기서부터 랭킹바 Wrapper
-                Row {
-                    RankingBar(rank = 1, stair = 999, name = "김은찬", title = "자본주의")
-                    RankingBar(rank = 2, stair = 999, name = "김은찬", title = "자본주의")
-                    RankingBar(rank = 3, stair = 999, name = "김은찬", title = "자본주의")
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(-6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Box(
+                        modifier = modifier
+                            .offset(0.dp, 40.dp)
+                    ) {
+                        RankingBar(rank = 2, stair = 999, name = "김은찬", title = "자본주의", zIndex = 2f)
+                    }
+                    RankingBar(rank = 1, stair = 999, name = "김은찬", title = "자본주의", zIndex = 3f)
+                    Box(
+                        modifier = modifier
+                            .offset(0.dp, 50.dp)
+                    ) {
+                        RankingBar(rank = 3, stair = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
+                    }
                 }
             }
         }
 
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .zIndex(7f)
