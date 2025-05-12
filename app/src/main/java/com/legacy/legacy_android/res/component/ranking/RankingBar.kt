@@ -35,8 +35,8 @@ import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun RankingBar(
+    grade : Int,
     rank : Int,
-    stair : Int,
     name : String,
     title : String,
     zIndex: Float,
@@ -51,9 +51,9 @@ fun RankingBar(
             modifier = Modifier
                 .background(color = Background_Normal, shape = RoundedCornerShape(20.dp))
                 .border(
-                    width = 1.dp, color = if (rank == 1) {
+                    width = 1.dp, color = if (grade == 1) {
                         Primary
-                    } else if (rank == 2) {
+                    } else if (grade == 2) {
                         Red_Netural
                     } else {
                         Blue_Natural
@@ -90,10 +90,10 @@ fun RankingBar(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "${rank}위",
-                            color = if (rank == 1) {
+                            text = "${grade}위",
+                            color = if (grade == 1) {
                                 Primary
-                            } else if (rank == 2) {
+                            } else if (grade == 2) {
                                 Red_Netural
                             } else {
                                 Blue_Natural
@@ -103,7 +103,7 @@ fun RankingBar(
                             fontSize = 20.sp
                         )
                         Text(
-                            text = "${stair}층",
+                            text = "${rank}층",
                             color = Yellow_Netural,
                             fontFamily = pretendard,
                             fontWeight = FontWeight.Bold,
