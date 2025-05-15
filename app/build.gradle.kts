@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,17 +8,31 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52"
     id("kotlin-kapt")
 }
+
 android {
+
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { localProperties.load(it) }
+    }
+    val MAPS_API_KEY = localProperties.getProperty("MAPS_API_KEY") ?: ""
+    val KAKAO_API_KEY = localProperties.getProperty("KAKAO_API_KEY") ?: ""
+
     namespace = "com.legacy.legacy_android"
     compileSdk = 35
 
     defaultConfig {
+        buildConfigField("String", "MAPS_API_KEY", "\"$MAPS_API_KEY\"")
+        buildConfigField("String", "KAKAO_API_KEY", "\"$KAKAO_API_KEY\"")
+
+        manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
+        manifestPlaceholders["KAKAO_API_KEY"] = KAKAO_API_KEY
         applicationId = "com.legacy.legacy_android"
         minSdk = 28
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -29,19 +46,28 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
+
 dependencies {
     val nav_version = "2.8.9"
+    implementation ("com.kakao.sdk:v2-all:2.20.1")
+    implementation ("com.kakao.sdk:v2-user:2.20.1")
+    implementation ("com.kakao.sdk:v2-share:2.20.1")
+    implementation ("com.kakao.sdk:v2-talk:2.20.1")
+    implementation ("com.kakao.sdk:v2-friend:2.20.1")
+    implementation ("com.kakao.sdk:v2-navi:2.20.1")
+    implementation ("com.kakao.sdk:v2-cert:2.20.1")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")

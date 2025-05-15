@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.feature.screen.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +43,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+
+    val context = LocalContext.current
     Box(modifier = modifier.fillMaxSize()) {
         Image(
             modifier = modifier.fillMaxSize(),
@@ -98,7 +102,17 @@ fun LoginScreen(
                         .width(321.dp)
                         .height(54.dp)
                         .background(Black, shape = RoundedCornerShape(16.dp))
-                        .clickable{navHostController.navigate(ScreenNavigate.HOME.name)},
+                        .clickable {
+                            viewModel.loginWithKakao(
+                                context = context,
+                                onSuccess = {
+                                    navHostController.navigate(ScreenNavigate.HOME.name)
+                                },
+                                onFailure = { error ->
+                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
+                                }
+                            )
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Row(

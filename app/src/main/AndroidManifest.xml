@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -16,7 +17,7 @@
         tools:targetApi="35">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBOT0e8Osofc4569Ba0sCpLiKUDI95-8L4"/>
+            android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,7 +25,8 @@
             android:theme="@style/Theme.Legacy_android">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <data android:host="oauth"
+                    android:scheme="kakao${KAKAO_API_KEY}" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

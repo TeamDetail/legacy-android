@@ -25,6 +25,7 @@ import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.ranking.RankingBar
+import com.legacy.legacy_android.res.component.ranking.RankingTable
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Natural
@@ -45,20 +46,18 @@ fun RankingScreen(
     ) {
         InfoBar()
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(
-                modifier = modifier
-                    .height(70.dp)
-            )
+            Spacer(modifier = modifier.height(70.dp))
+            TitleBox(title = "랭킹", image = R.drawable.trophy)
+            Spacer(modifier = modifier.height(16.dp))
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            TitleBox(title = "랭킹", image = R.drawable.trophy)
                 Row(
                     modifier = modifier
                         .fillMaxWidth(),
@@ -94,10 +93,10 @@ fun RankingScreen(
                     }
                 }
                 // 여기서부터 랭킹바 Wrapper
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(-6.dp),
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Box(
                         modifier = modifier
                             .offset(0.dp, 40.dp)
@@ -112,9 +111,10 @@ fun RankingScreen(
                         RankingBar(grade = 3, rank = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
                     }
                 }
+                RankingTable()
             }
-        }
 
+        }
         Box(
             modifier = modifier
                 .align(Alignment.BottomCenter)

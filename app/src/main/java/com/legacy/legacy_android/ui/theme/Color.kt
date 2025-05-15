@@ -32,3 +32,4 @@ val Netural80 = Color(0xFFB0B2B4)
 
 val Background_Normal = Color(0xFF1C1C1E)
 val Background_Alternative = Color(0xFF111212)
+val Background_Netural = Color(0xFF191A1A)
