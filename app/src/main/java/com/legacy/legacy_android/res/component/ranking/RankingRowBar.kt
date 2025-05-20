@@ -73,7 +73,7 @@ fun RankingRowBar(
                     text = buildAnnotatedString {
                         append(name)
                         withStyle(style = SpanStyle(color = Label_Alternative, fontSize = 12.sp)) {
-                            append("LV. ${level.toString()}")
+                            append("  LV. ${level.toString()}")
                         }
                     },
                     color = Label,
@@ -85,8 +85,9 @@ fun RankingRowBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Fill_Netural)
-                        .border(width = 1.dp, color = Yellow_Netural),
-                    horizontalArrangement = Arrangement.End
+                        .border(width = 1.dp, color = Yellow_Netural)
+                        .,
+                    horizontalArrangement = Arrangement.Center
                 ){
                     Text(
                         text = title,
@@ -97,5 +98,10 @@ fun RankingRowBar(
                 }
             }
         }
+        Text(
+            text = "${level}Lv",
+            fontFamily = bitbit,
+            fontSize = 18.sp
+        )
     }
 }
