@@ -67,7 +67,7 @@ fun HomeScreen(
                 .fillMaxHeight()
                 .absoluteOffset(0.dp, 30.dp)
                 .zIndex(5f)) {
-            InfoBar()
+            InfoBar(navHostController)
         }
 
         // QuizBox

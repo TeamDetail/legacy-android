@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.R
@@ -46,7 +47,7 @@ import java.util.Locale
 
 @Composable
 fun InfoBar(
-
+    navHostController: NavHostController
 ) {
     val viewModel: InfoBarViewModel = hiltViewModel();
     Box(
@@ -145,7 +146,7 @@ fun InfoBar(
                         .zIndex(11f)
                         .background(Background_Normal)
                 ) {
-                    OptionBar()
+                    OptionBar(navHostController)
                 }
             }
         }

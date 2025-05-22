@@ -18,6 +18,8 @@ import com.legacy.legacy_android.feature.screen.login.LoginScreen
 import com.legacy.legacy_android.feature.screen.login.LoginViewModel
 import com.legacy.legacy_android.feature.screen.market.MarketScreen
 import com.legacy.legacy_android.feature.screen.market.MarketViewModel
+import com.legacy.legacy_android.feature.screen.profile.ProfileScreen
+import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.feature.screen.ranking.RankingScreen
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.trial.TrialScreen
@@ -30,7 +32,8 @@ enum class ScreenNavigate {
     MARKET,
     RANKING,
     ACHIEVE,
-    TRIAL
+    TRIAL,
+    PROFILE
 }
 
 @AndroidEntryPoint
@@ -86,6 +89,14 @@ class MainActivity : AppCompatActivity() {
                     RankingScreen(
                         modifier = Modifier,
                         viewModel = rankingViewModel,
+                        navHostController = navController
+                    )
+                }
+                composable (route = ScreenNavigate.PROFILE.name){
+                    val profileViewModel: ProfileViewModel = hiltViewModel()
+                    ProfileScreen(
+                        modifier = Modifier,
+                        viewModel = profileViewModel,
                         navHostController = navController
                     )
                 }

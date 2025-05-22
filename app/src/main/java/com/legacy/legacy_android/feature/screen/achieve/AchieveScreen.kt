@@ -35,7 +35,7 @@ fun AchieveScreen(
             .fillMaxHeight()
             .background(Background_Alternative)
     ){
-        InfoBar()
+        InfoBar(navHostController)
         Column (
             modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)

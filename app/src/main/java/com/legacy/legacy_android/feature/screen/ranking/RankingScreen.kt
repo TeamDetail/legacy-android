@@ -44,7 +44,7 @@ fun RankingScreen(
             .fillMaxHeight()
             .background(Background_Alternative)
     ) {
-        InfoBar()
+        InfoBar(navHostController)
         Column(
             modifier = modifier
                 .fillMaxWidth()

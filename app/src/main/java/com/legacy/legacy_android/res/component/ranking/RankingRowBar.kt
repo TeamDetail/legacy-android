@@ -86,7 +86,7 @@ fun RankingRowBar(
                         .fillMaxWidth()
                         .background(Fill_Netural)
                         .border(width = 1.dp, color = Yellow_Netural)
-                        .,
+                        ,
                     horizontalArrangement = Arrangement.Center
                 ){
                     Text(
