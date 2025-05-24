@@ -13,8 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Assitive
-import com.legacy.legacy_android.ui.theme.Line_Natural
-import com.legacy.legacy_android.ui.theme.Primary
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.ui.theme.pretendard
 

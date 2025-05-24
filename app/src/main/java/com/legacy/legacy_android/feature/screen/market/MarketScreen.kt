@@ -32,7 +32,6 @@ import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Natural
 import com.legacy.legacy_android.ui.theme.Primary
-import com.legacy.legacy_android.ui.theme.Red_Normal
 import kotlinx.coroutines.delay
 
 @Composable
