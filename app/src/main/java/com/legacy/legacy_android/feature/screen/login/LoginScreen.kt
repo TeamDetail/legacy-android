@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,8 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.ScreenNavigate
-import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.pretendard
@@ -101,7 +101,7 @@ fun LoginScreen(
                     modifier = modifier
                         .width(321.dp)
                         .height(54.dp)
-                        .background(Black, shape = RoundedCornerShape(16.dp))
+                        .background(Color(0xFFFEE500), shape = RoundedCornerShape(16.dp))
                         .clickable {
                             viewModel.loginWithKakao(
                                 context = context,
@@ -116,34 +116,38 @@ fun LoginScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(31.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp), // 적당한 패딩
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.facebook),
+                            painter = painterResource(R.drawable.kakao),
                             contentDescription = null,
-                            modifier = modifier
-                                .width(30.dp)
-                                .height(30.dp)
+                            modifier = Modifier
+                                .width(20.dp)
+                                .height(20.dp)
                         )
-
+                        Spacer(modifier = Modifier.weight(1f))
                         Text(
-                            text = "카카오톡 로그인",
+                            text = "카카오 로그인",
                             style = TextStyle(
-                                fontSize = 20.sp,
+                                fontSize = 15.sp,
                                 lineHeight = 24.sp,
                                 fontFamily = pretendard,
                                 fontWeight = FontWeight.Medium,
-                                color = Label,
+                                color = Color(0xFF181600),
                                 textAlign = TextAlign.Center,
                             ),
                         )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Box(modifier = Modifier.width(20.dp))
                     }
                 }
-
             }
         }
     }
+
     Box(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = modifier
