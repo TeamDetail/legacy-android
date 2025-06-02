@@ -60,7 +60,10 @@ android {
 
 
 dependencies {
+    val room_version = "2.7.1"
     val nav_version = "2.8.9"
+    implementation("com.squareup.retrofit2:retrofit:3.1.0-SNAPSHOT")
+    implementation("androidx.room:room-runtime:$room_version")
     implementation ("com.kakao.sdk:v2-all:2.20.1")
     implementation ("com.kakao.sdk:v2-user:2.20.1")
     implementation ("com.kakao.sdk:v2-share:2.20.1")
