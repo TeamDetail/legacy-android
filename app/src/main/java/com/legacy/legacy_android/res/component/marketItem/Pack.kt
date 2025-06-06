@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +34,13 @@ fun Pack(
     packModel: PackModel){
     Box(
         modifier = Modifier
-            .background(Fill_Normal)
+            .background(Fill_Normal, RoundedCornerShape(20.dp))
     ){
         Box(
             modifier = Modifier
                 .width(189.5.dp)
-                .border(width = 1.dp, color = packModel.border)
+                .border(1.dp, packModel.border, RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .background(Fill_Normal)
         ){
             Column (
@@ -45,7 +48,6 @@ fun Pack(
                 modifier = Modifier
                     .height(120.dp)
                     .padding(12.dp)
-
             ) {
                 Column {
                     Text(

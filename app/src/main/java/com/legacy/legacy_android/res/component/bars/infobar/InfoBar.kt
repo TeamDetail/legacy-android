@@ -58,7 +58,7 @@ fun InfoBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(start = 12.dp, end = 12.dp)
+                .padding(10.dp)
                 .fillMaxWidth()
         ) {
             Row(

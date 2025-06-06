@@ -95,7 +95,7 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(horizontal = 10.dp, vertical = 40.dp)
+                .padding(vertical = 40.dp)
                 .zIndex(7f)
         ) {
             NavBar(navHostController = navHostController)
