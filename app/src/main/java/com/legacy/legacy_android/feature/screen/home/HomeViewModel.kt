@@ -1,15 +1,17 @@
 package com.legacy.legacy_android.feature.screen.home
 
-import android.app.Application
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+@HiltViewModel
 class HomeViewModel @Inject constructor(
-    application: Application
-): AndroidViewModel(application){
-
-
-
+    @ApplicationContext private val context: Context
+): ViewModel() {
+    val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 }

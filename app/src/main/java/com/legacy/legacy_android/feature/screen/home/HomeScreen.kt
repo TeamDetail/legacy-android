@@ -41,7 +41,7 @@ fun HomeScreen(
 ) {
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
-    val currentLocation = getMyLocation().value
+    val currentLocation = getMyLocation(viewModel.fusedLocationClient).value
     println(currentLocation)
 
     val cameraPositionState = rememberCameraPositionState()
