@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
@@ -18,6 +17,7 @@ android {
     }
     val MAPS_API_KEY = localProperties.getProperty("MAPS_API_KEY") ?: ""
     val KAKAO_API_KEY = localProperties.getProperty("KAKAO_API_KEY") ?: ""
+    val SERVER_API_KEY = localProperties.getProperty("SERVER_API_KEY") ?: ""
 
     namespace = "com.legacy.legacy_android"
     compileSdk = 35
@@ -25,9 +25,11 @@ android {
     defaultConfig {
         buildConfigField("String", "MAPS_API_KEY", "\"$MAPS_API_KEY\"")
         buildConfigField("String", "KAKAO_API_KEY", "\"$KAKAO_API_KEY\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"$SERVER_API_KEY\"")
 
         manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
         manifestPlaceholders["KAKAO_API_KEY"] = KAKAO_API_KEY
+        manifestPlaceholders["SERVER_API_KEY"] = SERVER_API_KEY
         applicationId = "com.legacy.legacy_android"
         minSdk = 28
         targetSdk = 35
