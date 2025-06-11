@@ -5,10 +5,12 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.legacy.legacy_android.ScreenNavigate
 import com.legacy.legacy_android.feature.network.login.LoginRequest
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.user.saveUser.saveAccToken
@@ -27,16 +29,25 @@ class LoginViewModel @Inject constructor(
 
     fun loginWithKakao(
         context: Context,
-        onSuccess: (OAuthToken) -> Unit,
+        navHostController: NavHostController,
         onFailure: (Throwable) -> Unit
     ) {
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
+                Log.d(TAG, "토큰: $token")
                 onFailure(error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken} ${token.refreshToken}")
-                onSuccess(token)
+                // 백엔드 로그인 호출
+                callBackendLogin(
+                    kakaoAccessToken = token.accessToken,
+                    kakaoRefreshToken = token.refreshToken,
+                    onBackendLoginSuccess = { Log.i("성공", "벡엔드") },
+                    onFailure = onFailure,
+                    context = context,
+                    navHostController = navHostController
+                )
             }
         }
 
@@ -52,39 +63,38 @@ class LoginViewModel @Inject constructor(
                     UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
                 } else if (token != null) {
                     Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    onSuccess(token)
-                    callBackendLogin(kakaoAccessToken = token.accessToken, kakaoRefreshToken = token.refreshToken,
-                        onSuccess = onSuccess, onFailure = onFailure, token)
+                    callBackendLogin(
+                        kakaoAccessToken = token.accessToken,
+                        kakaoRefreshToken = token.refreshToken,
+                        onBackendLoginSuccess = { Log.i("성공", "벡엔드") },
+                        onFailure = onFailure,
+                        context = context,
+                        navHostController = navHostController
+                    )
                 }
             }
         } else {
             UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
         }
     }
+
     private fun callBackendLogin(
         kakaoAccessToken: String,
         kakaoRefreshToken: String,
-        onSuccess: (OAuthToken) -> Unit,
+        onBackendLoginSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
-        token: OAuthToken
+        context: Context,
+        navHostController: NavHostController
     ) {
         viewModelScope.launch {
             try {
                 val request = LoginRequest(accessToken = kakaoAccessToken, refreshToken = kakaoRefreshToken)
                 val response = loginService.login(request)
-
-                Log.i(TAG, "백엔드 로그인 성공: AccessToken = ${response.accessToken}, RefreshToken = ${response.refreshToken}")
-
-                saveAccToken(
-                    context = getApplication<Application>().applicationContext,
-                    token = response.accessToken
-                )
-                saveRefToken(
-                    context = getApplication<Application>().applicationContext,
-                    token = response.refreshToken
-                )
-                onSuccess(token)
-
+                Log.i(TAG, "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = $response.data.accessToken}")
+                onBackendLoginSuccess()
+                saveAccToken(context, response.data.accessToken)
+                saveRefToken(context, response.data.accessToken)
+                navHostController.navigate(ScreenNavigate.HOME.name)
             } catch (e: Exception) {
                 Log.e(TAG, "백엔드 로그인 실패", e)
                 onFailure(e)
@@ -92,4 +102,3 @@ class LoginViewModel @Inject constructor(
         }
     }
 }
-

@@ -16,6 +16,7 @@ fun saveRefToken(context: Context, token: String?) {
         } else {
             editor.remove(KEY_REF_TOKEN)
         }
+        Log.d("ref토큰 저장 성공", "${token}")
         editor.apply()
     } catch (e: Exception) {
         Log.d("토큰오류", "saveRefToken: $e")
@@ -31,6 +32,7 @@ fun saveAccToken(context: Context, token: String?) {
         } else {
             editor.remove(KEY_ACC_TOKEN)
         }
+        Log.d("acc토큰 저장 성공", "${token}")
         editor.apply()
     } catch (e: Exception) {
         Log.d("토큰오류", "saveAccToken: $e")

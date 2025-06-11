@@ -105,9 +105,7 @@ fun LoginScreen(
                         .clickable {
                             viewModel.loginWithKakao(
                                 context = context,
-                                onSuccess = {
-                                    navHostController.navigate(ScreenNavigate.HOME.name)
-                                },
+                                navHostController = navHostController,
                                 onFailure = { error ->
                                     Log.e("LoginScreen", "카카오 로그인 실패", error)
                                 }
@@ -118,7 +116,7 @@ fun LoginScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 20.dp), // 적당한 패딩
+                            .padding(horizontal = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(

@@ -4,6 +4,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginService {
-    @POST("/kakao/code")
+    @POST("/kakao/accessToken")
     suspend fun login(@Body code: LoginRequest) : LoginResponse
 }
