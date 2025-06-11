@@ -86,10 +86,12 @@ fun HomeScreen(
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
+                maxZoomPreference = 0f,
+                minZoomPreference = 30f,
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
-                zoomControlsEnabled = false ),
+                zoomControlsEnabled = false),
         )
         // NavBar
         Box(

@@ -25,7 +25,7 @@ android {
     defaultConfig {
         buildConfigField("String", "MAPS_API_KEY", "\"$MAPS_API_KEY\"")
         buildConfigField("String", "KAKAO_API_KEY", "\"$KAKAO_API_KEY\"")
-        buildConfigField("String", "SERVER_API_KEY", "\"$SERVER_API_KEY\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"${SERVER_API_KEY}\"")
 
         manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
         manifestPlaceholders["KAKAO_API_KEY"] = KAKAO_API_KEY
@@ -64,12 +64,16 @@ android {
 dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.room:room-runtime:$room_version")
     implementation ("com.kakao.sdk:v2-all:2.20.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("com.kakao.sdk:v2-user:2.20.1")
     implementation ("com.kakao.sdk:v2-share:2.20.1")
     implementation ("com.kakao.sdk:v2-talk:2.20.1")
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
     implementation ("com.kakao.sdk:v2-friend:2.20.1")
     implementation ("com.kakao.sdk:v2-navi:2.20.1")
     implementation ("com.kakao.sdk:v2-cert:2.20.1")

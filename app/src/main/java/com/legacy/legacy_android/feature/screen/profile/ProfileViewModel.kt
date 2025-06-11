@@ -22,6 +22,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(profileUiState = ProfilePendingUiState.Loading)
         }
         viewModelScope.launch {
+
         }
     }
 }
