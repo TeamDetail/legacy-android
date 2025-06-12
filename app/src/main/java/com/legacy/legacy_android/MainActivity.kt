@@ -3,10 +3,10 @@ package com.legacy.legacy_android
 import android.content.Context
 import android.media.SoundPool
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -17,6 +17,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
+import com.legacy.legacy_android.feature.screen.friend.FriendScreen
+import com.legacy.legacy_android.feature.screen.friend.FriendViewModel
 import com.legacy.legacy_android.feature.screen.home.HomeScreen
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.feature.screen.login.LoginScreen
@@ -38,12 +40,12 @@ enum class ScreenNavigate {
     RANKING,
     ACHIEVE,
     TRIAL,
-    PROFILE
+    PROFILE,
+    FRIEND
 }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
@@ -112,6 +114,14 @@ class MainActivity : AppCompatActivity() {
                     ProfileScreen(
                         modifier = Modifier,
                         viewModel = profileViewModel,
+                        navHostController = navController
+                    )
+                }
+                composable (route = ScreenNavigate.FRIEND.name){
+                    val friendViewModel: FriendViewModel = hiltViewModel()
+                    FriendScreen(
+                        modifier = Modifier,
+                        viewModel = friendViewModel,
                         navHostController = navController
                     )
                 }

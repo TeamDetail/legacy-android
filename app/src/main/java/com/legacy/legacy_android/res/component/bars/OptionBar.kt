@@ -30,7 +30,10 @@ fun OptionBar(navHostController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val iconModifier = Modifier.size(30.dp)
-            Image(painter = painterResource(R.drawable.friends), contentDescription = null, modifier = iconModifier)
+            Image(painter = painterResource(R.drawable.friends), contentDescription = null,
+                modifier = iconModifier.clickable {
+                navHostController.navigate("friend")
+            })
             Box {
                 Image(painter = painterResource(R.drawable.mail), contentDescription = null, modifier = iconModifier)
             }

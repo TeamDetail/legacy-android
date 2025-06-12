@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,8 +33,6 @@ import com.legacy.legacy_android.feature.data.getMyLocation
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.ui.theme.Primary
-import com.legacy.legacy_android.ui.theme.Purple_Netural
-
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -91,6 +90,8 @@ fun HomeScreen(
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
+//                minZoomPreference = 17f,
+//                maxZoomPreference = 15f
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
@@ -106,7 +107,7 @@ fun HomeScreen(
                 ),
                 strokeColor = Primary,
                 strokeWidth = 1f,
-                fillColor = Purple_Netural
+                fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
             )
         }
 
