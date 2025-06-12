@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = ScreenNavigate.HOME.name) {
+            NavHost(navController = navController, startDestination = ScreenNavigate.LOGIN.name) {
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
                     LoginScreen(

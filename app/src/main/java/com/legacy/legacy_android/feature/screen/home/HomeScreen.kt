@@ -22,13 +22,17 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
+import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.Purple_Netural
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -54,6 +58,7 @@ fun HomeScreen(
             cameraPositionState.animate(cameraUpdate)
         }
     }
+
 
     Box(modifier = modifier
         .fillMaxSize()
@@ -82,17 +87,30 @@ fun HomeScreen(
 //        }
         // 구글맵
         GoogleMap(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
-                maxZoomPreference = 18f,
-                minZoomPreference = 16f,
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
-                zoomControlsEnabled = false),
-        )
+                zoomControlsEnabled = false
+            )
+        ) {
+            Polygon(
+                points = listOf(
+                    LatLng(35.8771, 128.6034),
+                    LatLng(35.8771, 128.6234),
+                    LatLng(35.8591, 128.6234),
+                    LatLng(35.8591, 128.6034),
+                ),
+                strokeColor = Primary,
+                strokeWidth = 1f,
+                fillColor = Purple_Netural
+            )
+        }
+
+
         // NavBar
         Box(
             modifier = Modifier
