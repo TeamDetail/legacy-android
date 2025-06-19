@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.feature.screen.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
+import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.ui.theme.Primary
@@ -50,11 +52,31 @@ fun HomeScreen(
     val cameraPositionState = rememberCameraPositionState()
 
     LaunchedEffect(currentLocation) {
-        if (currentLocation != null) {
-            val cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                CameraPosition.fromLatLngZoom(currentLocation, 17f)
+        currentLocation?.let {
+            cameraPositionState.move(
+                CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.fromLatLngZoom(
+                        LatLng(it.latitude, it.longitude),
+                        16f
+                    )
+                )
             )
-            cameraPositionState.animate(cameraUpdate)
+        }
+    }
+
+    LaunchedEffect(cameraPositionState.isMoving) {
+        if (!cameraPositionState.isMoving) {
+            val center = cameraPositionState.position.target
+            val zoom = cameraPositionState.position.zoom
+
+            val delta = 0.01 / zoom
+            val minLat = center.latitude - delta
+            val maxLat = center.latitude + delta
+            val minLng = center.longitude - delta
+            val maxLng = center.longitude + delta
+            print("이거 ${minLng}, ${maxLat}  ${minLng}  ${maxLng}")
+
+            viewModel.fetchRuinsMap(minLat, maxLat, minLng, maxLng)
         }
     }
 
@@ -90,25 +112,24 @@ fun HomeScreen(
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
-//                minZoomPreference = 17f,
-//                maxZoomPreference = 15f
+                minZoomPreference = 10f
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
                 zoomControlsEnabled = false
             )
         ) {
-            Polygon(
-                points = listOf(
-                    LatLng(35.8771, 128.6034),
-                    LatLng(35.8771, 128.6234),
-                    LatLng(35.8591, 128.6234),
-                    LatLng(35.8591, 128.6034),
-                ),
-                strokeColor = Primary,
-                strokeWidth = 1f,
-                fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
-            )
+//            Polygon(
+//                points = listOf(
+//                    LatLng(35.8771, 128.6034),
+//                    LatLng(35.8771, 128.6234),
+//                    LatLng(35.8591, 128.6234),
+//                    LatLng(35.8591, 128.6034),
+//                ),
+//                strokeColor = Primary,
+//                strokeWidth = 1f,
+//                fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
+//            )
         }
 
 
@@ -118,6 +139,7 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .padding(vertical = 40.dp)
                 .zIndex(7f)
+
         ) {
             NavBar(navHostController = navHostController)
 //            AdventureInfo(name = "대구소프트웨어마이스터고등학교", loc = LatLng (35.8576, 128.5747), info = "대구소프트웨어마이스터고등학교는 세상을 이롭게 하는 개발자 육성을 위한 학교입니다.", tags = listOf("IT", "마이스터", "대구", "고등학교"))

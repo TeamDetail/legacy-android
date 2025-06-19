@@ -1,8 +1,8 @@
-// NetworkModule.kt
 package com.legacy.legacy_android.di
 
 import com.legacy.legacy_android.BuildConfig
 import com.legacy.legacy_android.feature.network.login.LoginService
+import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +29,12 @@ object NetworkModule {
     fun provideLoginService(retrofit: Retrofit): LoginService {
         return retrofit.create(LoginService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideRuinsMapService(retrofit: Retrofit): RuinsMapService {
+        return retrofit.create(RuinsMapService::class.java)
+    }
 }
+
+
