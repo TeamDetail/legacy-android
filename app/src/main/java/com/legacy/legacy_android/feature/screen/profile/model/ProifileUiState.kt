@@ -1,6 +1,6 @@
 package com.legacy.legacy_android.feature.screen.profile.model
 
-import com.legacy.legacy_android.feature.network.user.UserResponse
+import com.legacy.legacy_android.feature.network.user.GetMeResponse
 
 data class ProfileUiState(
     val profileUiState: ProfilePendingUiState = ProfilePendingUiState.Default,
@@ -8,7 +8,7 @@ data class ProfileUiState(
 
 sealed interface ProfilePendingUiState {
     data class Success(
-        val myData: UserResponse
+        val myData: GetMeResponse
     ): ProfilePendingUiState
     data object Loading : ProfilePendingUiState
     data object Error : ProfilePendingUiState

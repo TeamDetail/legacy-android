@@ -6,5 +6,5 @@ import retrofit2.http.POST
 
 interface RuinsMapService {
     @POST("/ruins/map")
-    suspend fun ruinsmap(@Body loc: RuinsMapRequest) : BaseResponse<RuinsMapRequest>
+    suspend fun ruinsmap(@Body loc: RuinsMapRequest) : BaseResponse<RuinsMapResponse>
 }

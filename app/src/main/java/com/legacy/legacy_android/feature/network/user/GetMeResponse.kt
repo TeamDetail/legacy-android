@@ -1,6 +1,6 @@
 package com.legacy.legacy_android.feature.network.user
 
-data class UserResponse(
+data class GetMeResponse(
     val status: Int,
     val message: String,
     val data: UserData
