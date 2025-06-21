@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.network.remote
+package com.legacy.legacy_android.feature.network.core.remote
 
 import android.Manifest
 import android.content.Context
@@ -6,13 +6,16 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.legacy.legacy_android.MyApplication
+import com.legacy.legacy_android.LegacyApplication
 import com.test.beep_and.feature.data.user.getUser.getAccToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RequestInterceptor(
+class RequestInterceptor @Inject constructor(
     private val networkUtil: NetworkUtil
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -21,10 +24,10 @@ class RequestInterceptor(
                 throw NoConnectivityException()
             }
             val request = chain.request()
-            val context = MyApplication.getContext()
+            val context = LegacyApplication.getContext()
             val skipPaths = listOf(
-                "/dauth/login",
-                "/auth/login",
+                "/kakao/code",
+                "/kakao/accessToken",
                 "/auth/refresh"
             )
             val path = request.url.encodedPath
@@ -54,7 +57,10 @@ class RequestInterceptor(
     }
 }
 
-class NetworkUtil(private val context: Context) {
+@Singleton
+class NetworkUtil @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     fun isNetworkConnected(): Boolean {
         val connectivityManager =
@@ -82,9 +88,8 @@ class NetworkUtil(private val context: Context) {
         Log.d("NetworkUtil", "Has WiFi: $hasWifi, Has Cellular: $hasCellular")
 
         return hasWifi || hasCellular
-    }}
+    }
+}
 
 class NoConnectivityException : IOException("인터넷 연결이 없습니다. 네트워크 상태를 확인해주세요.")
 class NetworkException(message: String) : IOException(message)
-
-
