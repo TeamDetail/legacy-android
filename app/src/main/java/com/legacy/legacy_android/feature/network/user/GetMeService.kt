@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface GetMeService {
     @GET("/user/me")
-    suspend fun profile(): BaseResponse<GetMeResponse>
+    suspend fun getMe(): BaseResponse<UserData>
 }

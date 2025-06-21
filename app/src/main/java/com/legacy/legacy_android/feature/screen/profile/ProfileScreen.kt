@@ -88,7 +88,7 @@ fun ProfileScreen(
                 modifier = Modifier.padding(top = 24.dp)
             ) {
                 AsyncImage(
-                    model = profile?.data?.imageUrl,
+                    model = profile?.imageUrl,
                     contentDescription = "프로필 이미지",
                     modifier = Modifier
                         .size(80.dp)
@@ -99,7 +99,7 @@ fun ProfileScreen(
                     error = painterResource(R.drawable.ic_launcher_foreground)
                 )
                 Text(
-                    text = profile?.data?.nickname ?: "사용자",
+                    text = profile?.nickname ?: "사용자",
                     color = Label,
                     fontSize = 24.sp,
                     fontFamily = pretendard,

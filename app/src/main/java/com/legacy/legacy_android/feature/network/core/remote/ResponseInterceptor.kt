@@ -3,10 +3,10 @@ package com.legacy.legacy_android.feature.network.core.remote
 import android.util.Log
 import com.legacy.legacy_android.LegacyApplication
 import com.legacy.legacy_android.feature.data.user.clearToken
-import com.legacy.legacy_android.feature.data.user.saveUser.saveAccToken
-import com.legacy.legacy_android.feature.data.user.saveUser.saveRefToken
+import com.legacy.legacy_android.feature.data.user.getRefToken
+import com.legacy.legacy_android.feature.data.user.saveAccToken
+import com.legacy.legacy_android.feature.data.user.saveRefToken
 import com.legacy.legacy_android.feature.network.token.AccTokenRequest
-import com.test.beep_and.feature.data.user.getUser.getRefToken
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Protocol

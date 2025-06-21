@@ -19,7 +19,7 @@ object RetrofitClient {
     fun init(context: Context) {
         val gson = GsonBuilder().setLenient().create()
 
-        val client = OkHttpClient().newBuilder()
+        val client = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
@@ -35,8 +35,8 @@ object RetrofitClient {
             .build()
     }
 
-    private fun getRetrofit(): Retrofit {
-        return retrofit ?: throw IllegalStateException("RetrofitClient is not initialized")
+    fun getRetrofit(): Retrofit {
+        return retrofit ?: throw IllegalStateException("RetrofitClient not initialized")
     }
 
     val loginService: LoginService by lazy {
@@ -55,6 +55,7 @@ object RetrofitClient {
         getRetrofit().create(RuinsMapService::class.java)
     }
 }
+
 
 object LegacyRetrofitClient {
     private var retrofit: Retrofit? = null

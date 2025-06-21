@@ -11,8 +11,8 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.legacy.legacy_android.ScreenNavigate
-import com.legacy.legacy_android.feature.data.user.saveUser.saveAccToken
-import com.legacy.legacy_android.feature.data.user.saveUser.saveRefToken
+import com.legacy.legacy_android.feature.data.user.saveAccToken
+import com.legacy.legacy_android.feature.data.user.saveRefToken
 import com.legacy.legacy_android.feature.network.login.LoginRequest
 import com.legacy.legacy_android.feature.network.login.LoginService
 import dagger.hilt.android.lifecycle.HiltViewModel

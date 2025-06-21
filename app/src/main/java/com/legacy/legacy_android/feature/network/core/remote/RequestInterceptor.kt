@@ -7,13 +7,15 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.legacy.legacy_android.LegacyApplication
-import com.test.beep_and.feature.data.user.getUser.getAccToken
+import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
+import com.legacy.legacy_android.feature.data.user.getAccToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 class RequestInterceptor @Inject constructor(
     private val networkUtil: NetworkUtil
@@ -23,6 +25,7 @@ class RequestInterceptor @Inject constructor(
             if (!networkUtil.isNetworkConnected()) {
                 throw NoConnectivityException()
             }
+
             val request = chain.request()
             val context = LegacyApplication.getContext()
             val skipPaths = listOf(
@@ -40,8 +43,7 @@ class RequestInterceptor @Inject constructor(
                     .addHeader("Authorization", "Bearer ${getAccToken(context)}")
                     .build()
             }
-            println("Request URL: ${newRequest.url}")
-            println("Headers: ${newRequest.headers}")
+            println("엑세스 토큰: ${getAccToken(context)}")
 
             return try {
                 chain.proceed(newRequest)

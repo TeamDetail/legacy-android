@@ -1,12 +1,10 @@
-package com.legacy.legacy_android.feature.data.user.saveUser
+package com.legacy.legacy_android.feature.data.user
 
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.runBlocking
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.legacy.legacy_android.feature.data.user.dataStore
-
 
 val REF_TOKEN = stringPreferencesKey("ref_token")
 val ACC_TOKEN = stringPreferencesKey("acc_token")
@@ -17,7 +15,8 @@ fun saveRefToken(context: Context, token: String?) {
             context.dataStore.edit { preferences ->
                 if (token != null) {
                     preferences[REF_TOKEN] = token
-                } else {
+                }
+                else {
                     preferences.remove(REF_TOKEN)
                 }
             }
@@ -32,7 +31,8 @@ fun saveAccToken(context: Context, token: String?) {
             context.dataStore.edit { preferences ->
                 if (token != null) {
                     preferences[ACC_TOKEN] = token
-                } else {
+                }
+                else {
                     preferences.remove(ACC_TOKEN)
                 }
             }

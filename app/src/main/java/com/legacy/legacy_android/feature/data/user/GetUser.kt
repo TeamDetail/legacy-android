@@ -1,9 +1,6 @@
-package com.test.beep_and.feature.data.user.getUser
+package com.legacy.legacy_android.feature.data.user
 
 import android.content.Context
-import com.legacy.legacy_android.feature.data.user.dataStore
-import com.legacy.legacy_android.feature.data.user.saveUser.ACC_TOKEN
-import com.legacy.legacy_android.feature.data.user.saveUser.REF_TOKEN
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -19,5 +16,4 @@ fun getAccToken(context: Context): String? {
         preferences[ACC_TOKEN]
     }
 }
-
 
