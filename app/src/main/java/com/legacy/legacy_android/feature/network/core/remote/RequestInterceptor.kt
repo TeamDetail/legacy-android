@@ -7,7 +7,6 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.legacy.legacy_android.LegacyApplication
-import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
@@ -43,7 +42,6 @@ class RequestInterceptor @Inject constructor(
                     .addHeader("Authorization", "Bearer ${getAccToken(context)}")
                     .build()
             }
-            println("엑세스 토큰: ${getAccToken(context)}")
 
             return try {
                 chain.proceed(newRequest)

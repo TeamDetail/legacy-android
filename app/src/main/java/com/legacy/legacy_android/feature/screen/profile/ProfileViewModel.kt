@@ -28,9 +28,9 @@ class ProfileViewModel @Inject constructor(
             try {
                 val response = getMeService.getMe()
                 profile = response.data
-            }catch (error: Error){
+            } catch (error: Error) {
                 Log.e("프로필 뷰에서 에러발생", error.toString())
             }
         }
-        }
     }
+}

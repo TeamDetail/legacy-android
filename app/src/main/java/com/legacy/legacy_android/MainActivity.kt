@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -15,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
@@ -57,10 +57,18 @@ class MainActivity : AppCompatActivity() {
             .build()
         soundId = soundPool.load(this, R.raw.click, 1)
 
+        val sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE)
+
+        val startDestination = if (ACC_TOKEN != null ) {
+            ScreenNavigate.HOME.name
+        } else {
+            ScreenNavigate.LOGIN.name
+        }
+
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = ScreenNavigate.LOGIN.name) {
+            NavHost(navController = navController, startDestination = startDestination) {
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
                     LoginScreen(

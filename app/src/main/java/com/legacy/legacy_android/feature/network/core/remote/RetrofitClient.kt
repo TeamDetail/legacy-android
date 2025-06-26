@@ -54,6 +54,7 @@ object RetrofitClient {
     val ruinsMapService: RuinsMapService by lazy {
         getRetrofit().create(RuinsMapService::class.java)
     }
+
 }
 
 

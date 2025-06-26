@@ -1,7 +1,6 @@
 package com.legacy.legacy_android.feature.screen.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,7 +30,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.legacy.legacy_android.feature.data.getMyLocation
-import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
+import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.ui.theme.Primary
@@ -44,7 +43,35 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+
+    fun getRectanglePoints(
+        topLeft: LatLng,
+        latPerPixel: Double,
+        lonPerPixel: Double,
+        strokeWidthLat: Double,
+        strokeWidthLng: Double
+    ): List<LatLng> {
+        return listOf(
+            LatLng(topLeft.latitude - strokeWidthLat, topLeft.longitude + strokeWidthLng),
+            LatLng(topLeft.latitude - strokeWidthLat, topLeft.longitude + lonPerPixel - strokeWidthLng),
+            LatLng(topLeft.latitude - latPerPixel + strokeWidthLat, topLeft.longitude + lonPerPixel - strokeWidthLng),
+            LatLng(topLeft.latitude - latPerPixel + strokeWidthLat, topLeft.longitude + strokeWidthLng)
+        )
+    }
+
+
+    // 가로
+    val latPerPixel = 0.000724
+    // 세로
+    val lonPerPixel = 0.000909;
+
+    // 가로 경계 두께
+    val defaultStrokeWidthToLatitude = 0.00000905;
+    // 세로 경계 두께
+    val defaultStrokeWidthToLongitude = 0.0000113625;
+    val ruins = viewModel.ruinsData
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
 
     val currentLocation = getMyLocation(viewModel.fusedLocationClient).value
     println(currentLocation)
@@ -66,20 +93,25 @@ fun HomeScreen(
 
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
-            val center = cameraPositionState.position.target
-            val zoom = cameraPositionState.position.zoom
+            val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
+            bounds?.let {
+                val southwest = it.southwest
+                val northeast = it.northeast
 
-            val delta = 0.01 / zoom
-            val minLat = center.latitude - delta
-            val maxLat = center.latitude + delta
-            val minLng = center.longitude - delta
-            val maxLng = center.longitude + delta
-            print("이거 ${minLng}, ${maxLat}  ${minLng}  ${maxLng}")
+                viewModel.minLat = southwest.latitude
+                viewModel.maxLat = northeast.latitude
+                viewModel.minLng = southwest.longitude
+                viewModel.maxLng = northeast.longitude
 
-            viewModel.fetchRuinsMap(minLat, maxLat, minLng, maxLng)
+                viewModel.fetchRuinsMap(
+                    minLat = viewModel.minLat,
+                    maxLat = viewModel.maxLat,
+                    minLng = viewModel.minLng,
+                    maxLng = viewModel.maxLng
+                )
+            }
         }
     }
-
 
     Box(modifier = modifier
         .fillMaxSize()
@@ -106,7 +138,7 @@ fun HomeScreen(
 //        ){
 //            QuizBox(name = "대구소프트웨어마이스트고등학겨")
 //        }
-        // 구글맵
+
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -117,19 +149,30 @@ fun HomeScreen(
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
                 zoomControlsEnabled = false
-            )
+            ),
         ) {
-//            Polygon(
-//                points = listOf(
-//                    LatLng(35.8771, 128.6034),
-//                    LatLng(35.8771, 128.6234),
-//                    LatLng(35.8591, 128.6234),
-//                    LatLng(35.8591, 128.6034),
-//                ),
-//                strokeColor = Primary,
-//                strokeWidth = 1f,
-//                fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
-//            )
+            ruins.forEach { ruin ->
+                val topLeft = LatLng(ruin.latitude, ruin.longitude)
+
+                val polygonPoints = getRectanglePoints(
+                    topLeft = topLeft,
+                    latPerPixel = latPerPixel,
+                    lonPerPixel = lonPerPixel,
+                    strokeWidthLat = defaultStrokeWidthToLatitude,
+                    strokeWidthLng = defaultStrokeWidthToLongitude
+                )
+
+                Polygon(
+                    tag=ruin.ruinsId,
+                    points = polygonPoints,
+                    strokeColor = Primary,
+                    strokeWidth = 1f,
+                    fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
+                    clickable = true,
+                    onClick = {viewModel.selectedId.value = ruin.ruinsId
+                    viewModel.fetchRuinsId(ruin.ruinsId)}
+                )
+            }
         }
 
 
@@ -142,8 +185,15 @@ fun HomeScreen(
 
         ) {
             NavBar(navHostController = navHostController)
-//            AdventureInfo(name = "대구소프트웨어마이스터고등학교", loc = LatLng (35.8576, 128.5747), info = "대구소프트웨어마이스터고등학교는 세상을 이롭게 하는 개발자 육성을 위한 학교입니다.", tags = listOf("IT", "마이스터", "대구", "고등학교"))
+            if (viewModel.selectedId.value > -1) {
+                AdventureInfo(
+                    name = viewModel.ruinsIdData.value?.name ?: "이름 없음",
+                    img = viewModel.ruinsIdData.value?.ruinsImage,
+                    loc = LatLng (35.8576, 128.5747),
+                    info = viewModel.ruinsIdData.value?.name, // 여기 나중에 설명 들어가야함
+                    tags = listOf("IT", "마이스터", "대구", "고등학교")
+                )
+            }
         }
     }
 }
-

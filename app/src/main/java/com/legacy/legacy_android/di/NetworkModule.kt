@@ -3,6 +3,7 @@ package com.legacy.legacy_android.di
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
+import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
 import com.legacy.legacy_android.feature.network.token.TokenService
 import com.legacy.legacy_android.feature.network.user.GetMeService
 import dagger.Module
@@ -44,5 +45,11 @@ object NetworkModule {
     @Singleton
     fun provideRuinsMapService(retrofit: Retrofit): RuinsMapService {
         return retrofit.create(RuinsMapService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRuinsIdService(retrofit: Retrofit): RuinsIdService {
+        return retrofit.create(RuinsIdService::class.java)
     }
 }

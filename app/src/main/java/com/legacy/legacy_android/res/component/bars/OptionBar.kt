@@ -42,7 +42,7 @@ fun OptionBar(navHostController: NavHostController) {
                 painter = painterResource(R.drawable.info),
                 contentDescription = null,
                 modifier = iconModifier.clickable {
-                    navHostController.navigate("profile")
+//                    navHostController.navigate("profile")
                 }
             )
             Image(painter = painterResource(R.drawable.logout),

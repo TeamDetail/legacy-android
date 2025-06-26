@@ -2,16 +2,20 @@ package com.legacy.legacy_android.feature.screen.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +33,10 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
+import com.legacy.legacy_android.res.component.button.BackArrow
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Label
+import com.legacy.legacy_android.ui.theme.Yellow
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
@@ -59,21 +65,7 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(R.drawable.arrow),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clickable {
-                            Nav.setNavStatus(selectedId)
-                            when (selectedId) {
-                                0 -> navHostController.navigate("MARKET")
-                                1 -> navHostController.navigate("ACHIEVE")
-                                2 -> navHostController.navigate("HOME")
-                                3 -> navHostController.navigate("TRIAL")
-                                4 -> navHostController.navigate("RANKING")
-                            }
-                        }
-                )
+             BackArrow(navHostController = navHostController, selectedId = selectedId)
                 Text(
                     text = "프로필",
                     color = Label,
@@ -85,26 +77,51 @@ fun ProfileScreen(
             // 여기서 프로필 윗부분
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 24.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    Modifier.padding(top = 24.dp)
             ) {
                 AsyncImage(
                     model = profile?.imageUrl,
                     contentDescription = "프로필 이미지",
                     modifier = Modifier
                         .size(80.dp)
-                        .clip(CircleShape)
-                        .padding(end = 16.dp),
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                    error = painterResource(R.drawable.ic_launcher_foreground)
+                    error = painterResource(R.drawable.temp_profile)
                 )
-                Text(
-                    text = profile?.nickname ?: "사용자",
-                    color = Label,
-                    fontSize = 24.sp,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Bold,
-                )
+                Column(
+                    modifier = Modifier
+                        .width(120.dp)
+                ){
+                    Text(
+                        text = profile?.nickname ?: "사용자",
+                        color = Label,
+                        fontSize = 28.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "LV. ${viewModel.profile?.level}",
+                        color = Label,
+                        fontSize = 16.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .border(width = 1.dp, color = Yellow, shape = RoundedCornerShape(8.dp))
+                    ) {
+                        Text(
+                            text = viewModel.profile?.title.toString(),
+                            color = Yellow,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp, horizontal = 16.dp)
+                        )
+                    }
+                }
             }
         }
     }

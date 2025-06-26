@@ -1,5 +1,4 @@
 package com.legacy.legacy_android.res.component.adventure
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
@@ -40,7 +40,8 @@ fun AdventureInfo(
     name : String?,
     loc : LatLng?,
     info : String?,
-    tags : List<String>?
+    tags : List<String>?,
+    img: String?,
     ){
     Box(
         modifier = Modifier
@@ -127,13 +128,15 @@ fun AdventureInfo(
                         .clip(RoundedCornerShape(12.dp))
                         .padding(5.dp)
                 ) {
-                    Image(
+                    AsyncImage(
+                        model = img,
+                        contentDescription = "유적지 이미지",
                         modifier = Modifier
-                            .border(1.dp, color = Background_Normal)
                             .fillMaxSize()
+                            .matchParentSize()
                             .background(color = Purple_Netural),
-                        painter = painterResource(R.drawable.schoo_img),
-                        contentDescription = null
+                        error = painterResource(R.drawable.schoo_img),
+                        placeholder = painterResource(R.drawable.schoo_img)
                     )
 
                     Column(

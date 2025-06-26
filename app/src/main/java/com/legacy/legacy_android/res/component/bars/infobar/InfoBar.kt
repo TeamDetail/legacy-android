@@ -14,13 +14,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.R
@@ -46,6 +50,9 @@ fun InfoBar(
     navHostController: NavHostController
 ) {
     val viewModel: InfoBarViewModel = hiltViewModel();
+    LaunchedEffect(Unit) {
+        viewModel.fetchProfile()
+    }
     Box(
         modifier = Modifier
             .absoluteOffset(0.dp, 30.dp)
@@ -56,68 +63,84 @@ fun InfoBar(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
         ) {
+            // 프로필 & 코인
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxHeight()
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxHeight()
             ) {
-                Image(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(999.dp)),
-                    painter = painterResource(R.drawable.temp_profile),
-                    contentDescription = null
-                )
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.fillMaxHeight()
+                // 프로필
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.
+                    fillMaxWidth(0.3f)
+                        .fillMaxHeight()
+                            .clickable { navHostController.navigate("profile") }
                 ) {
-                    Text(
-                        text = viewModel.name,
-                        color = Label,
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold
+                    AsyncImage(
+                        model = viewModel.profile?.imageUrl,
+                        contentDescription = "프로필 이미지",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        error = painterResource(R.drawable.temp_profile)
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Text(
+                            text = viewModel.profile?.nickname.toString(),
+                            color = Label,
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
+                        Text(
+                            text = "LV. ${viewModel.profile?.level}",
+                            color = Label_Alternative,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                        .fillMaxWidth(0.3f),
+                    horizontalArrangement = Arrangement.spacedBy(1.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.coin),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp)
                     )
                     Text(
-                        text = "LV. ${viewModel.level}",
-                        color = Label_Alternative,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold
-                        )
+                        text = NumberFormat.getNumberInstance(Locale.US)
+                            .format(viewModel.profile?.credit ?: 0),
+                        color = Yellow,
+                        style = TextStyle(fontSize = 14.sp, fontFamily = bitbit)
                     )
                 }
             }
-
-            Row(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp)),
-                horizontalArrangement = Arrangement.spacedBy(1.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.coin),
-                    contentDescription = null,
-                    modifier = Modifier.size(40.dp)
-                )
-                Text(
-                    text = NumberFormat.getNumberInstance(Locale.US).format(viewModel.money),
-                    color = Yellow,
-                    style = TextStyle(fontSize = 14.sp, fontFamily = bitbit)
-                )
-            }
-
             Box(
                 modifier = Modifier
                     .zIndex(10f)
