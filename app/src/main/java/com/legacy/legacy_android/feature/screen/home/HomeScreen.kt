@@ -91,6 +91,7 @@ fun HomeScreen(
         }
     }
 
+
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
             val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
@@ -102,13 +103,14 @@ fun HomeScreen(
                 viewModel.maxLat = northeast.latitude
                 viewModel.minLng = southwest.longitude
                 viewModel.maxLng = northeast.longitude
-
+            if (cameraPositionState.position.zoom > 11.0f) {
                 viewModel.fetchRuinsMap(
                     minLat = viewModel.minLat,
                     maxLat = viewModel.maxLat,
                     minLng = viewModel.minLng,
                     maxLng = viewModel.maxLng
                 )
+            }
             }
         }
     }
@@ -142,6 +144,9 @@ fun HomeScreen(
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
+            onMapClick = {
+                viewModel.selectedId.value = -1
+            },
             properties = MapProperties(
                 isMyLocationEnabled = locationPermissionState.status.isGranted,
                 minZoomPreference = 10f

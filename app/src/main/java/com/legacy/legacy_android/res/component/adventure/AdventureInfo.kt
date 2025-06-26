@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -132,11 +133,17 @@ fun AdventureInfo(
                         model = img,
                         contentDescription = "유적지 이미지",
                         modifier = Modifier
-                            .fillMaxSize()
                             .matchParentSize()
-                            .background(color = Purple_Netural),
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop,
                         error = painterResource(R.drawable.schoo_img),
                         placeholder = painterResource(R.drawable.schoo_img)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(Background_Normal.copy(alpha = 0.5f))
+                            .clip(RoundedCornerShape(12.dp))
                     )
 
                     Column(
