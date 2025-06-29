@@ -7,14 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.Modifier
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
+import com.legacy.legacy_android.feature.data.user.dataStore
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
@@ -32,6 +30,9 @@ import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.trial.TrialScreen
 import com.legacy.legacy_android.feature.screen.trial.TrialViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.json.JSONObject
 
 enum class ScreenNavigate {
     LOGIN,
@@ -46,20 +47,35 @@ enum class ScreenNavigate {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         soundPool = SoundPool.Builder()
             .setMaxStreams(5)
             .build()
         soundId = soundPool.load(this, R.raw.click, 1)
 
-        val sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE)
+        fun isTokenValid(token: String): Boolean {
+            return try {
+                val parts = token.split(".")
+                val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.DEFAULT))
+                val json = JSONObject(payload)
+                val exp = json.getLong("exp")
+                val now = System.currentTimeMillis() / 1000
+                now < exp
+            } catch (e: Exception) {
+                false
+            }
+        }
 
-        val startDestination = if (ACC_TOKEN != null ) {
+        val token = runBlocking {
+            applicationContext.dataStore.data.first()[ACC_TOKEN]
+        }
+
+        val startDestination = if (!token.isNullOrBlank() && isTokenValid(token)) {
             ScreenNavigate.HOME.name
         } else {
             ScreenNavigate.LOGIN.name
