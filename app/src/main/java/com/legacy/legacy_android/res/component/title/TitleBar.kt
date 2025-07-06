@@ -3,7 +3,6 @@ package com.legacy.legacy_android.res.component.title
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
+import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun TitleBar(title: String) {
@@ -32,9 +32,11 @@ fun TitleBar(title: String) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
+                modifier = Modifier.padding(6.dp),
                 text = title,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.ExtraBold,
+                fontSize = 14.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Bold,
                 color = Yellow_Netural,
             )
         }

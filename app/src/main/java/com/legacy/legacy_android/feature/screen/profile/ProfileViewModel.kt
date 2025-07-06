@@ -23,6 +23,9 @@ class ProfileViewModel @Inject constructor(
     var profile by mutableStateOf<UserData?>(null)
         private set
 
+    val profileMode = listOf("내 기록", "칭호", "도감")
+    var profileStatus by mutableStateOf(0)
+
     fun fetchProfile() {
         viewModelScope.launch {
             try {

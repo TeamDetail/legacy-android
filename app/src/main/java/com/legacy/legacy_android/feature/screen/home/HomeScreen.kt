@@ -103,7 +103,7 @@ fun HomeScreen(
                 viewModel.maxLat = northeast.latitude
                 viewModel.minLng = southwest.longitude
                 viewModel.maxLng = northeast.longitude
-            if (cameraPositionState.position.zoom > 11.0f) {
+            if (cameraPositionState.position.zoom > 13.0f) {
                 viewModel.fetchRuinsMap(
                     minLat = viewModel.minLat,
                     maxLat = viewModel.maxLat,
@@ -158,13 +158,12 @@ fun HomeScreen(
         ) {
             ruins.forEach { ruin ->
                 val topLeft = LatLng(ruin.latitude, ruin.longitude)
-
                 val polygonPoints = getRectanglePoints(
                     topLeft = topLeft,
                     latPerPixel = latPerPixel,
                     lonPerPixel = lonPerPixel,
                     strokeWidthLat = defaultStrokeWidthToLatitude,
-                    strokeWidthLng = defaultStrokeWidthToLongitude
+                    strokeWidthLng = defaultStrokeWidthToLongitude,
                 )
 
                 Polygon(
@@ -175,7 +174,7 @@ fun HomeScreen(
                     fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
                     clickable = true,
                     onClick = {viewModel.selectedId.value = ruin.ruinsId
-                    viewModel.fetchRuinsId(ruin.ruinsId)}
+                    viewModel.fetchRuinsId(ruin.ruinsId)},
                 )
             }
         }
