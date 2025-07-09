@@ -91,13 +91,14 @@ fun HomeScreen(
         println("위치 움직임")
     }
 
-    LaunchedEffect(currentLocation, userId) {
+    LaunchedEffect(currentLocation) {
         if (currentLocation != null && userId != null) {
             viewModel.fetchBlock(
                 latitude = currentLocation?.latitude,
                 longitude = currentLocation?.longitude,
                 userId = userId
             )
+            viewModel.fetchGetBlock(userId = userId)
         }
     }
 

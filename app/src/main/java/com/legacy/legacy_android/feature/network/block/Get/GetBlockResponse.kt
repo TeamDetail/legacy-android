@@ -4,6 +4,6 @@ data class GetBlockResponse (
     val blockId: Int,
     val blockName: String,
     val blockType: String,
-    val latitude: Int,
-    val longitude: Int
+    val latitude: Double,
+    val longitude: Double
 )

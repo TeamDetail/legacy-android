@@ -6,8 +6,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.legacy.legacy_android.feature.network.block.Get.GetBlockRequest
+import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockRequest
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapRequest
@@ -25,7 +28,8 @@ class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val ruinsMapService: RuinsMapService,
     private val ruinsIdService: RuinsIdService,
-    private val postBlockService: PostBlockService
+    private val postBlockService: PostBlockService,
+    private val getBlockService: GetBlockService
 ): ViewModel() {
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
@@ -68,11 +72,24 @@ class HomeViewModel @Inject constructor(
                     userId = userId,
                     mobileOrWebsite = "MOBILE"
                 )
-                println(request)
                 val response = postBlockService.block(request)
                 Log.d("PostMap", "블록 생성 성공: ${response.blockId}")
             }catch (e: Exception){
                 Log.e("PostMap", "에러: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchGetBlock(userId: Long){
+        viewModelScope.launch {
+            try{
+                val request = GetBlockRequest(
+                    userId = userId
+                )
+                val response = getBlockService.getBlockById(userId)
+                Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
+            }catch (e: Exception){
+                Log.e("GetMap", "에러: ${e.message}")
             }
         }
     }

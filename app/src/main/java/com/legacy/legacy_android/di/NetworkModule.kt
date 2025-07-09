@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.di
 
+import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
@@ -58,5 +59,11 @@ object NetworkModule {
     @Singleton
     fun providePostBlockService(retrofit: Retrofit): PostBlockService{
         return retrofit.create(PostBlockService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBlockService(retrofit: Retrofit): GetBlockService{
+        return retrofit.create(GetBlockService::class.java)
     }
 }
