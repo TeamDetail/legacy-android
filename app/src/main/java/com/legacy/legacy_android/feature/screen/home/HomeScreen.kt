@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +31,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.legacy.legacy_android.feature.data.getMyLocation
+import com.legacy.legacy_android.feature.data.LocationViewModel
+import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.NavBar
@@ -41,8 +44,14 @@ import com.legacy.legacy_android.ui.theme.Primary
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchProfile()
+    }
 
     fun getRectanglePoints(
         topLeft: LatLng,
@@ -59,7 +68,6 @@ fun HomeScreen(
         )
     }
 
-
     // 가로
     val latPerPixel = 0.000724
     // 세로
@@ -73,10 +81,25 @@ fun HomeScreen(
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
 
-    val currentLocation = getMyLocation(viewModel.fusedLocationClient).value
-    println(currentLocation)
-
     val cameraPositionState = rememberCameraPositionState()
+
+    val userId = profileViewModel.profile?.userId
+
+    val currentLocation by locationViewModel.locationFlow.collectAsState()
+
+    LaunchedEffect(currentLocation) {
+        println("위치 움직임")
+    }
+
+    LaunchedEffect(currentLocation, userId) {
+        if (currentLocation != null && userId != null) {
+            viewModel.fetchBlock(
+                latitude = currentLocation?.latitude,
+                longitude = currentLocation?.longitude,
+                userId = userId
+            )
+        }
+    }
 
     LaunchedEffect(currentLocation) {
         currentLocation?.let {

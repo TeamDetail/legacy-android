@@ -33,10 +33,15 @@ fun getMyLocation(
 
     LaunchedEffect(permissionState.status.isGranted) {
         if (permissionState.status.isGranted) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    locationState.value = LatLng(it.latitude, it.longitude)
-                }
+            try {
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location ->
+                        location?.let {
+                            locationState.value = LatLng(it.latitude, it.longitude)
+                        }
+                    }
+            } catch (e: SecurityException) {
+                e.printStackTrace()
             }
         }
     }

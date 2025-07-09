@@ -2,6 +2,7 @@ package com.legacy.legacy_android.feature.screen.profile
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +16,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-
 class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getMeService: GetMeService

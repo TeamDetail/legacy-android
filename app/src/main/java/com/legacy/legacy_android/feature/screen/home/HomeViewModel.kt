@@ -8,10 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.legacy.legacy_android.feature.network.block.Post.PostBlockRequest
+import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapRequest
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
-import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdRequest
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdResponse
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +24,11 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val ruinsMapService: RuinsMapService,
-    private val ruinsIdService: RuinsIdService
+    private val ruinsIdService: RuinsIdService,
+    private val postBlockService: PostBlockService
 ): ViewModel() {
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
-
 
     var minLat: Double = 0.0
     var maxLat: Double = 0.0
@@ -57,6 +58,24 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun fetchBlock(latitude: Double?, longitude: Double?, userId: Long){
+        viewModelScope.launch {
+            try {
+                val request = PostBlockRequest(
+                    blockType = "NORMAL",
+                    latitude = latitude,
+                    longitude = longitude,
+                    userId = userId,
+                    mobileOrWebsite = "MOBILE"
+                )
+                println(request)
+                val response = postBlockService.block(request)
+                Log.d("PostMap", "블록 생성 성공: ${response.blockId}")
+            }catch (e: Exception){
+                Log.e("PostMap", "에러: ${e.message}")
+            }
+        }
+    }
 
     fun fetchRuinsMap(minLat: Double, maxLat: Double, minLng: Double, maxLng: Double) {
         if (!isFinite(minLat, maxLat, minLng, maxLng)) {
@@ -70,7 +89,7 @@ class HomeViewModel @Inject constructor(
                 val response = ruinsMapService.ruinsMap(minLat = request.minLat, maxLat = request.maxLat, minLng = request.minLng, maxLng = request.maxLng)
                 ruinsData = response.data as MutableList<RuinsMapResponse>
             } catch (e: Exception) {
-                Log.e("RuinsMap", "에러: ${e.message}")
+                Log.e("RuinsMap", "에러: ${e}")
             }
         }
     }

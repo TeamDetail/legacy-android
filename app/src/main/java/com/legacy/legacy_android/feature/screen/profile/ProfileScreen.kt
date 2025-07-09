@@ -161,7 +161,7 @@ fun ProfileScreen(
                 }
             RecordScreen(
                 modifier = modifier,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
     }
@@ -172,6 +172,7 @@ fun RecordScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ){
+    val profile = viewModel.profile
     Column (
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)

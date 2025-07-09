@@ -1,6 +1,5 @@
 package com.legacy.legacy_android
 
-import android.content.Context
 import android.media.SoundPool
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -11,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
 import com.legacy.legacy_android.feature.data.user.dataStore
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
@@ -95,10 +95,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable(route = ScreenNavigate.HOME.name) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
+                    val profileViewModel: ProfileViewModel = hiltViewModel()
+                    val locationViewModel: LocationViewModel = hiltViewModel()
                     HomeScreen(
                         modifier = Modifier,
                         viewModel = homeViewModel,
-                        navHostController = navController
+                        navHostController = navController,
+                        profileViewModel = profileViewModel,
+                        locationViewModel = locationViewModel
                     )
                 }
                 composable(route = ScreenNavigate.MARKET.name) {

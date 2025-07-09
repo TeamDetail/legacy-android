@@ -25,16 +25,13 @@ data class UserData(
 
 data class Stats(
     val snowflakeCapacity: Int,
-    @SerializedName("storeRestock")
-    val forcedRestock: Int,
-    @SerializedName("creditCollect")
-    val creditRecovery: Int,
-    val dropCount: Int
+    val storeRestock: Int,
+    val dropCount: Int,
+    val creditCollect: Int
 )
 
 data class Title(
     val name: String,
     val content: String,
-    @SerializedName("styleId")
-    val grade: Int
+    val styleId: Int
 )

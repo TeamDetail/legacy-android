@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.di
 
+import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
@@ -51,5 +52,11 @@ object NetworkModule {
     @Singleton
     fun provideRuinsIdService(retrofit: Retrofit): RuinsIdService {
         return retrofit.create(RuinsIdService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostBlockService(retrofit: Retrofit): PostBlockService{
+        return retrofit.create(PostBlockService::class.java)
     }
 }
