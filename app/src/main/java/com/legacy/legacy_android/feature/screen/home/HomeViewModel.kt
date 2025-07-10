@@ -72,8 +72,8 @@ class HomeViewModel @Inject constructor(
                     userId = userId,
                     mobileOrWebsite = "MOBILE"
                 )
-                val response = postBlockService.block(request)
-                Log.d("PostMap", "블록 생성 성공: ${response.blockId}")
+//                val response = postBlockService.block(request)
+//                Log.d("PostMap", "블록 생성 성공: ${response.blockId}")
             }catch (e: Exception){
                 Log.e("PostMap", "에러: ${e.message}")
             }
@@ -83,11 +83,8 @@ class HomeViewModel @Inject constructor(
     fun fetchGetBlock(userId: Long){
         viewModelScope.launch {
             try{
-                val request = GetBlockRequest(
-                    userId = userId
-                )
-                val response = getBlockService.getBlockById(userId)
-                Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
+//                val response = getBlockService.getBlockById(userId)
+//                Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
             }catch (e: Exception){
                 Log.e("GetMap", "에러: ${e.message}")
             }
