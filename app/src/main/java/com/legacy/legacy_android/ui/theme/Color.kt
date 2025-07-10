@@ -9,6 +9,9 @@ val Black = Color(0xFF232424)
 val White = Color(0xFFFFFFFF)
 val Primary = Color(0xFFA05AE8)
 
+val Green = Color(0xFF07C002)
+val Green_Alternative = Color(0xFF0A573B)
+
 val Red_Normal = Color(0xFFD05458)
 val Red_Netural = Color(0xFFF06969)
 

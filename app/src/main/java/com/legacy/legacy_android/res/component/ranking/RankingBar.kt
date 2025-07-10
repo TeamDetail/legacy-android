@@ -103,7 +103,7 @@ fun RankingBar(
                             fontSize = 20.sp
                         )
                         Text(
-                            text = "${rank}층",
+                            text = "${rank}블록",
                             color = Yellow_Netural,
                             fontFamily = pretendard,
                             fontWeight = FontWeight.Bold,

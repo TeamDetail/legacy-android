@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,6 +39,7 @@ fun RankingRowBar(
     title : String,
     level: Int
 ){
+    val normalized = rank % 1000
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +74,7 @@ fun RankingRowBar(
                     text = buildAnnotatedString {
                         append(name)
                         withStyle(style = SpanStyle(color = Label_Alternative, fontSize = 12.sp)) {
-                            append("  LV. ${level.toString()}")
+                            append("  LV. ${level}")
                         }
                     },
                     color = Label,
@@ -97,9 +99,16 @@ fun RankingRowBar(
             }
         }
         Text(
-            text = "${level}Lv",
+            text = "${rank}블록",
             fontFamily = bitbit,
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            color = if (rank > 2000) Color(0xFFA05AE8) else when (normalized) {
+                in 0..199   -> (if (rank < 1001) Color(0xFFA05AE8) else Color(0xFFEDB900)).copy(alpha = 0.6f)
+                in 200..399 -> Color(0xFFA05AE8).copy(alpha = 0.7f)
+                in 400..599 -> Color(0xFFA05AE8).copy(alpha = 0.8f)
+                in 600..799 -> Color(0xFFA05AE8).copy(alpha = 0.9f)
+                else        -> Color(0xFFA05AE8).copy(alpha = 1.0f)
+            }
         )
     }
 }

@@ -14,5 +14,7 @@ data class RuinsIdResponse (
     val periodName: String,
     val specifiedDate: Date,
     val owner: String,
-    val manager: String
+    val manager: String,
+    val latitude: Double,
+    val longitude: Double,
 )

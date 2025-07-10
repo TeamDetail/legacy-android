@@ -66,27 +66,13 @@ fun RankingScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        viewModel.gamemode.forEachIndexed { index, item ->
-                            StatusButton(
-                                selectedValue = viewModel.gameStatus,
-                                onClick = { viewModel.gameStatus = index },
-                                text = item,
-                                id = index,
-                                selectedColor = Primary,
-                                nonSelectedColor = Line_Natural
-                            )
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
                         viewModel.friendmode.forEachIndexed { index, item ->
                             StatusButton(
                                 selectedValue = viewModel.friendStatus,
                                 onClick = { viewModel.friendStatus = index },
                                 text = item,
                                 id = index,
-                                selectedColor = Red_Normal,
+                                selectedColor = Primary,
                                 nonSelectedColor = Line_Natural
                             )
                         }

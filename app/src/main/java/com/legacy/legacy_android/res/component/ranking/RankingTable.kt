@@ -20,6 +20,6 @@ fun RankingTable(){
             .background(Background_Netural)
     )
     {
-        RankingRowBar(grade = 1, rank = 2500, level = 99, title = "자본주의", name = "박재민");
+        RankingRowBar(grade = 1, rank = 50, level = 99, title = "자본주의", name = "박재민");
     }
 }

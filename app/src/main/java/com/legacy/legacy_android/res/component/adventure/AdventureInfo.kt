@@ -39,10 +39,11 @@ import com.legacy.legacy_android.ui.theme.pretendard
 @Composable
 fun AdventureInfo(
     name : String?,
-    loc : LatLng?,
     info : String?,
     tags : List<String>?,
     img: String?,
+    latitude: Double?,
+    longitude: Double?
     ){
     Box(
         modifier = Modifier
@@ -90,7 +91,7 @@ fun AdventureInfo(
                             )
                         )
                         Text(
-                            text = "${loc?.latitude?.toInt()}, ${loc?.longitude?.toInt()}",
+                            text = "${latitude}, ${longitude}",
                             color = White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Medium,

@@ -2,17 +2,21 @@ package com.legacy.legacy_android.feature.screen.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,9 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -34,11 +42,15 @@ import com.legacy.legacy_android.res.component.button.BackArrow
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.Background_Alternative
+import com.legacy.legacy_android.ui.theme.Blue_Natural
+import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Natural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
+import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
@@ -177,24 +189,157 @@ fun RecordScreen(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
+        // 숙련
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            // 숙련
+            Text(
+                text = "숙련",
+                fontSize = 20.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Bold,
+                color = Label
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Fill_Normal)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .fillMaxHeight()
+                        .background(Red_Normal)
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        buildAnnotatedString {
+                            append("Lv. ${profile?.level ?: "0"} ")
+                            withStyle(
+                                style = SpanStyle(color = Label_Alternative, fontSize = 16.sp)
+                            ) {
+                                append("(500 / 13000)")
+                            }
+                        },
+                        color = Label,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = pretendard,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+        }
+        // 시련
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            Text(
+                text = "시련",
+                fontSize = 20.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Bold,
+                color = Label
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Fill_Normal)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .fillMaxHeight()
+                        .background(Primary)
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "최고 몇층",
+                        color = Label,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = pretendard,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+        }
+    }
+    // 탐험
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "숙련",
+            text = "탐험",
             fontSize = 20.sp,
             fontFamily = pretendard,
             fontWeight = FontWeight.Bold,
             color = Label
         )
-        Row(
-            modifier = modifier
-                .fillMaxWidth(0.6f)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(32.dp)
+                .clip(RoundedCornerShape(12.dp))
         ) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Fill_Normal)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .fillMaxHeight()
+                    .background(Blue_Natural)
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "카드 몇개 수집",
+                    color = Label,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = pretendard,
+                    fontSize = 20.sp
+                )
+            }
         }
-    }
     }
 }

@@ -25,6 +25,7 @@ import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.ui.theme.Green_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -41,8 +42,8 @@ fun HomeScreen(
         profileViewModel.fetchProfile()
     }
 
-
     val ruins = viewModel.ruinsData
+    val blocks = viewModel.blockData
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val cameraPositionState = rememberCameraPositionState()
     val userId = profileViewModel.profile?.userId
@@ -55,6 +56,8 @@ fun HomeScreen(
             if (userId != null) {
                 viewModel.fetchBlock(loc.latitude, loc.longitude, userId)
                 viewModel.fetchGetBlock(userId)
+                println(currentLocation)
+                println(userId)
             }
         }
     }
@@ -129,8 +132,6 @@ fun HomeScreen(
             ),
         ) {
             ruins.forEach { ruin ->
-
-
                 Polygon(
                     tag = ruin.ruinsId,
                     points = PolygonStyle.getPolygonPointsFromLocation(
@@ -147,6 +148,18 @@ fun HomeScreen(
                     }
                 )
             }
+            blocks.forEach { blocks ->
+                Polygon(
+                    tag = blocks.blockId,
+                    points = PolygonStyle.getPolygonPointsFromLocation(
+                        latitude = blocks.latitude,
+                        longitude = blocks.longitude
+                    ),
+                    strokeWidth = 1f,
+                    strokeColor = Green_Alternative,
+                    fillColor = Color(0xFF07C002).copy(alpha = 0.75f),
+                )
+            }
         }
 
         // NavBar + Adventure Info
@@ -157,14 +170,14 @@ fun HomeScreen(
                 .zIndex(7f)
         ) {
             NavBar(navHostController = navHostController)
-
             if (viewModel.selectedId.value > -1) {
                 AdventureInfo(
                     name = viewModel.ruinsIdData.value?.name ?: "이름 없음",
                     img = viewModel.ruinsIdData.value?.ruinsImage,
-                    loc = LatLng(35.8576, 128.5747),
                     info = viewModel.ruinsIdData.value?.name,
-                    tags = listOf("IT", "마이스터", "대구", "고등학교")
+                    tags = listOf("IT", "마이스터", "대구", "고등학교"),
+                    latitude = viewModel.ruinsIdData.value?.longitude,
+                    longitude = viewModel.ruinsIdData.value?.latitude
                 )
             }
         }

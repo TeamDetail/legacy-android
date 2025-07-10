@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockRequest
+import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockRequest
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
@@ -22,6 +23,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -43,6 +47,8 @@ class HomeViewModel @Inject constructor(
 
     var ruinsData = mutableListOf<RuinsMapResponse>()
     var ruinsIdData = mutableStateOf<RuinsIdResponse?>(null)
+
+    var blockData by mutableStateOf<List<GetBlockResponse>>(emptyList())
 
     fun isFinite(vararg values: Double): Boolean {
         return values.all { it.isFinite() }
@@ -83,8 +89,9 @@ class HomeViewModel @Inject constructor(
     fun fetchGetBlock(userId: Long){
         viewModelScope.launch {
             try{
-//                val response = getBlockService.getBlockById(userId)
-//                Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
+                val response = getBlockService.getBlockById(userId)
+                blockData = response.data ?: emptyList()
+                Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
             }catch (e: Exception){
                 Log.e("GetMap", "에러: ${e.message}")
             }
@@ -96,7 +103,6 @@ class HomeViewModel @Inject constructor(
             Log.e("RuinsMap", "좌표에 Infinity 또는 NaN이 포함되어 요청하지 않음")
             return
         }
-
         viewModelScope.launch {
             try {
                 val request = RuinsMapRequest(minLat, maxLat, minLng, maxLng)
