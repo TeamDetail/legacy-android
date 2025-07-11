@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,8 +39,11 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.button.BackArrow
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.profile.Scorebar
+import com.legacy.legacy_android.res.component.profile.Statbar
 import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Blue_Natural
@@ -57,7 +61,7 @@ import com.legacy.legacy_android.ui.theme.pretendard
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
-    navHostController: NavHostController
+    navHostController: NavHostController,
 ){
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
@@ -171,10 +175,16 @@ fun ProfileScreen(
                         }
                     }
                 }
-            RecordScreen(
-                modifier = modifier,
-                viewModel = viewModel,
-            )
+            when (viewModel.profileStatus) {
+                0 -> RecordScreen(
+                    modifier = modifier,
+                    viewModel = viewModel,
+                )
+                1 ->TitleScreen(
+                    modifier = modifier,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
@@ -183,163 +193,73 @@ fun ProfileScreen(
 fun RecordScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
-){
+) {
     val profile = viewModel.profile
+    // 스탯 바
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // 숙련
+        Statbar(
+            modifier = modifier,
+            name = "숙련",
+            text = "Lv. ${profile?.level}",
+            percent = 0.6f,
+            subtext = "(7000/13000)",
+            barColor = Red_Normal
+        )
+        // 시련
+        Statbar(
+            modifier = modifier,
+            name = "시련",
+            text = "최고 160층",
+            barColor = Primary,
+            percent = 0.6f,
+            subtext = ""
+        )
+        // 탐험
+        Statbar(
+            modifier = modifier,
+            name = "탐험",
+            text = "카드 300개 수집",
+            percent = 0.6f,
+            subtext = "",
+            barColor = Blue_Natural
+        )
+    }
+    Spacer(modifier = modifier.height(16.dp))
+    // 스코어
     Column (
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ){
-        // 숙련
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            // 숙련
-            Text(
-                text = "숙련",
-                fontSize = 20.sp,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Bold,
-                color = Label
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(32.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(Fill_Normal)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .fillMaxHeight()
-                        .background(Red_Normal)
-                )
-                Box(
-                    modifier = Modifier
-                        .matchParentSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        buildAnnotatedString {
-                            append("Lv. ${profile?.level ?: "0"} ")
-                            withStyle(
-                                style = SpanStyle(color = Label_Alternative, fontSize = 16.sp)
-                            ) {
-                                append("(500 / 13000)")
-                            }
-                        },
-                        color = Label,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = pretendard,
-                        fontSize = 20.sp
-                    )
-                }
-            }
-        }
-        // 시련
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Text(
-                text = "시련",
-                fontSize = 20.sp,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Bold,
-                color = Label
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(32.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(Fill_Normal)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .fillMaxHeight()
-                        .background(Primary)
-                )
-                Box(
-                    modifier = Modifier
-                        .matchParentSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "최고 몇층",
-                        color = Label,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = pretendard,
-                        fontSize = 20.sp
-                    )
-                }
-            }
-        }
-    }
-    // 탐험
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        Text(
-            text = "탐험",
-            fontSize = 20.sp,
-            fontFamily = pretendard,
-            fontWeight = FontWeight.Bold,
-            color = Label
+        verticalArrangement = Arrangement.spacedBy(12.dp),){
+        Scorebar(
+            modifier =  modifier,
+            title = "시련 최고 점수",
+            text = "${profile?.maxScore}"
         )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(32.dp)
-                .clip(RoundedCornerShape(12.dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(Fill_Normal)
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .fillMaxHeight()
-                    .background(Blue_Natural)
-            )
-            Box(
-                modifier = Modifier
-                    .matchParentSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "카드 몇개 수집",
-                    color = Label,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = pretendard,
-                    fontSize = 20.sp
-                )
-            }
-        }
+        Scorebar(
+            modifier = modifier,
+            title = "탐험한 일반 블록 수",
+            text = "${profile?.allBlocks}"
+        )
+        Scorebar(
+            modifier = modifier,
+            title = "탐험한 유적지 블록 수",
+            text = "${profile?.ruinsBlocks}"
+        )
+        Scorebar(
+            modifier = modifier,
+            title = "사용한 크레딧",
+            text = "${profile?.stats?.creditCollect}"
+        )
     }
+}
+
+@Composable
+fun TitleScreen(
+    modifier: Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
+){
+
 }
