@@ -20,12 +20,15 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
@@ -49,7 +52,8 @@ import java.util.Locale
 fun InfoBar(
     navHostController: NavHostController
 ) {
-    val viewModel: InfoBarViewModel = hiltViewModel();
+    val viewModel: InfoBarViewModel = hiltViewModel()
+    val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
     }
@@ -85,7 +89,7 @@ fun InfoBar(
                             .clickable { navHostController.navigate("profile") }
                 ) {
                     AsyncImage(
-                        model = viewModel.profile?.imageUrl,
+                        model = profile?.imageUrl,
                         contentDescription = "프로필 이미지",
                         modifier = Modifier
                             .size(40.dp)
@@ -100,7 +104,7 @@ fun InfoBar(
                         modifier = Modifier.fillMaxHeight()
                     ) {
                         Text(
-                            text = viewModel.profile?.nickname.toString(),
+                            text = profile?.nickname.toString(),
                             color = Label,
                             style = TextStyle(
                                 fontSize = 15.sp,
@@ -109,7 +113,7 @@ fun InfoBar(
                             )
                         )
                         Text(
-                            text = "LV. ${viewModel.profile?.level}",
+                            text = "LV. ${profile?.level}",
                             color = Label_Alternative,
                             style = TextStyle(
                                 fontSize = 12.sp,
@@ -135,7 +139,7 @@ fun InfoBar(
                     )
                     Text(
                         text = NumberFormat.getNumberInstance(Locale.US)
-                            .format(viewModel.profile?.credit ?: 0),
+                            .format(profile?.credit ?: 0),
                         color = Yellow,
                         style = TextStyle(fontSize = 14.sp, fontFamily = bitbit)
                     )

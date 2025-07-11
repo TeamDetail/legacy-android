@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.feature.screen.home
 
+import android.Manifest
 import com.legacy.legacy_android.res.component.quiz.QuizBox
 import androidx.compose.foundation.background
 import android.annotation.SuppressLint
@@ -8,13 +9,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -22,6 +26,7 @@ import com.google.maps.android.compose.*
 import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
+import com.legacy.legacy_android.res.component.adventure.LocationDialog
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
@@ -38,6 +43,7 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
@@ -45,25 +51,63 @@ fun HomeScreen(
     val ruins = viewModel.ruinsData
     val blocks = viewModel.blockData
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val locationProviderClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+    var showPermissionDialog by remember {
+        mutableStateOf(false)
+    }
+    val permissions = listOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val permissionState = rememberMultiplePermissionsState(permissions = permissions)
+
+    // 권한 체크 로직 수정
+    val allRequiredPermission = permissionState.allPermissionsGranted
+
     val cameraPositionState = rememberCameraPositionState()
     val userId = profileViewModel.profile?.userId
     val currentLocation by locationViewModel.locationFlow.collectAsState()
     var hasMovedToCurrentLocation by remember { mutableStateOf(false) }
 
-    // 위치 및 데이터 요청
-    LaunchedEffect(currentLocation) {
-        currentLocation?.let { loc ->
-            if (userId != null) {
-                viewModel.fetchBlock(loc.latitude, loc.longitude, userId)
-                viewModel.fetchGetBlock(userId)
-                println(currentLocation)
-                println(userId)
+    // 권한 상태 변화 감지 및 처리
+    LaunchedEffect(permissionState.allPermissionsGranted) {
+        if (permissionState.allPermissionsGranted) {
+            // 권한이 승인되면 위치 서비스 시작
+            locationViewModel.startLocationUpdates()
+        } else {
+            // 권한이 없으면 다이얼로그 표시
+            if (permissionState.shouldShowRationale) {
+                showPermissionDialog = true
+            } else if (permissionState.revokedPermissions.isNotEmpty()) {
+                // 권한이 거부되었지만 rationale을 보여주지 않는 경우 (사용자가 "다시 묻지 않음" 선택)
+                showPermissionDialog = true
             }
         }
     }
 
-    LaunchedEffect(currentLocation) {
-        if (!hasMovedToCurrentLocation && currentLocation != null) {
+    // 권한 다이얼로그 표시
+    if (!allRequiredPermission && showPermissionDialog) {
+        LocationDialog(permissionState = permissionState) {
+            showPermissionDialog = it
+        }
+    }
+
+    // 위치 및 데이터 요청 (권한이 있을 때만)
+    LaunchedEffect(currentLocation, userId) {
+        if (allRequiredPermission && currentLocation != null && userId != null) {
+            val loc = currentLocation!!
+            viewModel.fetchBlock(loc.latitude, loc.longitude, userId)
+            viewModel.fetchGetBlock(userId)
+            println("Current location: $currentLocation")
+            println("User ID: $userId")
+        }
+    }
+
+    // 카메라 위치 이동 (권한이 있을 때만)
+    LaunchedEffect(currentLocation, allRequiredPermission) {
+        if (allRequiredPermission && !hasMovedToCurrentLocation && currentLocation != null) {
             cameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(
                     CameraPosition.fromLatLngZoom(
@@ -105,17 +149,6 @@ fun HomeScreen(
         ) {
             InfoBar(navHostController)
         }
-        // QuizBox
-        // Box(
-        //     contentAlignment = Alignment.Center,
-        //     modifier = modifier
-        //         .fillMaxWidth()
-        //         .fillMaxSize()
-        //         .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
-        //         .zIndex(500f)
-        // ){
-        //     QuizBox(name = "대구소프트웨어마이스트고등학겨")
-        // }
 
         // Google Map
         GoogleMap(
@@ -123,7 +156,7 @@ fun HomeScreen(
             cameraPositionState = cameraPositionState,
             onMapClick = { viewModel.selectedId.value = -1 },
             properties = MapProperties(
-                isMyLocationEnabled = locationPermissionState.status.isGranted,
+                isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
                 minZoomPreference = 10f
             ),
             uiSettings = MapUiSettings(

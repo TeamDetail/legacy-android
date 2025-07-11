@@ -7,9 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52"
     id("kotlin-kapt")
 }
-
 android {
-
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
