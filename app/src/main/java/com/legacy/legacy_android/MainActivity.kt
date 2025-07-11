@@ -13,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
 import com.legacy.legacy_android.feature.data.user.dataStore
+import com.legacy.legacy_android.feature.data.user.getAccToken
+import com.legacy.legacy_android.feature.data.user.isTokenValid
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
@@ -58,29 +60,12 @@ class MainActivity : AppCompatActivity() {
             .build()
         soundId = soundPool.load(this, R.raw.click, 1)
 
-        fun isTokenValid(token: String): Boolean {
-            return try {
-                val parts = token.split(".")
-                val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.DEFAULT))
-                val json = JSONObject(payload)
-                val exp = json.getLong("exp")
-                val now = System.currentTimeMillis() / 1000
-                now < exp
-            } catch (e: Exception) {
-                false
-            }
-        }
-
-        val token = runBlocking {
-            applicationContext.dataStore.data.first()[ACC_TOKEN]
-        }
-
-        val startDestination = if (!token.isNullOrBlank() && isTokenValid(token)) {
+        val token = getAccToken(this)
+        val startDestination = if (isTokenValid(token)) {
             ScreenNavigate.HOME.name
         } else {
             ScreenNavigate.LOGIN.name
         }
-
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()

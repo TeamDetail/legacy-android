@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class InfoBarViewModel @Inject constructor(
     application: Application,
-    @ApplicationContext private val context: Context,
     private val userRepository: UserRepository
 
 ) : AndroidViewModel(application) {

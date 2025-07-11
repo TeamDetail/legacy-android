@@ -26,6 +26,7 @@ import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import com.legacy.legacy_android.domain.repository.UserRepository
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -33,10 +34,13 @@ class HomeViewModel @Inject constructor(
     private val ruinsMapService: RuinsMapService,
     private val ruinsIdService: RuinsIdService,
     private val postBlockService: PostBlockService,
-    private val getBlockService: GetBlockService
+    private val getBlockService: GetBlockService,
+    private val userRepository: UserRepository
 ): ViewModel() {
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
+
+    val profileFlow = userRepository.profile
 
     var minLat: Double = 0.0
     var maxLat: Double = 0.0
@@ -68,7 +72,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun fetchBlock(latitude: Double?, longitude: Double?, userId: Long){
+    fun fetchBlock(latitude: Double?, longitude: Double?, userId: Long?){
         viewModelScope.launch {
             try {
                 val request = PostBlockRequest(
@@ -86,7 +90,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun fetchGetBlock(userId: Long){
+    fun fetchGetBlock(userId: Long?){
         viewModelScope.launch {
             try{
                 val response = getBlockService.getBlockById(userId)

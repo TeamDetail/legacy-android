@@ -7,6 +7,6 @@ import retrofit2.http.Path
 interface GetBlockService {
     @GET("/block/user/{id}")
     suspend fun getBlockById(
-        @Path("id") id: Long
+        @Path("id") id: Long?
     ): BaseResponse<List<GetBlockResponse>>
 }

@@ -10,6 +10,7 @@ import com.legacy.legacy_android.feature.network.user.GetMeService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.network.user.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,9 +18,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val getMeService: GetMeService
+    private val userRepository: UserRepository
 ) : ViewModel() {
+    val profileFlow = userRepository.profile
+
     var profile by mutableStateOf<UserData?>(null)
         private set
 
@@ -28,12 +30,8 @@ class ProfileViewModel @Inject constructor(
 
     fun fetchProfile() {
         viewModelScope.launch {
-            try {
-                val response = getMeService.getMe()
-                profile = response.data
-            } catch (error: Error) {
-                Log.e("프로필 뷰에서 에러발생", error.toString())
-            }
+            userRepository.fetchProfile()
         }
     }
+
 }

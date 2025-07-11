@@ -18,7 +18,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -43,7 +42,7 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    val context = LocalContext.current
+    val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
@@ -51,9 +50,6 @@ fun HomeScreen(
     val ruins = viewModel.ruinsData
     val blocks = viewModel.blockData
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
-    val locationProviderClient = remember {
-        LocationServices.getFusedLocationProviderClient(context)
-    }
     var showPermissionDialog by remember {
         mutableStateOf(false)
     }
@@ -63,49 +59,39 @@ fun HomeScreen(
     )
     val permissionState = rememberMultiplePermissionsState(permissions = permissions)
 
-    // 권한 체크 로직 수정
     val allRequiredPermission = permissionState.allPermissionsGranted
 
     val cameraPositionState = rememberCameraPositionState()
-    val userId = profileViewModel.profile?.userId
     val currentLocation by locationViewModel.locationFlow.collectAsState()
     var hasMovedToCurrentLocation by remember { mutableStateOf(false) }
 
-    // 권한 상태 변화 감지 및 처리
     LaunchedEffect(permissionState.allPermissionsGranted) {
         if (permissionState.allPermissionsGranted) {
-            // 권한이 승인되면 위치 서비스 시작
             locationViewModel.startLocationUpdates()
         } else {
-            // 권한이 없으면 다이얼로그 표시
             if (permissionState.shouldShowRationale) {
                 showPermissionDialog = true
             } else if (permissionState.revokedPermissions.isNotEmpty()) {
-                // 권한이 거부되었지만 rationale을 보여주지 않는 경우 (사용자가 "다시 묻지 않음" 선택)
                 showPermissionDialog = true
             }
         }
     }
 
-    // 권한 다이얼로그 표시
     if (!allRequiredPermission && showPermissionDialog) {
         LocationDialog(permissionState = permissionState) {
             showPermissionDialog = it
         }
     }
 
-    // 위치 및 데이터 요청 (권한이 있을 때만)
-    LaunchedEffect(currentLocation, userId) {
-        if (allRequiredPermission && currentLocation != null && userId != null) {
+    LaunchedEffect(currentLocation) {
+        if (allRequiredPermission && currentLocation != null && profile?.userId != null) {
             val loc = currentLocation!!
-            viewModel.fetchBlock(loc.latitude, loc.longitude, userId)
-            viewModel.fetchGetBlock(userId)
+            viewModel.fetchBlock(loc.latitude, loc.longitude, profile?.userId)
+            viewModel.fetchGetBlock(profile?.userId)
             println("Current location: $currentLocation")
-            println("User ID: $userId")
         }
     }
 
-    // 카메라 위치 이동 (권한이 있을 때만)
     LaunchedEffect(currentLocation, allRequiredPermission) {
         if (allRequiredPermission && !hasMovedToCurrentLocation && currentLocation != null) {
             cameraPositionState.move(
@@ -154,7 +140,8 @@ fun HomeScreen(
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            onMapClick = { viewModel.selectedId.value = -1 },
+            onMapClick = { viewModel.selectedId.value = -1
+                         viewModel.ruinsIdData = mutableStateOf(null)},
             properties = MapProperties(
                 isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
                 minZoomPreference = 10f

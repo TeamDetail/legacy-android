@@ -34,25 +34,17 @@ class LocationViewModel @Inject constructor(
 
     private var locationCallback: LocationCallback? = null
 
-    private val locationRequest = LocationRequest.Builder(
-        Priority.PRIORITY_HIGH_ACCURACY,
-        3000L
-    ).apply {
-        setMinUpdateIntervalMillis(1000L)
-        setMaxUpdateDelayMillis(10000L)
-        setWaitForAccurateLocation(false)
-    }.build()
+    private val locationRequest = LocationRequest.create().apply {
+        interval = 15000L
+        fastestInterval = 10000L
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        maxWaitTime = 30000L
+    }
 
     init {
         checkLocationPermission()
-        if (_isLocationPermissionGranted.value) {
-            startLocationUpdates()
-        }
     }
 
-    /**
-     * 위치 권한 확인
-     */
     private fun checkLocationPermission() {
         val hasFineLocationPermission = ActivityCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -79,7 +71,8 @@ class LocationViewModel @Inject constructor(
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let { location ->
-                    _locationFlow.value = LatLng(location.latitude, location.longitude)
+                    val newLocation = LatLng(location.latitude, location.longitude)
+                    _locationFlow.value = newLocation
                 }
             }
 
@@ -98,7 +91,6 @@ class LocationViewModel @Inject constructor(
                 Looper.getMainLooper()
             )
             _isLocationServiceRunning.value = true
-
             getLastKnownLocation()
 
         } catch (e: SecurityException) {
@@ -114,6 +106,7 @@ class LocationViewModel @Inject constructor(
         }
         _isLocationServiceRunning.value = false
     }
+
     private fun getLastKnownLocation() {
         if (!_isLocationPermissionGranted.value) {
             return
@@ -126,20 +119,17 @@ class LocationViewModel @Inject constructor(
                 }
             }
         } catch (e: SecurityException) {
-            // 권한이 없는 경우
             _isLocationPermissionGranted.value = false
         }
     }
+
     fun updatePermissionStatus() {
         val wasGranted = _isLocationPermissionGranted.value
         checkLocationPermission()
 
-        // 권한이 새로 승인된 경우 위치 서비스 시작
         if (!wasGranted && _isLocationPermissionGranted.value) {
             startLocationUpdates()
-        }
-        // 권한이 거부된 경우 위치 서비스 중지
-        else if (wasGranted && !_isLocationPermissionGranted.value) {
+        } else if (wasGranted && !_isLocationPermissionGranted.value) {
             stopLocationUpdates()
         }
     }

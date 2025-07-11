@@ -25,6 +25,7 @@ fun saveRefToken(context: Context, token: String?) {
         }
     }
 }
+
 fun saveAccToken(context: Context, token: String?) {
     runBlocking {
         try {

@@ -24,7 +24,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.google.android.gms.maps.model.LatLng
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Blue_Natural
@@ -91,7 +90,7 @@ fun AdventureInfo(
                             )
                         )
                         Text(
-                            text = "${latitude}, ${longitude}",
+                            text = if (latitude != null && longitude != null) "${latitude}, ${longitude}" else "",
                             color = White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Medium,
@@ -113,7 +112,7 @@ fun AdventureInfo(
                             )
                         )
                         Text(
-                            text = "$info",
+                            text = if (info != null) info else "",
                             color = White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
@@ -174,7 +173,7 @@ fun AdventureInfo(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(12.dp),
-                        text = name ?: "",
+                        text = if (name != null) name else "",
                         fontFamily = bitbit,
                         fontSize = 17.sp,
                         color = Label

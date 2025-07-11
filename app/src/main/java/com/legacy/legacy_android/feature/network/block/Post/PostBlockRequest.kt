@@ -4,6 +4,6 @@ data class PostBlockRequest(
     val blockType: String,
     val latitude : Double?,
     val longitude: Double?,
-    val userId: Long,
+    val userId: Long?,
     val mobileOrWebsite: String
 )

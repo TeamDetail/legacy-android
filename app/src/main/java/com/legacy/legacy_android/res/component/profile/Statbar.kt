@@ -74,7 +74,7 @@ fun Statbar(
             ) {
                 Text(
                     buildAnnotatedString {
-                        append("Lv. ${text} ")
+                        append("${text} ")
                         withStyle(
                             style = SpanStyle(color = Label_Alternative, fontSize = 16.sp)
                         ) {
