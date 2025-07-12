@@ -67,14 +67,14 @@ fun RankingScreen(
                     modifier = modifier
                         .offset(0.dp, 40.dp)
                 ) {
-                    RankingBar(grade = 2, rank = 999, name = "김은찬", title = "자본주의", zIndex = 2f)
+                    RankingBar(rank = 2, blocks = 999, name = "김은찬", title = "자본주의", zIndex = 2f)
                 }
-                RankingBar(grade = 1, rank = 999, name = "김은찬", title = "자본주의", zIndex = 3f)
+                RankingBar(rank = 1, blocks = 999, name = "김은찬", title = "자본주의", zIndex = 3f)
                 Box(
                     modifier = modifier
                         .offset(0.dp, 50.dp)
                 ) {
-                    RankingBar(grade = 3, rank = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
+                    RankingBar(rank = 3, blocks = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
                 }
             }
             RankingTable(modifier = modifier)

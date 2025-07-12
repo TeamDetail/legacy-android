@@ -2,7 +2,6 @@ package com.legacy.legacy_android.res.component.ranking
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,21 +25,20 @@ import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import com.legacy.legacy_android.res.component.title.SmallTitleBar
 import com.legacy.legacy_android.ui.theme.Background_Netural
-import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun RankingRowBar(
-    grade : Int,
     rank : Int,
+    blocks : Int,
     name : String,
     title : String,
     level: Int
 ){
-    val normalized = rank % 1000
+    val normalized = blocks % 1000
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +48,7 @@ fun RankingRowBar(
         horizontalArrangement = Arrangement.SpaceAround,
     ){
         Text(
-            text = grade.toString(),
+            text = rank.toString(),
             fontFamily = bitbit,
             color = Label,
             fontSize = 28.sp,
@@ -83,28 +81,15 @@ fun RankingRowBar(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Fill_Netural)
-                        .border(width = 1.dp, color = Yellow_Netural),
-                    horizontalArrangement = Arrangement.Center
-                ){
-                    Text(
-                        text = title,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Yellow_Netural,
-                    )
-                }
+                SmallTitleBar(title = title)
             }
         }
         Text(
-            text = "${rank}블록",
+            text = "${blocks}블록",
             fontFamily = bitbit,
             fontSize = 18.sp,
-            color = if (rank > 2000) Color(0xFFA05AE8) else when (normalized) {
-                in 0..199   -> (if (rank < 1001) Color(0xFFA05AE8) else Color(0xFFEDB900)).copy(alpha = 0.6f)
+            color = if (blocks > 2000) Color(0xFFA05AE8) else when (normalized) {
+                in 0..199   -> (if (blocks < 1001) Color(0xFFA05AE8) else Color(0xFFEDB900)).copy(alpha = 0.6f)
                 in 200..399 -> Color(0xFFA05AE8).copy(alpha = 0.7f)
                 in 400..599 -> Color(0xFFA05AE8).copy(alpha = 0.8f)
                 in 600..799 -> Color(0xFFA05AE8).copy(alpha = 0.9f)

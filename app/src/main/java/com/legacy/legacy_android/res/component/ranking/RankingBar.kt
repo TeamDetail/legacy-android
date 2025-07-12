@@ -25,35 +25,36 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.legacy.legacy_android.res.component.title.SmallTitleBar
 import com.legacy.legacy_android.ui.theme.Blue_Natural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
-import com.legacy.legacy_android.ui.theme.Yellow
-import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun RankingBar(
-    grade : Int,
     rank : Int,
+    blocks : Int,
     name : String,
     title : String,
     zIndex: Float,
 ) {
+    val normalized = blocks % 1000
     Box(
         modifier = Modifier
             .border(2.dp, Background_Normal, shape = RoundedCornerShape(20.dp))
             .padding(2.dp)
+            .width(100.dp)
             .zIndex(zIndex)
     ) {
         Box(
             modifier = Modifier
                 .background(color = Background_Normal, shape = RoundedCornerShape(20.dp))
                 .border(
-                    width = 1.dp, color = if (grade == 1) {
+                    width = 1.dp, color = if (rank == 1) {
                         Primary
-                    } else if (grade == 2) {
+                    } else if (rank == 2) {
                         Red_Netural
                     } else {
                         Blue_Natural
@@ -90,10 +91,10 @@ fun RankingBar(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "${grade}위",
-                            color = if (grade == 1) {
+                            text = "${rank}위",
+                            color = if (rank == 1) {
                                 Primary
-                            } else if (grade == 2) {
+                            } else if (rank == 2) {
                                 Red_Netural
                             } else {
                                 Blue_Natural
@@ -103,8 +104,14 @@ fun RankingBar(
                             fontSize = 20.sp
                         )
                         Text(
-                            text = "${rank}블록",
-                            color = Yellow_Netural,
+                            text = "${blocks}블록",
+                            color = if (blocks > 2000) Color(0xFFA05AE8) else when (normalized) {
+                                in 0..199   -> (if (blocks < 1001) Color(0xFFA05AE8) else Color(0xFFEDB900)).copy(alpha = 0.6f)
+                                in 200..399 -> Color(0xFFA05AE8).copy(alpha = 0.7f)
+                                in 400..599 -> Color(0xFFA05AE8).copy(alpha = 0.8f)
+                                in 600..799 -> Color(0xFFA05AE8).copy(alpha = 0.9f)
+                                else        -> Color(0xFFA05AE8).copy(alpha = 1.0f)
+                            },
                             fontFamily = pretendard,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp
@@ -118,18 +125,7 @@ fun RankingBar(
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .border(width = 1.dp, color = Yellow, shape = RoundedCornerShape(8.dp))
-                ) {
-                    Text(
-                        text = title,
-                        color = Yellow,
-                        fontSize = 10.sp,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp, horizontal = 16.dp)
-                    )
-                }
+                SmallTitleBar(title = title)
             }
         }
     }
