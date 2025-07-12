@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 
@@ -29,34 +30,10 @@ fun TrialScreen(
     modifier: Modifier = Modifier,
     viewModel: TrialViewModel = hiltViewModel(),
     navHostController: NavHostController){
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Background_Alternative)
+    CommonScreenLayout(
+        modifier = modifier,
+        navHostController = navHostController
     ) {
-        InfoBar(navHostController)
-        Column(
-            modifier = modifier
-                .padding(vertical = 40.dp, horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(
-                modifier = modifier
-                    .height(70.dp)
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
                 TitleBox(title = "시련", image = R.drawable.fight)
             }
         }
-            Box(
-                modifier = modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 40.dp)
-                    .zIndex(7f)
-            ) { NavBar(navHostController = navHostController)
-            }
-    }
-}

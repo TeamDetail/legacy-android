@@ -130,7 +130,7 @@ fun HomeScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .absoluteOffset(0.dp, 30.dp)
+                .absoluteOffset(0.dp, 10.dp)
                 .zIndex(5f)
         ) {
             InfoBar(navHostController)
@@ -200,7 +200,7 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(vertical = 40.dp)
+                .padding(vertical = 40.dp, horizontal = 12.dp)
                 .zIndex(7f)
         ) {
             NavBar(navHostController = navHostController)

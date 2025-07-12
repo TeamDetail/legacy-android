@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,7 @@ import com.legacy.legacy_android.res.component.marketItem.MarketInfo
 import com.legacy.legacy_android.res.component.marketItem.PackWrap
 import com.legacy.legacy_android.res.component.marketItem.Packs
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Natural
@@ -45,26 +48,13 @@ fun MarketScreen(modifier: Modifier = Modifier,
         }
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Background_Alternative)
-    ){
-        InfoBar(navHostController)
-        Column (
-            modifier = modifier
-                .padding(vertical = 40.dp, horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = modifier
-                .height(70.dp))
-            Column (
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TitleBox(title = "상점", image = R.drawable.shop)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+    CommonScreenLayout(
+        modifier = modifier,
+        navHostController = navHostController
+    ) {
+        TitleBox(title = "상점", image = R.drawable.shop)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     viewModel.packList.forEachIndexed { index, item ->
                         StatusButton(
@@ -92,14 +82,3 @@ fun MarketScreen(modifier: Modifier = Modifier,
                     .height(100.dp)
             )
         }
-        // NavBar
-        Box(
-            modifier = modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp)
-                .zIndex(7f)
-        ) {
-            NavBar(navHostController = navHostController)
-        }
-    }
-}

@@ -24,13 +24,12 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.ranking.RankingBar
 import com.legacy.legacy_android.res.component.ranking.RankingTable
 import com.legacy.legacy_android.res.component.title.TitleBox
-import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Natural
 import com.legacy.legacy_android.ui.theme.Primary
-import com.legacy.legacy_android.ui.theme.Red_Normal
 
 @Composable
 fun RankingScreen(
@@ -38,76 +37,54 @@ fun RankingScreen(
     viewModel: RankingViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Background_Alternative)
+    CommonScreenLayout(
+        modifier = modifier,
+        navHostController = navHostController
     ) {
-        InfoBar(navHostController)
+        TitleBox(title = "랭킹", image = R.drawable.trophy)
         Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 40.dp, horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = modifier.height(70.dp))
-            TitleBox(title = "랭킹", image = R.drawable.trophy)
-            Spacer(modifier = modifier.height(16.dp))
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Row (
+                modifier = modifier
+                    .fillMaxWidth()
+            ){
                 Row(
-                    modifier = modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        viewModel.friendmode.forEachIndexed { index, item ->
-                            StatusButton(
-                                selectedValue = viewModel.friendStatus,
-                                onClick = { viewModel.friendStatus = index },
-                                text = item,
-                                id = index,
-                                selectedColor = Primary,
-                                nonSelectedColor = Line_Natural
-                            )
-                        }
+                    viewModel.friendmode.forEachIndexed { index, item ->
+                        StatusButton(
+                            selectedValue = viewModel.friendStatus,
+                            onClick = { viewModel.friendStatus = index },
+                            text = item,
+                            id = index,
+                            selectedColor = Primary,
+                            nonSelectedColor = Line_Natural
+                        )
                     }
                 }
-                // 여기서부터 랭킹바 Wrapper
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(-6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = modifier
-                            .offset(0.dp, 40.dp)
-                    ) {
-                        RankingBar(grade = 2, rank = 999, name = "김은찬", title = "자본주의", zIndex = 2f)
-                    }
-                    RankingBar(grade = 1, rank = 999, name = "김은찬", title = "자본주의", zIndex = 3f)
-                    Box(
-                        modifier = modifier
-                            .offset(0.dp, 50.dp)
-                    ) {
-                        RankingBar(grade = 3, rank = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
-                    }
-                }
-                RankingTable()
             }
-
-        }
-        Box(
-            modifier = modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp)
-                .zIndex(7f)
-        ) {
-            NavBar(navHostController = navHostController)
+            // 여기서부터 랭킹바 Wrapper
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(-6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = modifier
+                        .offset(0.dp, 40.dp)
+                ) {
+                    RankingBar(grade = 2, rank = 999, name = "김은찬", title = "자본주의", zIndex = 2f)
+                }
+                RankingBar(grade = 1, rank = 999, name = "김은찬", title = "자본주의", zIndex = 3f)
+                Box(
+                    modifier = modifier
+                        .offset(0.dp, 50.dp)
+                ) {
+                    RankingBar(grade = 3, rank = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
+                }
+            }
+            RankingTable()
         }
     }
 }
