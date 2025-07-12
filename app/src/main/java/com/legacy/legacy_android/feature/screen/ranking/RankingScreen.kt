@@ -1,28 +1,20 @@
 package com.legacy.legacy_android.feature.screen.ranking
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.res.component.bars.NavBar
-import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.ranking.RankingBar
@@ -65,6 +57,7 @@ fun RankingScreen(
                     }
                 }
             }
+            Spacer(modifier = modifier.height(30.dp))
             // 여기서부터 랭킹바 Wrapper
             Row(
                 horizontalArrangement = Arrangement.spacedBy(-6.dp),
@@ -84,7 +77,7 @@ fun RankingScreen(
                     RankingBar(grade = 3, rank = 999, name = "김은찬", title = "자본주의", zIndex = 1f)
                 }
             }
-            RankingTable()
+            RankingTable(modifier = modifier)
         }
     }
 }

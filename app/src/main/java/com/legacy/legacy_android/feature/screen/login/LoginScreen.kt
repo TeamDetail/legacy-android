@@ -32,7 +32,6 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.ScreenNavigate
 import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.pretendard

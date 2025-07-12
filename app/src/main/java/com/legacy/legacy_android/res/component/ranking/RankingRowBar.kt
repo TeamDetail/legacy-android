@@ -26,6 +26,7 @@ import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
@@ -44,7 +45,7 @@ fun RankingRowBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(Fill_Netural, shape = RoundedCornerShape(12.dp)),
+            .background(Background_Netural),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
     ){
