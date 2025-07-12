@@ -6,27 +6,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
-fun isTokenValid(token: String?): Boolean {
-    if (token.isNullOrBlank()) return false
-    return try {
-        val parts = token.split(".")
-        if (parts.size != 3) return false
-        val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.DEFAULT))
-        val json = JSONObject(payload)
-        val exp = json.getLong("exp")
-        val now = System.currentTimeMillis() / 1000
-        now < exp
-    } catch (e: Exception) {
-        false
-    }
-}
-
 fun getAccToken(context: Context): String? {
     return runBlocking {
         val preferences = context.dataStore.data.first()
         val currentToken = preferences[ACC_TOKEN]
 
-        if (isTokenValid(currentToken)) {
+        if (!currentToken.isNullOrBlank() && isTokenValidInternal(currentToken)) {
             return@runBlocking currentToken
         }
 
@@ -37,7 +22,7 @@ fun getAccToken(context: Context): String? {
 
         try {
             val newToken = refreshAccessToken(context, refreshToken)
-            if (newToken != null) {
+            if (newToken != null && isTokenValidInternal(newToken)) {
                 saveAccToken(context, newToken)
                 return@runBlocking newToken
             }
@@ -49,6 +34,33 @@ fun getAccToken(context: Context): String? {
     }
 }
 
+private fun isTokenValidInternal(token: String): Boolean {
+    return try {
+        val parts = token.split(".")
+        if (parts.size != 3) return false
+
+        val payload = String(
+            android.util.Base64.decode(
+                parts[1],
+                android.util.Base64.URL_SAFE or android.util.Base64.NO_PADDING
+            )
+        )
+
+        val json = JSONObject(payload)
+        val exp = json.getLong("exp")
+        val now = System.currentTimeMillis() / 1000
+
+        now < exp
+    } catch (e: Exception) {
+        Log.e("Token", "토큰 검증 실패: $e")
+        false
+    }
+}
+
+fun isTokenValid(token: String?): Boolean {
+    if (token.isNullOrBlank()) return false
+    return isTokenValidInternal(token)
+}
 fun getRefToken(context: Context): String? {
     return runBlocking {
         val preferences = context.dataStore.data.first()
