@@ -1,13 +1,13 @@
 package com.legacy.legacy_android.res.component.adventure
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import com.legacy.legacy_android.R
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Blue_Natural
@@ -37,12 +38,14 @@ import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun AdventureInfo(
+    viewModel: HomeViewModel,
     name : String?,
     info : String?,
     tags : List<String>?,
     img: String?,
     latitude: Double?,
-    longitude: Double?
+    longitude: Double?,
+    ruinsId: Int?
     ){
     Box(
         modifier = Modifier
@@ -186,6 +189,11 @@ fun AdventureInfo(
                     .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .border(1.dp, color = Blue_Natural, shape = RoundedCornerShape(8.dp))
+                    .clickable(
+                        onClick = {
+                            viewModel.fetchQuiz(ruinsId)
+                        }
+                    )
             ){
                 Text(
                     modifier = Modifier
@@ -193,7 +201,7 @@ fun AdventureInfo(
                     text = "퀴즈 풀고 탐험하기",
                     color = Blue_Natural,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }

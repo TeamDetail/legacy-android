@@ -4,6 +4,7 @@ import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
+import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
 import com.legacy.legacy_android.feature.network.token.TokenService
@@ -65,5 +66,10 @@ object NetworkModule {
     @Singleton
     fun provideGetBlockService(retrofit: Retrofit): GetBlockService{
         return retrofit.create(GetBlockService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideGetQuizService(retrofit: Retrofit): GetQuizService{
+        return retrofit.create(GetQuizService::class.java)
     }
 }

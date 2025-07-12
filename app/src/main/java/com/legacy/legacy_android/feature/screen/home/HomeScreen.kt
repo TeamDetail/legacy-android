@@ -86,7 +86,7 @@ fun HomeScreen(
     LaunchedEffect(currentLocation) {
         if (allRequiredPermission && currentLocation != null && profile?.userId != null) {
             val loc = currentLocation!!
-            viewModel.fetchBlock(loc.latitude, loc.longitude, profile?.userId)
+            viewModel.fetchBlock(loc.latitude, loc.longitude)
             viewModel.fetchGetBlock(profile?.userId)
             println("Current location: $currentLocation")
         }
@@ -134,6 +134,20 @@ fun HomeScreen(
                 .zIndex(5f)
         ) {
             InfoBar(navHostController)
+        }
+
+//         QuizBox
+        if (viewModel.quizIdData.value != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
+                    .zIndex(500f)
+            ) {
+                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue)
+            }
         }
 
         // Google Map
@@ -192,12 +206,14 @@ fun HomeScreen(
             NavBar(navHostController = navHostController)
             if (viewModel.selectedId.value > -1) {
                 AdventureInfo(
+                    viewModel = viewModel,
                     name = viewModel.ruinsIdData.value?.name ?: "이름 없음",
                     img = viewModel.ruinsIdData.value?.ruinsImage,
                     info = viewModel.ruinsIdData.value?.name,
                     tags = listOf("IT", "마이스터", "대구", "고등학교"),
                     latitude = viewModel.ruinsIdData.value?.longitude,
-                    longitude = viewModel.ruinsIdData.value?.latitude
+                    longitude = viewModel.ruinsIdData.value?.latitude,
+                    ruinsId = viewModel.ruinsIdData.value?.ruinsId
                 )
             }
         }

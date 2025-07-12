@@ -6,10 +6,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.legacy.legacy_android.feature.network.block.Get.GetBlockRequest
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockRequest
@@ -25,8 +23,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.domain.repository.UserRepository
+import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
+import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -35,7 +34,8 @@ class HomeViewModel @Inject constructor(
     private val ruinsIdService: RuinsIdService,
     private val postBlockService: PostBlockService,
     private val getBlockService: GetBlockService,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val getQuizService: GetQuizService
 ): ViewModel() {
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
@@ -52,6 +52,8 @@ class HomeViewModel @Inject constructor(
     var ruinsData = mutableListOf<RuinsMapResponse>()
     var ruinsIdData = mutableStateOf<RuinsIdResponse?>(null)
 
+    var quizIdData = mutableStateOf<GetQuizResponse?>(null)
+
     var blockData by mutableStateOf<List<GetBlockResponse>>(emptyList())
 
     fun isFinite(vararg values: Double): Boolean {
@@ -63,7 +65,7 @@ class HomeViewModel @Inject constructor(
     fun fetchRuinsId(id: Int) {
         viewModelScope.launch {
             try {
-                val response = ruinsIdService.getRuinsById(id = id)
+                val response = ruinsIdService.getRuinsById(id)
                 ruinsIdData.value = response.data
                 Log.d("RuinsId", "성공: ${response.data}")
             } catch (e: Exception) {
@@ -72,15 +74,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun fetchBlock(latitude: Double?, longitude: Double?, userId: Long?){
+    fun fetchBlock(latitude: Double?, longitude: Double?){
         viewModelScope.launch {
             try {
                 val request = PostBlockRequest(
-                    blockType = "NORMAL",
                     latitude = latitude,
                     longitude = longitude,
-                    userId = userId,
-                    mobileOrWebsite = "MOBILE"
                 )
 //                val response = postBlockService.block(request)
 //                Log.d("PostMap", "블록 생성 성공: ${response.blockId}")
@@ -93,7 +92,7 @@ class HomeViewModel @Inject constructor(
     fun fetchGetBlock(userId: Long?){
         viewModelScope.launch {
             try{
-                val response = getBlockService.getBlockById(userId)
+                val response = getBlockService.getBlockById()
                 blockData = response.data ?: emptyList()
                 Log.d("GetMap", "블럭 불러오기 성공 ${response.data}")
             }catch (e: Exception){
@@ -114,6 +113,19 @@ class HomeViewModel @Inject constructor(
                 ruinsData = response.data as MutableList<RuinsMapResponse>
             } catch (e: Exception) {
                 Log.e("RuinsMap", "에러: ${e}")
+            }
+        }
+    }
+
+    fun fetchQuiz(ruinsId: Int?){
+        viewModelScope.launch {
+            try{
+                val response = getQuizService.getQuizById(ruinsId)
+                quizIdData.value = response.data
+                Log.d("Quiz", "성공: ${response.data}")
+            }catch (e: Exception){
+                println(ruinsId)
+                Log.e("GetQuiz", "에러: ${e}")
             }
         }
     }

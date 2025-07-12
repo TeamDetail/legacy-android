@@ -30,7 +30,8 @@ import com.legacy.legacy_android.ui.theme.Yellow
 
 @Composable
 fun QuizBox(
-    name : String
+    name : String?,
+    optionValue: List<String>?
 ){
     Column(
         verticalArrangement = Arrangement.Center,
@@ -56,7 +57,7 @@ fun QuizBox(
                     fontSize = 28.sp
                 )
                 Text(
-                    text = name,
+                    text = name.toString(),
                     color = Label_Alternative,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp
