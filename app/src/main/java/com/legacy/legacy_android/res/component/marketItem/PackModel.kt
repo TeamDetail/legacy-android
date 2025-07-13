@@ -1,7 +1,7 @@
 package com.legacy.legacy_android.res.component.marketItem
 
 import androidx.compose.ui.graphics.Color
-import com.legacy.legacy_android.ui.theme.Blue_Natural
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Purple_Netural
 import com.legacy.legacy_android.ui.theme.Red_Normal
 
@@ -15,10 +15,10 @@ public object Packs {
         PackModel(id = 3, name = "대한민국 팩", description = "자랑스러운 우리 나라,\n 대한민국의 문화가 담긴 카드팩", credit = 300000, border = Purple_Netural),
     )
     val bluePackList = listOf(
-        PackModel(id = 0, name = "역사&학문 팩", description = "역사를 잊는 민족에게 \n미래는 없다.", credit = 300000, border = Blue_Natural),
-        PackModel(id = 1, name = "예술&기술 팩", description = "고도로 발달한 기술은 \n마법과 구별할 수 없다.", credit = 300000, border = Blue_Natural),
-        PackModel(id = 2, name = "신앙&체제 팩", description = "교회가 국가를 대신할 수 \n없듯이, 국가는 교회를 대신할 수 없다.", credit = 300000, border = Blue_Natural),
-        PackModel(id = 3, name = "놀이&의식주 팩", description = "현재는 선물이다. \n그러니 걱정 말고 맘껏 즐거라.", credit = 300000, border = Blue_Natural),
+        PackModel(id = 0, name = "역사&학문 팩", description = "역사를 잊는 민족에게 \n미래는 없다.", credit = 300000, border = Blue_Netural),
+        PackModel(id = 1, name = "예술&기술 팩", description = "고도로 발달한 기술은 \n마법과 구별할 수 없다.", credit = 300000, border = Blue_Netural),
+        PackModel(id = 2, name = "신앙&체제 팩", description = "교회가 국가를 대신할 수 \n없듯이, 국가는 교회를 대신할 수 없다.", credit = 300000, border = Blue_Netural),
+        PackModel(id = 3, name = "놀이&의식주 팩", description = "현재는 선물이다. \n그러니 걱정 말고 맘껏 즐거라.", credit = 300000, border = Blue_Netural),
     )
     val redPackList = listOf(
         PackModel(id = 0, name = "경상도 팩", description = "경상북도 & 경상남도의 \n카드가 포함된 카드팩", credit = 300000, border = Red_Normal),

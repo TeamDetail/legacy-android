@@ -34,15 +34,17 @@ import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.res.component.button.BackArrow
+import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.Statbar
 import com.legacy.legacy_android.res.component.title.TitleBar
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
-import com.legacy.legacy_android.ui.theme.Blue_Natural
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Line_Natural
+import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
 import com.legacy.legacy_android.ui.theme.pretendard
@@ -70,21 +72,7 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .align(Alignment.TopStart)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-             BackArrow(navHostController = navHostController, selectedId = selectedId)
-                Text(
-                    text = "프로필",
-                    color = Label,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = pretendard,
-                )
-            }
-
-            // 여기서부터 작성
+            BackButton(selectedId = selectedId, title = "프로필", navHostController = navHostController)
                 // 여기서 프로필 윗부분
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -115,10 +103,7 @@ fun ProfileScreen(
                         ) {
                             Text(
                                 text = profile?.nickname ?: "null",
-                                color = Label,
-                                fontSize = 28.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Bold,
+                                style = AppTextStyles.Title3.bold
                             )
                             Image(
                                 painter = painterResource(R.drawable.edit),
@@ -130,9 +115,7 @@ fun ProfileScreen(
                         Text(
                             text = "LV. ${profile?.level}",
                             color = Label_Alternative,
-                            fontSize = 16.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTextStyles.Body1.bold
                         )
                         // 칭호
                         TitleBar(
@@ -159,7 +142,7 @@ fun ProfileScreen(
                                     text = item,
                                     id = index,
                                     selectedColor = Primary,
-                                    nonSelectedColor = Line_Natural
+                                    nonSelectedColor = Line_Netural
                                 )
                             }
                         }
@@ -196,7 +179,7 @@ fun RecordScreen(
         // 숙련
         Statbar(
             modifier = modifier,
-            name = "숙련",
+            title = "숙련",
             text = "Lv. ${profile?.level}",
             percent = 0.6f,
             subtext = "(7000/13000)",
@@ -205,7 +188,7 @@ fun RecordScreen(
         // 시련
         Statbar(
             modifier = modifier,
-            name = "시련",
+            title = "시련",
             text = "최고 160층",
             barColor = Primary,
             percent = 0.6f,
@@ -214,11 +197,11 @@ fun RecordScreen(
         // 탐험
         Statbar(
             modifier = modifier,
-            name = "탐험",
+            title = "탐험",
             text = "카드 300개 수집",
             percent = 0.6f,
             subtext = "",
-            barColor = Blue_Natural
+            barColor = Blue_Netural
         )
     }
     Spacer(modifier = modifier.height(16.dp))

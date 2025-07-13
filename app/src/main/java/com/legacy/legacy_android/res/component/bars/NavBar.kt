@@ -18,16 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.network.Nav
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label_Strong
 import com.legacy.legacy_android.ui.theme.Primary
-import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun NavBar(navHostController: NavHostController) {
@@ -67,11 +64,7 @@ fun NavBar(navHostController: NavHostController) {
                     Text(
                         text = item.name,
                         color = if (selectedId == item.id) Primary else Label_Strong,
-                        style = TextStyle(
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
-                        )
+                        style = AppTextStyles.Caption2.Medium
                     )
                 }
             }

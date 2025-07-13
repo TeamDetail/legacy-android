@@ -27,6 +27,7 @@ import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.pretendard
 import com.legacy.legacy_android.res.component.button.BackArrow
+import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.friend.FriendBar
 
 @Composable
@@ -48,22 +49,7 @@ fun FriendScreen(
                 .verticalScroll(rememberScrollState())
                 .align(Alignment.TopStart)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BackArrow(
-                    selectedId = selectedId,
-                    navHostController = navHostController
-                )
-                Text(
-                    text = "친구",
-                    color = Label,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = pretendard,
-                )
-            }
+            BackButton(title = "친구", navHostController = navHostController, selectedId = selectedId)
             // 여기서 프로필 윗부분
             Column(
                 modifier = Modifier.fillMaxWidth(),

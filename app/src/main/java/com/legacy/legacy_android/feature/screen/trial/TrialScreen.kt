@@ -17,6 +17,6 @@ fun TrialScreen(
         modifier = modifier,
         navHostController = navHostController
     ) {
-                TitleBox(title = "시련", image = R.drawable.fight)
+        TitleBox(title = "시련", image = R.drawable.fight)
             }
         }

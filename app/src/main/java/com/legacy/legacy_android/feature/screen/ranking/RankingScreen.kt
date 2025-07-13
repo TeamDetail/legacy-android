@@ -20,7 +20,7 @@ import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.ranking.RankingBar
 import com.legacy.legacy_android.res.component.ranking.RankingTable
 import com.legacy.legacy_android.res.component.title.TitleBox
-import com.legacy.legacy_android.ui.theme.Line_Natural
+import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 
 @Composable
@@ -52,7 +52,7 @@ fun RankingScreen(
                             text = item,
                             id = index,
                             selectedColor = Primary,
-                            nonSelectedColor = Line_Natural
+                            nonSelectedColor = Line_Netural
                         )
                     }
                 }

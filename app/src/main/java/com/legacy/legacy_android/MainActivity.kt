@@ -11,8 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.legacy.legacy_android.feature.data.LocationViewModel
-import com.legacy.legacy_android.feature.data.user.ACC_TOKEN
-import com.legacy.legacy_android.feature.data.user.dataStore
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.isTokenValid
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
@@ -32,9 +30,6 @@ import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.trial.TrialScreen
 import com.legacy.legacy_android.feature.screen.trial.TrialViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
 
 enum class ScreenNavigate {
     LOGIN,

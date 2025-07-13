@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -61,9 +61,8 @@ fun Pack(
                     Text(
                         text = packModel.description,
                         fontFamily = pretendard,
-                        color = Label_Alternative,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 13.sp
+                        style = AppTextStyles.Caption1.ExtraBold,
+                        color = Label_Alternative
                     )
                 }
                 Text(

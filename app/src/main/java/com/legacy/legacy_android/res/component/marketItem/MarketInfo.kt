@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
@@ -54,15 +55,14 @@ fun MarketInfo(
                     }
                     append("개 구매!")
                 },
-                color = Label,
-                fontWeight = FontWeight.Bold,
-                fontFamily = pretendard,
-                fontSize = 22.sp
+                style = AppTextStyles.Heading1.bold
             )
             Text(
                 text = buildAnnotatedString {
                     append("현재 가격 배율\n")
-                    withStyle(style = SpanStyle(color = Yellow_Netural, fontSize = 28.sp, fontWeight = FontWeight.Bold)) {
+                    withStyle(
+                        style = AppTextStyles.Title2.bold.toSpanStyle().copy(color = Yellow_Netural)
+                    ) {
                         append("${magnification}배")
                     }
                     withStyle (style = SpanStyle()){
@@ -71,9 +71,7 @@ fun MarketInfo(
 
                 },
                 color = Label_Alternative,
-                fontWeight = FontWeight.Medium,
-                fontFamily = pretendard,
-                fontSize = 12.sp
+                style = AppTextStyles.Caption2.Medium
             )
             Box (
                 modifier = Modifier
@@ -85,12 +83,10 @@ fun MarketInfo(
                     text = buildAnnotatedString {
                         append("초기화까지 ")
                         withStyle(style = SpanStyle(color = Purple_Netural )) {
-                            append(time.toString())
+                            append(time)
                         }
                     },
-                    color = Label_Netural,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.Caption2.Bold,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                 )

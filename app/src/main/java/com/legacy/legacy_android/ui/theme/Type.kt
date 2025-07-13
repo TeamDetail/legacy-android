@@ -1,13 +1,16 @@
 package com.legacy.legacy_android.ui.theme
 
 
+import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.R
 
-// Set of Material typography styles to start with
 val pretendard = FontFamily(
     Font(R.font.pretendard_black, FontWeight.Black, FontStyle.Normal),
     Font(R.font.pretendard_bold, FontWeight.Bold, FontStyle.Normal),
@@ -20,6 +23,10 @@ val pretendard = FontFamily(
     Font(R.font.pretendard_thin, FontWeight.Thin, FontStyle.Normal),
 )
 
-val bitbit = FontFamily(
+
+
+
+
+        val bitbit = FontFamily(
     Font(R.font.bitbit, FontWeight.Normal, FontStyle.Normal)
 )

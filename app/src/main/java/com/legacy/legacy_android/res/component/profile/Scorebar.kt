@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -32,10 +33,8 @@ fun Scorebar(
     ) {
         Text(
             text = title,
-            fontSize = 15.sp,
+            style = AppTextStyles.Body2.bold,
             color = Label_Alternative,
-            fontWeight = FontWeight.Bold,
-            fontFamily = pretendard
         )
         Row (
             modifier = modifier
@@ -44,10 +43,7 @@ fun Scorebar(
         ){
             Text(
                 text = text,
-                fontSize = 16.sp,
-                color = Label,
-                fontWeight = FontWeight.Bold,
-                fontFamily = pretendard,
+                style = AppTextStyles.Body1.bold,
                 modifier = modifier
                     .padding(5.dp, 10.dp, 5.dp, 10.dp)
             )

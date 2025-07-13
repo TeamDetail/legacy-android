@@ -20,21 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Blue_Natural
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Purple_Netural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
-import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun AdventureInfo(
@@ -74,11 +72,7 @@ fun AdventureInfo(
                     Text(
                         text = "유적지 탐험",
                         color = White,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = pretendard,
-                            fontSize = 18.sp
-                        )
+                        style = AppTextStyles.Headline.bold
                     )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -86,20 +80,11 @@ fun AdventureInfo(
                         Text(
                             text = "선택한 블록",
                             color = Label_Alternative,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Medium,
-                                fontFamily = pretendard,
-                                fontSize = 15.sp
-                            )
+                            style = AppTextStyles.Body2.medium
                         )
                         Text(
                             text = if (latitude != null && longitude != null) "${latitude}, ${longitude}" else "",
-                            color = White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Medium,
-                                fontFamily = pretendard,
-                                fontSize = 18.sp
-                            )
+                            style = AppTextStyles.Headline.medium
                         )
                     }
                     Column(
@@ -108,20 +93,11 @@ fun AdventureInfo(
                         Text(
                             text = "유적지 정보",
                             color = Label_Alternative,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Medium,
-                                fontFamily = pretendard,
-                                fontSize = 15.sp
-                            )
+                            style = AppTextStyles.Body2.medium
                         )
                         Text(
                             text = if (info != null) info else "",
-                            color = White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = pretendard,
-                                fontSize = 18.sp
-                            )
+                            style = AppTextStyles.Body1.bold
                         )
                     }
                 }
@@ -155,6 +131,8 @@ fun AdventureInfo(
                             .align(Alignment.TopStart)
 
                     ) {
+                        
+                        // 태그 매핑
                         tags?.forEach { item ->
                             Box(
                                 modifier = Modifier
@@ -162,9 +140,7 @@ fun AdventureInfo(
                             ) {
                                 Text(
                                     text = item,
-                                    color = Label,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    style = AppTextStyles.Label.Bold,
                                     modifier = Modifier
                                         .padding(horizontal = 12.dp, vertical = 4.dp)
                                 )
@@ -178,7 +154,7 @@ fun AdventureInfo(
                             .padding(12.dp),
                         text = if (name != null) name else "",
                         fontFamily = bitbit,
-                        fontSize = 17.sp,
+                        fontSize = 16.sp,
                         color = Label
                     )
                 }
@@ -188,7 +164,7 @@ fun AdventureInfo(
                 modifier = Modifier
                     .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
-                    .border(1.dp, color = Blue_Natural, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(8.dp))
                     .clickable(
                         onClick = {
                             viewModel.fetchQuiz(ruinsId)
@@ -198,10 +174,9 @@ fun AdventureInfo(
                 Text(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 8.dp),
-                    text = "퀴즈 풀고 탐험하기",
-                    color = Blue_Natural,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "퀴즈 풀고 탐험하기!",
+                    color = Blue_Netural,
+                    style = AppTextStyles.Body1.bold
                 )
             }
         }

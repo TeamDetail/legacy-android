@@ -32,6 +32,7 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.pretendard
@@ -72,13 +73,7 @@ fun LoginScreen(
                 )
                 Text(
                     text = "지역 문화 유산을 쉽게, 레거시",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        color = White,
-                        textAlign = TextAlign.Center,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Medium
-                    )
+                    style = AppTextStyles.Headline.medium
                 )
             }
             Column(
@@ -88,12 +83,7 @@ fun LoginScreen(
             {
                 Text(
                     text = "소셜 로그인하고 곧바로 뛰어드세요!",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        color = White,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Bold
-                    )
+                    style = AppTextStyles.Body2.bold
                 )
 
                 Box(
@@ -128,14 +118,12 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = "카카오 로그인",
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                lineHeight = 24.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF181600),
-                                textAlign = TextAlign.Center,
-                            ),
+                            style = AppTextStyles.Body2.medium.merge(
+                                TextStyle(
+                                    color = Color(0xFF181600),
+                                    textAlign = TextAlign.Center,
+                                )
+                            )
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         Box(modifier = Modifier.width(20.dp))
@@ -153,29 +141,20 @@ fun LoginScreen(
         ) {
             Text(
                 text = "서비스 약관",
-                style = TextStyle(
+                style = AppTextStyles.Label.Medium.merge(
                     color = Netural80,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
                 )
             )
             Text(
                 text = " · ",
-                style = TextStyle(
+                style = AppTextStyles.Label.Medium.merge(
                     color = Netural80,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
                 )
             )
             Text(
                 text = "개인정보처리방침",
-                style = TextStyle(
+                style = AppTextStyles.Label.Medium.merge(
                     color = Netural80,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
                 )
             )
         }

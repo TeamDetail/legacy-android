@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -30,7 +31,7 @@ import com.legacy.legacy_android.ui.theme.pretendard
 fun Statbar(
     modifier: Modifier,
     percent : Float,
-    name: String,
+    title: String,
     text: String,
     subtext: String,
     barColor: Color
@@ -43,10 +44,8 @@ fun Statbar(
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = name,
-            fontSize = 20.sp,
-            fontFamily = pretendard,
-            fontWeight = FontWeight.Bold,
+            text = title,
+            style = AppTextStyles.Heading2.bold,
             color = Label
         )
 
@@ -76,15 +75,12 @@ fun Statbar(
                     buildAnnotatedString {
                         append("${text} ")
                         withStyle(
-                            style = SpanStyle(color = Label_Alternative, fontSize = 16.sp)
+                            style = AppTextStyles.Caption2.Bold.toSpanStyle().copy(color = Label_Alternative)
                         ) {
                             append(subtext)
                         }
                     },
-                    color = Label,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = pretendard,
-                    fontSize = 20.sp
+                    style = AppTextStyles.Headline.bold
                 )
             }
         }

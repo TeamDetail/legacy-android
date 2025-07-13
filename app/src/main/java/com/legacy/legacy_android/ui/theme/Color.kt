@@ -15,7 +15,7 @@ val Green_Alternative = Color(0xFF0A573B)
 val Red_Normal = Color(0xFFD05458)
 val Red_Netural = Color(0xFFF06969)
 
-val Blue_Natural = Color(0xFF5B96C7)
+val Blue_Netural = Color(0xFF5B96C7)
 
 val Purple_Netural = Color(0xFFA980CF)
 
@@ -23,7 +23,7 @@ val Fill_Normal = Color(0xFF232424)
 val Fill_Netural = Color(0xFF383A3B)
 
 val Line_Alternative = Color(0xFF383A3B)
-val Line_Natural = Color(0xFF48494A)
+val Line_Netural = Color(0xFF48494A)
 
 val Label = Color(0xFFF5F5F5)
 val Label_Alternative = Color(0xFFC4C5C6)

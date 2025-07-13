@@ -15,19 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.res.component.title.TitleBar
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
-import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.bitbit
-import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun FriendBar(name: String, level : Int, title : String, profile: Int) {
@@ -56,23 +50,15 @@ fun FriendBar(name: String, level : Int, title : String, profile: Int) {
                     .width(144.dp)
             ) {
                 Text(
-                    text = buildAnnotatedString {
-                        append(name)
-                        withStyle(style = SpanStyle(color = Label_Alternative, fontSize = 12.sp)) {
-                            append("  LV. ${level.toString()}")
-                        }
-                    },
-                    color = Label,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    text = name,
+                    style = AppTextStyles.Headline.bold
                 )
                 TitleBar(title = title)
             }
             Text(
                 text = "${level}Lv",
                 fontFamily = bitbit,
-                fontSize = 18.sp,
+                fontSize = 22.sp,
                 color = Yellow_Netural
             )
         }

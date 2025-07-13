@@ -9,12 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Assitive
-import androidx.compose.ui.unit.sp
-import com.legacy.legacy_android.ui.theme.pretendard
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 
 @Composable
 fun StatusButton(
@@ -38,9 +36,7 @@ fun StatusButton(
         Text(
             text = text,
             color = if (isSelected) Label else Label_Assitive,
-            fontSize = 13.sp,
-            fontFamily = pretendard,
-            fontWeight = FontWeight.Bold,
+            style = AppTextStyles.Caption1.Bold,
             modifier = Modifier
                 .padding(vertical = 4.dp, horizontal = 12.dp)
         )

@@ -10,12 +10,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
-import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun TitleBar(title: String) {
@@ -34,9 +32,7 @@ fun TitleBar(title: String) {
             Text(
                 modifier = Modifier.padding(6.dp),
                 text = title,
-                fontSize = 14.sp,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.Caption2.Bold,
                 color = Yellow_Netural,
             )
         }

@@ -39,6 +39,7 @@ import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.bars.OptionBar
+import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow
@@ -104,21 +105,12 @@ fun InfoBar(
                     ) {
                         Text(
                             text = profile?.nickname.toString(),
-                            color = Label,
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Bold
-                            )
+                            style = AppTextStyles.Headline.bold
                         )
                         Text(
                             text = "LV. ${profile?.level}",
                             color = Label_Alternative,
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Bold
-                            )
+                            style = AppTextStyles.Caption2.Bold
                         )
                     }
                 }
@@ -140,7 +132,7 @@ fun InfoBar(
                         text = NumberFormat.getNumberInstance(Locale.US)
                             .format(profile?.credit ?: 0),
                         color = Yellow,
-                        style = TextStyle(fontSize = 14.sp, fontFamily = bitbit)
+                        style = TextStyle(fontSize = 16.sp, fontFamily = bitbit)
                     )
                 }
             }

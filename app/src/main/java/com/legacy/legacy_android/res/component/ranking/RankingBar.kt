@@ -26,10 +26,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.legacy.legacy_android.res.component.title.SmallTitleBar
-import com.legacy.legacy_android.ui.theme.Blue_Natural
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
+import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
@@ -57,7 +58,7 @@ fun RankingBar(
                     } else if (rank == 2) {
                         Red_Netural
                     } else {
-                        Blue_Natural
+                        Blue_Netural
                     }, shape = RoundedCornerShape(20.dp)
                 )
 
@@ -97,7 +98,7 @@ fun RankingBar(
                             } else if (rank == 2) {
                                 Red_Netural
                             } else {
-                                Blue_Natural
+                                Blue_Netural
                             },
                             fontFamily = pretendard,
                             fontWeight = FontWeight.Bold,
@@ -105,13 +106,7 @@ fun RankingBar(
                         )
                         Text(
                             text = "${blocks}블록",
-                            color = if (blocks > 2000) Color(0xFFA05AE8) else when (normalized) {
-                                in 0..199   -> (if (blocks < 1001) Color(0xFFA05AE8) else Color(0xFFEDB900)).copy(alpha = 0.6f)
-                                in 200..399 -> Color(0xFFA05AE8).copy(alpha = 0.7f)
-                                in 400..599 -> Color(0xFFA05AE8).copy(alpha = 0.8f)
-                                in 600..799 -> Color(0xFFA05AE8).copy(alpha = 0.9f)
-                                else        -> Color(0xFFA05AE8).copy(alpha = 1.0f)
-                            },
+                            color = Yellow_Netural,
                             fontFamily = pretendard,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp
