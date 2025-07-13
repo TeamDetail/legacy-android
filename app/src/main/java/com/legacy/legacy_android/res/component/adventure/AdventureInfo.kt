@@ -30,6 +30,7 @@ import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Purple_Netural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
@@ -113,10 +114,11 @@ fun AdventureInfo(
                         contentDescription = "유적지 이미지",
                         modifier = Modifier
                             .matchParentSize()
+                            .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp)),
                         contentScale = ContentScale.Crop,
-                        error = painterResource(R.drawable.schoo_img),
-                        placeholder = painterResource(R.drawable.schoo_img)
+                        error = painterResource(R.drawable.school_img),
+                        placeholder = painterResource(R.drawable.school_img)
                     )
                     Box(
                         modifier = Modifier

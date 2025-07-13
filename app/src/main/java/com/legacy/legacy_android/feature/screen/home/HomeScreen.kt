@@ -4,6 +4,8 @@ import android.Manifest
 import com.legacy.legacy_android.res.component.quiz.QuizBox
 import androidx.compose.foundation.background
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -144,8 +146,12 @@ fun HomeScreen(
                     .fillMaxSize()
                     .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
                     .zIndex(500f)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {}
             ) {
-                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue)
+                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus)
             }
         }
 

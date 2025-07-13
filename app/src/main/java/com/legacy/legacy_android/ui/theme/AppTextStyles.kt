@@ -140,21 +140,18 @@ object AppTextStyles {
             fontFamily = pretendard,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 18.sp,
-            lineHeight = 130.sp,
             color = com.legacy.legacy_android.ui.theme.Label
         )
         val medium = TextStyle(
             fontFamily = pretendard,
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
-            lineHeight = 130.sp,
             color = com.legacy.legacy_android.ui.theme.Label
         )
         val regular = TextStyle(
             fontFamily = pretendard,
             fontWeight = FontWeight.Normal,
             fontSize = 18.sp,
-            lineHeight = 130.sp,
             color = com.legacy.legacy_android.ui.theme.Label
         )
     }
