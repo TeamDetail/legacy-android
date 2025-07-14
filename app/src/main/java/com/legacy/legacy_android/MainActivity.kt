@@ -1,5 +1,6 @@
 package com.legacy.legacy_android
 
+import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -7,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -44,12 +46,15 @@ enum class ScreenNavigate {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var mediaPlayer: MediaPlayer? = null  // 🔹 추가: 음악 재생기
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         soundPool = SoundPool.Builder()
             .setMaxStreams(5)
             .build()
@@ -61,80 +66,72 @@ class MainActivity : AppCompatActivity() {
         } else {
             ScreenNavigate.LOGIN.name
         }
+
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            navController.addOnDestinationChangedListener { _: NavController, destination, _ ->
+                when (destination.route) {
+                    ScreenNavigate.MARKET.name -> {
+                        if (mediaPlayer == null) {
+                            mediaPlayer = MediaPlayer.create(this, R.raw.marketbgm).apply {
+                                isLooping = true
+                                start()
+                            }
+                        } else if (mediaPlayer?.isPlaying == false) {
+                            mediaPlayer?.start()
+                        }
+                    }
+
+                    else -> {
+                        mediaPlayer?.pause()
+                    }
+                }
+            }
+
             NavHost(navController = navController, startDestination = startDestination) {
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
-                    LoginScreen(
-                        modifier = Modifier,
-                        viewModel = loginViewModel,
-                        navHostController = navController
-                    )
+                    LoginScreen(Modifier, loginViewModel, navController)
                 }
                 composable(route = ScreenNavigate.HOME.name) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     val profileViewModel: ProfileViewModel = hiltViewModel()
                     val locationViewModel: LocationViewModel = hiltViewModel()
-                    HomeScreen(
-                        modifier = Modifier,
-                        viewModel = homeViewModel,
-                        navHostController = navController,
-                        profileViewModel = profileViewModel,
-                        locationViewModel = locationViewModel
-                    )
+                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel, navController)
                 }
                 composable(route = ScreenNavigate.MARKET.name) {
                     val marketViewModel: MarketViewModel = hiltViewModel()
-                    MarketScreen(
-                        modifier = Modifier,
-                        viewModel = marketViewModel,
-                        navHostController = navController
-                    )
+                    MarketScreen(Modifier, marketViewModel, navController)
                 }
-                composable (route = ScreenNavigate.ACHIEVE.name){
+                composable(route = ScreenNavigate.ACHIEVE.name) {
                     val achieveViewModel: AchieveViewModel = hiltViewModel()
-                    AchieveScreen(
-                        modifier = Modifier,
-                        viewModel = achieveViewModel,
-                        navHostController = navController
-                    )
+                    AchieveScreen(Modifier, achieveViewModel, navController)
                 }
-                composable (route = ScreenNavigate.TRIAL.name){
+                composable(route = ScreenNavigate.TRIAL.name) {
                     val trialViewModel: TrialViewModel = hiltViewModel()
-                    TrialScreen(
-                        modifier = Modifier,
-                        viewModel = trialViewModel,
-                        navHostController = navController
-                    )
+                    TrialScreen(Modifier, trialViewModel, navController)
                 }
-                composable (route = ScreenNavigate.RANKING.name){
+                composable(route = ScreenNavigate.RANKING.name) {
                     val rankingViewModel: RankingViewModel = hiltViewModel()
-                    RankingScreen(
-                        modifier = Modifier,
-                        viewModel = rankingViewModel,
-                        navHostController = navController
-                    )
+                    RankingScreen(Modifier, rankingViewModel, navController)
                 }
-                composable (route = ScreenNavigate.PROFILE.name){
+                composable(route = ScreenNavigate.PROFILE.name) {
                     val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(
-                        modifier = Modifier,
-                        viewModel = profileViewModel,
-                        navHostController = navController
-                    )
+                    ProfileScreen(Modifier, profileViewModel, navController)
                 }
-                composable (route = ScreenNavigate.FRIEND.name){
+                composable(route = ScreenNavigate.FRIEND.name) {
                     val friendViewModel: FriendViewModel = hiltViewModel()
-                    FriendScreen(
-                        modifier = Modifier,
-                        viewModel = friendViewModel,
-                        navHostController = navController
-                    )
+                    FriendScreen(Modifier, friendViewModel, navController)
                 }
             }
         }
     }
-}
 
+    override fun onDestroy() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        super.onDestroy()
+    }
+}

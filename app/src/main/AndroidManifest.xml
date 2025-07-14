@@ -23,11 +23,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="${KAKAO_API_KEY}" />
-
+        <service android:name=".service.MusicService"></service>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

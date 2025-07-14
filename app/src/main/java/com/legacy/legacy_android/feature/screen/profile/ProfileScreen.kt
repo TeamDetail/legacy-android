@@ -48,6 +48,8 @@ import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
 import com.legacy.legacy_android.ui.theme.pretendard
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -212,22 +214,22 @@ fun RecordScreen(
         Scorebar(
             modifier =  modifier,
             title = "시련 최고 점수",
-            text = "${profile?.maxScore}"
+            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.maxScore)} 문명 점수"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 일반 블록 수",
-            text = "${profile?.allBlocks}"
+            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.allBlocks)} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 유적지 블록 수",
-            text = "${profile?.ruinsBlocks}"
+            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.ruinsBlocks)} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "사용한 크레딧",
-            text = "${profile?.stats?.creditCollect}"
+            text = NumberFormat.getNumberInstance(Locale.US).format(profile?.stats?.creditCollect)
         )
     }
 }

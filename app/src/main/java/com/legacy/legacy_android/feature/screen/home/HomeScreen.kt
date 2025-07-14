@@ -30,6 +30,8 @@ import com.legacy.legacy_android.res.component.adventure.LocationDialog
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.res.component.modal.CreditModal
+import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.ui.theme.Green_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
 
@@ -151,7 +153,12 @@ fun HomeScreen(
                         interactionSource = remember { MutableInteractionSource() }
                     ) {}
             ) {
-                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus)
+                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus, ruinName = "이름", hintStatus = viewModel.hintStatus)
+                if (viewModel.hintStatus.value == 1){
+                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {viewModel.hintStatus.value = 2}, onDismiss = {viewModel.hintStatus.value = 0})
+                }else if (viewModel.hintStatus.value == 2){
+                    QuizModal(title = viewModel.quizIdData?.value?.quizProblem, questionNumber = viewModel.quizStatus.value+1, hint = "힌트", onConfirm = {viewModel.hintStatus.value = 0},)
+                }
             }
         }
 

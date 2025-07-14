@@ -48,6 +48,7 @@ class HomeViewModel @Inject constructor(
     var maxLng: Double = 0.0
 
     var quizStatus = mutableStateOf(0)
+    var hintStatus = mutableStateOf(0)
     var selectedId = mutableIntStateOf(-1)
 
     var ruinsData = mutableListOf<RuinsMapResponse>()

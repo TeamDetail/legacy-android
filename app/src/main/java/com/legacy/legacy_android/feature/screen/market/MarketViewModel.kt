@@ -19,7 +19,7 @@ class MarketViewModel @Inject constructor(
         _marketStatus = value
     }
 
-    val packList = listOf("카드 팩", "크레딧 충전")
+    val     packList = listOf("카드 팩", "크레딧 충전")
 
     var packStatus by mutableStateOf(0)
 

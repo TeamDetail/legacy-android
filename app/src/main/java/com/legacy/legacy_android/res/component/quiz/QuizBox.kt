@@ -38,7 +38,9 @@ import com.legacy.legacy_android.ui.theme.Yellow
 fun QuizBox(
     name : String?,
     optionValue: List<String>?,
-    quizStatus: MutableState<Int>
+    quizStatus: MutableState<Int>,
+    hintStatus: MutableState<Int>,
+    ruinName: String,
 ){
     Column(
         verticalArrangement = Arrangement.Center,
@@ -80,39 +82,50 @@ fun QuizBox(
                     style = AppTextStyles.Title1.bold
                 )
                 Text(
-                    text = name.toString(),
+                    text = ruinName.toString(),
                     color = Label_Alternative,
                     style = AppTextStyles.Body1.medium
                 )
             }
             // 저거 그 뭐더라 이름이랑 카드 나오는 거
-            Column ( horizontalAlignment = Alignment.CenterHorizontally){
+            Column (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally){
                 Text(
                     modifier = Modifier,
-                    text = "2024년 기준, 교장선생",
+                    text = name ?: "",
                     style = AppTextStyles.Title3.bold
                 )
                 Column (
                     verticalArrangement = Arrangement.spacedBy(16.dp)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .border(border = BorderStroke(4.dp, Fill_Normal), shape = RoundedCornerShape(12.dp))
-                            .padding(4.dp)
-                            .clickable{}
-                    ) {
+                ) {
+                    optionValue?.forEach { option ->
                         Box(
-                            contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Fill_Normal)
-                                .border(width = 1.dp, Line_Alternative, shape = RoundedCornerShape(12.dp))
-                                .padding(vertical = 12.dp)
+                                .border(
+                                    border = BorderStroke(4.dp, Fill_Normal),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(4.dp)
+                                .clickable {}
                         ) {
-                            Text(
-                                text = "앙기모띠",
-                                style = AppTextStyles.Body1.bold
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Fill_Normal)
+                                    .border(
+                                        width = 1.dp,
+                                        Line_Alternative,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(vertical = 12.dp)
+                            ) {
+                                Text(
+                                    text = option,
+                                    style = AppTextStyles.Body1.bold
+                                )
+                            }
                         }
                     }
                 }
@@ -120,7 +133,7 @@ fun QuizBox(
                     modifier = Modifier
                         .border(width = 4.dp, color = Fill_Normal, shape = RoundedCornerShape(12.dp))
                         .padding(4.dp)
-                        .clickable{}
+                        .clickable{hintStatus.value = 1}
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,

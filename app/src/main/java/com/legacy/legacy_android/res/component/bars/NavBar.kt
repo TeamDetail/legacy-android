@@ -48,8 +48,11 @@ fun NavBar(navHostController: NavHostController) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .clickable {
-                            Nav.setNavStatus(item.id)
-                            navHostController.navigate(item.onClick.name) },
+                            if (selectedId != item.id) {
+                                Nav.setNavStatus(item.id)
+                                navHostController.navigate(item.onClick.name)
+                            }
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
