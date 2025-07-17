@@ -137,6 +137,7 @@ class LoginViewModel @Inject constructor(
                 val response = loginService.login(request)
                 Log.i(TAG, "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = $response.data.accessToken}")
                 onBackendLoginSuccess()
+                println(response.data.accessToken)
                 saveAccToken(context.applicationContext, response.data.accessToken)
                 saveRefToken(context.applicationContext, response.data.refreshToken)
                 navHostController.navigate(ScreenNavigate.HOME.name)

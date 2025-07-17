@@ -8,5 +8,5 @@ interface GetQuizService {
     @GET("/quiz/{ruinsId}")
     suspend fun getQuizById(
         @Path("ruinsId") ruinsId : Int?
-    ): BaseResponse<GetQuizResponse>
+    ): BaseResponse<List<GetQuizResponse>>
 }

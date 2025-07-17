@@ -24,6 +24,7 @@ class UserRepository @Inject constructor(
         try {
             val response = getMeService.getMe()
             _profile.value = response.data
+            Log.d("UserRepository",  response.data?.userId.toString())
             hasLoaded = true
         } catch (error: Exception) {
             Log.e("UserRepository", "프로필 로드 실패", error)

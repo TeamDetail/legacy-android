@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -52,6 +53,7 @@ fun AdventureInfo(
             .background(Black, shape = RoundedCornerShape(size=12.dp))
             .height(300.dp)
             .padding(12.dp)
+            .zIndex(50f)
     ) {
         Column (modifier = Modifier
             .fillMaxWidth()

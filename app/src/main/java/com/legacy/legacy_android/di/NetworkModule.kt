@@ -5,6 +5,8 @@ import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
+import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerRequest
+import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
 import com.legacy.legacy_android.feature.network.token.TokenService
@@ -71,5 +73,10 @@ object NetworkModule {
     @Singleton
     fun provideGetQuizService(retrofit: Retrofit): GetQuizService{
         return retrofit.create(GetQuizService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providePostQuizAnswerService(retrofit: Retrofit): PostQuizAnswerService{
+        return retrofit.create(PostQuizAnswerService::class.java)
     }
 }

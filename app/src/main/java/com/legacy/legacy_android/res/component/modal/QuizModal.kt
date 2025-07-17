@@ -24,6 +24,7 @@ import com.legacy.legacy_android.ui.theme.Label_Alternative
 
 @Composable
 fun QuizModal(
+
     title: String?,
     questionNumber: Int?,
     hint: String?,

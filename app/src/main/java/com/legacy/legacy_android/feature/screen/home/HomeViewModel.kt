@@ -28,6 +28,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerRequest
+import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerResponse
+import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerService
+import kotlinx.coroutines.CoroutineScope
+import okhttp3.Dispatcher
 
 enum class HintStatus {
     NO,
@@ -47,16 +52,20 @@ class HomeViewModel @Inject constructor(
     private val ruinsMapService: RuinsMapService,
     private val ruinsIdService: RuinsIdService,
     private val postBlockService: PostBlockService,
+    private val postQuizAnswerService: PostQuizAnswerService,
     private val getBlockService: GetBlockService,
     private val userRepository: UserRepository,
     private val getQuizService: GetQuizService
 ) : ViewModel() {
+
+    val wrongAnswers = mutableListOf<Int>()
 
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
     val profileFlow = userRepository.profile
 
+    var answerOption = mutableListOf<String>()
     var minLat: Double = 0.0
     var maxLat: Double = 0.0
     var minLng: Double = 0.0
@@ -70,7 +79,7 @@ class HomeViewModel @Inject constructor(
     var visibleRuins by mutableStateOf<List<RuinsMapResponse>>(emptyList())
     var ruinsIdData = mutableStateOf<RuinsIdResponse?>(null)
 
-    var quizIdData = mutableStateOf<GetQuizResponse?>(null)
+    var quizIdData = mutableStateOf<List<GetQuizResponse>?>(null)
 
     var blockData by mutableStateOf<List<GetBlockResponse>>(emptyList())
 
@@ -89,6 +98,40 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun fetchQuizAnswer(quizId: Int) {
+        viewModelScope.launch {
+            try {
+                val requests = listOfNotNull(
+                    answerOption.getOrNull(0)?.let { PostQuizAnswerRequest(quizId = quizId, answerOption = it) },
+                    answerOption.getOrNull(1)?.let { PostQuizAnswerRequest(quizId = quizId + 1, answerOption = it) },
+                    answerOption.getOrNull(2)?.let { PostQuizAnswerRequest(quizId = quizId + 2, answerOption = it) },
+                )
+
+                val response = postQuizAnswerService.answer(requests)
+                val results = response.data.results
+
+                // 틀린 문제들 모으기
+                wrongAnswers.clear()
+                results.filter { !it.isCorrect }
+                    .map { it.quizId }
+                    .also { wrongAnswers.addAll(it) }
+
+                answerOption.clear()
+
+                if (wrongAnswers.isEmpty()) {
+                    quizStatus.value = 3 // 모두 맞음
+                } else {
+                    quizStatus.value = 5 // 일부 혹은 전부 틀림
+                }
+
+            } catch (e: Exception) {
+                quizStatus.value = 5
+                Log.e("Answer", "에러 발생: ${e.message}")
+            }
+        }
+    }
+
 
     fun fetchBlock(latitude: Double?, longitude: Double?) {
         viewModelScope.launch {
@@ -130,9 +173,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun fetchRuinsMap(minLat: Double, maxLat: Double, minLng: Double, maxLng: Double) {
-        if (!isFinite(minLat, maxLat, minLng, maxLng)) {
-            return
-        }
+        if (!isFinite(minLat, maxLat, minLng, maxLng)) return
+
         viewModelScope.launch {
             try {
                 val request = RuinsMapRequest(minLat, maxLat, minLng, maxLng)
@@ -149,6 +191,7 @@ class HomeViewModel @Inject constructor(
                     }
                 )
             } catch (e: Exception) {
+                Log.e("RuinsMap", "에러: ${e.message}")
             }
         }
     }

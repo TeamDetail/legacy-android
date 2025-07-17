@@ -60,7 +60,6 @@ enum class BgmType {
     MAIN, MARKET, LOGIN
 }
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -98,7 +97,6 @@ class MainActivity : AppCompatActivity() {
         soundId = soundPool.load(this, R.raw.click, 1)
         val refreshToken = getRefToken(this)
         val accessToken = getAccToken(this)
-
         val startDestination = when {
             isTokenValid(accessToken) -> {
                 ScreenNavigate.HOME.name
@@ -110,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                 ScreenNavigate.LOGIN.name
             }
         }
-
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(LifecycleEventObserver { _, event ->
             when (event) {
@@ -125,15 +122,15 @@ class MainActivity : AppCompatActivity() {
             navController.addOnDestinationChangedListener { _: NavController, destination, _ ->
                 when (destination.route) {
                     ScreenNavigate.MARKET.name -> {
-                        if (currentBgm != BgmType.MARKET) {
+                        if (currentBgm != BgmType.LOGIN) {
                             mediaPlayer?.stop()
                             mediaPlayer?.release()
-                            mediaPlayer = MediaPlayer.create(this, R.raw.marketbgm).apply {
+                            mediaPlayer = MediaPlayer.create(this, R.raw.loginbgm).apply {
                                 isLooping = true
                                 setVolume(0.4f, 0.4f)
                                 start()
                             }
-                            currentBgm = BgmType.MARKET
+                            currentBgm = BgmType.LOGIN
                         }
                     }
 

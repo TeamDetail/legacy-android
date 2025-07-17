@@ -91,13 +91,15 @@ fun LoginScreen(
                         .height(54.dp)
                         .background(Color(0xFFFEE500), shape = RoundedCornerShape(16.dp))
                         .clickable {
-                            viewModel.loginWithKakao(
-                                context = context,
-                                navHostController = navHostController,
-                                onFailure = { error ->
-                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
-                                }
-                            )
+                            if (!viewModel.loadingState.value) {
+                                viewModel.loginWithKakao(
+                                    context = context,
+                                    navHostController = navHostController,
+                                    onFailure = { error ->
+                                        Log.e("LoginScreen", "카카오 로그인 실패", error)
+                                    }
+                                )
+                            }
                         },
                     contentAlignment = Alignment.Center
                 ) {
@@ -137,7 +139,6 @@ fun LoginScreen(
                                 )
                             )
                         )
-
                     }
                 }
             }
