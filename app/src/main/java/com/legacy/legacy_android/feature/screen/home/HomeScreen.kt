@@ -7,6 +7,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,9 +73,10 @@ fun HomeScreen(
         profileViewModel.fetchProfile()
     }
 
+    val ruins = viewModel.visibleRuins
     val blocks = viewModel.blockData
-    val ruins = viewModel.ruinsData
-    val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val locationPermissionState =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     var showPermissionDialog by remember {
         mutableStateOf(false)
     }
@@ -171,15 +177,28 @@ fun HomeScreen(
                         interactionSource = remember { MutableInteractionSource() }
                     ) {}
             ) {
-                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus, ruinName = "이름",
+                QuizBox(
+                    name = viewModel.quizIdData?.value?.quizProblem,
+                    optionValue = viewModel.quizIdData?.value?.optionValue,
+                    quizStatus = viewModel.quizStatus,
+                    ruinName = "이름",
                     onConfirm = { viewModel.hintStatus.value = HintStatus.CREDIT }
                 )
                 if (viewModel.hintStatus.value == HintStatus.CREDIT) {
-                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {viewModel.hintStatus.value =
-                        HintStatus.HINT}, onDismiss = {viewModel.hintStatus.value = HintStatus.NO})
-                }else if (viewModel.hintStatus.value == HintStatus.HINT){
-                    QuizModal(title = viewModel.quizIdData?.value?.quizProblem, questionNumber = viewModel.quizStatus.value+1, hint = "힌트", onConfirm = {viewModel.hintStatus.value =
-                        HintStatus.NO},)
+                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {
+                        viewModel.hintStatus.value =
+                            HintStatus.HINT
+                    }, onDismiss = { viewModel.hintStatus.value = HintStatus.NO })
+                } else if (viewModel.hintStatus.value == HintStatus.HINT) {
+                    QuizModal(
+                        title = viewModel.quizIdData?.value?.quizProblem,
+                        questionNumber = viewModel.quizStatus.value + 1,
+                        hint = "힌트",
+                        onConfirm = {
+                            viewModel.hintStatus.value =
+                                HintStatus.NO
+                        },
+                    )
                 }
             }
         }
@@ -203,30 +222,28 @@ fun HomeScreen(
             )
         ) {
             ruins.forEach { ruin ->
-                key(ruin.ruinsId) {
-                    Polygon(
-                        tag = ruin.ruinsId,
-                        points = PolygonStyle.getPolygonPointsFromLocation(
-                            latitude = ruin.latitude,
-                            longitude = ruin.longitude
-                        ),
-                        strokeColor = Primary,
-                        strokeWidth = 1f,
-                        fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
-                        clickable = true,
-                        onClick = {
-                            viewModel.selectedId.value = ruin.ruinsId
-                            viewModel.fetchRuinsId(ruin.ruinsId)
-                        }
-                    )
-                }
-            }
-            blocks.forEach { block ->
                 Polygon(
-                    tag = block.blockId,
+                    tag = ruin.ruinsId,
                     points = PolygonStyle.getPolygonPointsFromLocation(
-                        latitude = block.latitude,
-                        longitude = block.longitude
+                        latitude = ruin.latitude,
+                        longitude = ruin.longitude
+                    ),
+                    strokeColor = Primary,
+                    strokeWidth = 1f,
+                    fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
+                    clickable = true,
+                    onClick = {
+                        viewModel.selectedId.value = ruin.ruinsId
+                        viewModel.fetchRuinsId(ruin.ruinsId)
+                    }
+                )
+            }
+            blocks.forEach { blocks ->
+                Polygon(
+                    tag = blocks.blockId,
+                    points = PolygonStyle.getPolygonPointsFromLocation(
+                        latitude = blocks.latitude,
+                        longitude = blocks.longitude
                     ),
                     strokeWidth = 1f,
                     strokeColor = Green_Alternative,
@@ -255,6 +272,31 @@ fun HomeScreen(
                     ruinsId = viewModel.ruinsIdData.value?.ruinsId
                 )
             }
+        }
+
+        IconButton(
+            onClick = {
+                currentLocation?.let {
+                    cameraPositionState.move(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(it.latitude, it.longitude),
+                            16f
+                        )
+                    )
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 20.dp, bottom = 120.dp)
+                .zIndex(8f)
+                .size(48.dp)
+                .background(Color.White, shape = androidx.compose.foundation.shape.CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Place,
+                contentDescription = "내 위치로 이동",
+                tint = Color.Black
+            )
         }
     }
 }

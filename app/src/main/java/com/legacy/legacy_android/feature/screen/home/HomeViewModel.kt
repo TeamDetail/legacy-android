@@ -17,18 +17,17 @@ import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdResponse
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
-
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 enum class HintStatus {
     NO,
@@ -49,9 +48,10 @@ class HomeViewModel @Inject constructor(
     private val ruinsIdService: RuinsIdService,
     private val postBlockService: PostBlockService,
     private val getBlockService: GetBlockService,
-    private val  userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val getQuizService: GetQuizService
-): ViewModel() {
+) : ViewModel() {
+
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
@@ -62,12 +62,12 @@ class HomeViewModel @Inject constructor(
     var minLng: Double = 0.0
     var maxLng: Double = 0.0
 
-
     var quizStatus = mutableStateOf(0)
     var hintStatus = mutableStateOf<HintStatus>(HintStatus.NO)
     var selectedId = mutableIntStateOf(-1)
 
     var ruinsData = mutableListOf<RuinsMapResponse>()
+    var visibleRuins by mutableStateOf<List<RuinsMapResponse>>(emptyList())
     var ruinsIdData = mutableStateOf<RuinsIdResponse?>(null)
 
     var quizIdData = mutableStateOf<GetQuizResponse?>(null)
@@ -78,9 +78,6 @@ class HomeViewModel @Inject constructor(
         return values.all { it.isFinite() }
     }
 
-
-
-    // ruin 정보 들고오기
     fun fetchRuinsId(id: Int) {
         viewModelScope.launch {
             try {
@@ -127,10 +124,7 @@ class HomeViewModel @Inject constructor(
                 blockData = rawBlocks.distinctBy { block ->
                     PolygonStyle.getGridKey(block.latitude, block.longitude)
                 }
-                Log.d("GetMap", "블럭 불러오기 성공 (중복 제거 후): ${blockData.size}개")
-                Log.d("GetMap", "원본 블럭 수: ${rawBlocks.size}개")
             } catch (e: Exception) {
-                Log.e("GetMap", "에러: ${e.message}")
             }
         }
     }
@@ -142,32 +136,49 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val request = RuinsMapRequest(minLat, maxLat, minLng, maxLng)
-                val response = ruinsMapService.ruinsMap(minLat = request.minLat, maxLat = request.maxLat, minLng = request.minLng, maxLng = request.maxLng)
-                // 여기서 미리 null 제거
-                allRuinsData = response.data.filterNotNull()
-                _visibleRuins.clear()
-                loadMoreRuins() // 첫 번째 배치 로드
+                val response = ruinsMapService.ruinsMap(
+                    minLat = request.minLat,
+                    maxLat = request.maxLat,
+                    minLng = request.minLng,
+                    maxLng = request.maxLng
+                )
+                ruinsData = response.data as MutableList<RuinsMapResponse>
+                updateVisibleRuinsSmoothly(
+                    ruinsData.filter {
+                        it.latitude in minLat..maxLat && it.longitude in minLng..maxLng
+                    }
+                )
             } catch (e: Exception) {
-                Log.e("RuinsMap", "에러: ${e}")
             }
         }
     }
 
-    private fun loadMoreRuins() {
-        val currentSize = _visibleRuins.size
-        val nextBatch = allRuinsData.drop(currentSize).take(RUINS_BATCH_SIZE)
-        _visibleRuins.addAll(nextBatch)
-    }
-
-    fun fetchQuiz(ruinsId: Int?){
+    fun fetchQuiz(ruinsId: Int?) {
         viewModelScope.launch {
-            try{
+            try {
                 val response = getQuizService.getQuizById(ruinsId)
                 quizIdData.value = response.data
                 Log.d("Quiz", "성공: ${response.data}")
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 println(ruinsId)
                 Log.e("GetQuiz", "에러: ${e}")
+            }
+        }
+    }
+
+    fun updateVisibleRuinsSmoothly(inBoundsRuins: List<RuinsMapResponse>) {
+        viewModelScope.launch {
+            val currentSet = visibleRuins.map { it.ruinsId }.toSet()
+            val newRuins = inBoundsRuins.filter { it.ruinsId !in currentSet }
+            val chunked = newRuins.chunked(1)
+
+            chunked.forEach { chunk ->
+                visibleRuins = visibleRuins + chunk
+                delay(50)
+            }
+
+            visibleRuins = visibleRuins.filter {
+                it.latitude in minLat..maxLat && it.longitude in minLng..maxLng
             }
         }
     }
