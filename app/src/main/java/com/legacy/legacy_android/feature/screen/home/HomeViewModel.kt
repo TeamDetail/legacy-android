@@ -57,7 +57,6 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val getQuizService: GetQuizService
 ) : ViewModel() {
-
     val wrongAnswers = mutableListOf<Int>()
 
     val fusedLocationClient: FusedLocationProviderClient =

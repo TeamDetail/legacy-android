@@ -244,11 +244,26 @@ fun HomeScreen(
             }
         }
 
-
+        var mapLoaded by remember { mutableStateOf(false) }
+        if (!mapLoaded) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(1500f)
+                    .background(Color.Transparent)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { }
+            )
+        }
         // Google Map
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
+            onMapLoaded = {
+                mapLoaded = true
+            },
             onMapClick = {
                 viewModel.selectedId.value = -1
                 viewModel.ruinsIdData = mutableStateOf(null)

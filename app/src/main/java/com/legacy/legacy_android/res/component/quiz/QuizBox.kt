@@ -131,8 +131,10 @@ fun QuizBox(
                                     )
                                     .padding(4.dp)
                                     .clickable {
-                                        selectedOption.value = option
-                                        soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                                        if (selectedOption.value != option) {
+                                            selectedOption.value = option
+                                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                                        }
                                     }
                             ) {
                                 Box(
