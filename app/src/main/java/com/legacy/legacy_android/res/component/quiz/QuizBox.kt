@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,7 +40,6 @@ import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.bitbit
-
 @Composable
 fun QuizBox(
     data: List<GetQuizResponse>,
@@ -62,14 +62,15 @@ fun QuizBox(
                 .fillMaxHeight(0.8f)
         ) {
             Column(
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .padding(vertical = 27.dp, horizontal = 37.dp)
+                    .fillMaxSize()
             ) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
-                            .padding(end = 16.dp)
                     ) {
                         repeat(3) { index ->
                             Box(
@@ -103,18 +104,18 @@ fun QuizBox(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
+                Text(
+                    text = data[quizStatus.value].quizProblem,
+                    style = AppTextStyles.Title3.bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 // 저거 그 뭐더라 이름이랑 카드 나오는 거
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // 문제 이름
-                    Text(
-                        text = data[quizStatus.value].quizProblem,
-                        style = AppTextStyles.Title3.bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -179,6 +180,7 @@ fun QuizBox(
                                             quizStatus.value = 0
                                             selectedOption.value = null
                                             viewModel.answerOption.clear()
+                                            viewModel.quizIndex.clear()
                                             viewModel.quizIdData.value = null
                                             soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                         }
@@ -219,10 +221,10 @@ fun QuizBox(
                                         .clickable {
                                             selectedOption.value?.let { selected ->
                                                 viewModel.answerOption.add(selected)
+                                                viewModel.quizIndex.add(data[quizStatus.value].quizId)
                                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                                 if (quizStatus.value == 2) {
-                                                    viewModel.fetchQuizAnswer(quizId = data[0].quizId)
-                                                    println(quizStatus.value)
+                                                    viewModel.fetchQuizAnswer()
                                                     selectedOption.value = null
                                                 } else if (quizStatus.value == 1 || quizStatus.value == 0) {
                                                     quizStatus.value++
@@ -313,6 +315,7 @@ fun CollectionView(
         quizStatus.value = 0
         selectedOption.value = null
         viewModel.answerOption.clear()
+        viewModel.quizIndex.clear()
         viewModel.quizIdData.value = null
     }
 
@@ -342,7 +345,8 @@ fun CollectionView(
                     contentDescription = "유적지 이미지",
                     modifier = Modifier
                         .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp)),
+                        .clip(RoundedCornerShape(12.dp))
+                        .matchParentSize(),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.school_img),
                     placeholder = painterResource(R.drawable.school_img)
@@ -442,6 +446,7 @@ fun WrongView(
                             quizStatus.value = 0
                             selectedOption.value = null
                             viewModel.answerOption.clear()
+                            viewModel.quizIndex.clear()
                             viewModel.quizIdData.value = null
                             viewModel.wrongAnswers.clear()
                         }

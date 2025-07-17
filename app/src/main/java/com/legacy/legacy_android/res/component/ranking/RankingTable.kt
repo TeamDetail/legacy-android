@@ -24,10 +24,11 @@ fun RankingTable(
         Column (
             modifier = modifier.padding(vertical = 12.dp)
         ){
-            RankingRowBar(rank = 4, blocks = 50, level = 99, title = "자본주의", name = "박재민");
-            RankingRowBar(rank = 5, blocks = 50, level = 99, title = "자본주의", name = "박재민");
-            RankingRowBar(rank = 6, blocks = 50, level = 99, title = "자본주의", name = "박재민");
-            RankingRowBar(rank = 7, blocks = 50, level = 99, title = "자본주의", name = "박재민");
+            RankingRowBar(rank = 4, blocks = 50, level = 99, name = "김건오", title = "팀원들");
+            RankingRowBar(rank = 5, blocks = 50, level = 99, name = "김시원", title = "팀원들");
+            RankingRowBar(rank = 6, blocks = 50, level = 99, name = "강건", title = "팀원들");
+            RankingRowBar(rank = 7, blocks = 50, level = 99, name = "안현우", title = "팀원들");
+            RankingRowBar(rank = 8, blocks = 50, level = 99, name = "나르샤 선생님", title = "박재민");
         }
     }
 }

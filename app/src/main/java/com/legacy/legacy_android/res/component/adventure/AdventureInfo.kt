@@ -1,17 +1,9 @@
 package com.legacy.legacy_android.res.component.adventure
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import com.legacy.legacy_android.R
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,46 +12,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
-import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Background_Normal
-import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Blue_Netural
-import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Line_Netural
-import com.legacy.legacy_android.ui.theme.Purple_Netural
-import com.legacy.legacy_android.ui.theme.White
-import com.legacy.legacy_android.ui.theme.bitbit
+import com.legacy.legacy_android.ui.theme.*
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun AdventureInfo(
+    id: Int?,
     viewModel: HomeViewModel,
-    name : String?,
-    info : String?,
-    tags : List<String>?,
+    name: String?,
+    info: String?,
+    tags: List<String>?,
     img: String?,
-    latitude: Double?,
-    longitude: Double?,
     ruinsId: Int?
-    ){
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Black, shape = RoundedCornerShape(size=12.dp))
+            .background(Black, shape = RoundedCornerShape(12.dp))
             .height(300.dp)
             .padding(12.dp)
             .zIndex(50f)
+            .clickable(enabled = false){}
     ) {
-        Column (modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +73,7 @@ fun AdventureInfo(
                             style = AppTextStyles.Body2.medium
                         )
                         Text(
-                            text = if (latitude != null && longitude != null) "${latitude}, ${longitude}" else "",
+                            text = "#" + NumberFormat.getNumberInstance(Locale.US).format(id ?: 0),
                             style = AppTextStyles.Headline.medium
                         )
                     }
@@ -99,7 +86,7 @@ fun AdventureInfo(
                             style = AppTextStyles.Body2.medium
                         )
                         Text(
-                            text = if (info != null) info else "",
+                            text = info ?: "",
                             style = AppTextStyles.Body1.bold
                         )
                     }
@@ -128,35 +115,11 @@ fun AdventureInfo(
                             .background(Background_Normal.copy(alpha = 0.5f))
                             .clip(RoundedCornerShape(12.dp))
                     )
-
-//                    Column(
-//                        verticalArrangement = Arrangement.spacedBy(2.dp),
-//                        modifier = Modifier
-//                            .align(Alignment.TopStart)
-//
-//                    ) {
-//
-//                        // 태그 매핑
-//                        tags?.forEach { item ->
-//                            Box(
-//                                modifier = Modifier
-//                                    .background(Purple_Netural, shape = RoundedCornerShape(24.dp))
-//                            ) {
-//                                Text(
-//                                    text = item,
-//                                    style = AppTextStyles.Label.Bold,
-//                                    modifier = Modifier
-//                                        .padding(horizontal = 12.dp, vertical = 4.dp)
-//                                )
-//                            }
-//                        }
-//                    }
-
                     Text(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(12.dp),
-                        text = if (name != null) name else "",
+                        text = name ?: "",
                         fontFamily = bitbit,
                         fontSize = 16.sp,
                         color = Label
@@ -174,10 +137,9 @@ fun AdventureInfo(
                             viewModel.fetchQuiz(ruinsId)
                         }
                     )
-            ){
+            ) {
                 Text(
-                    modifier = Modifier
-                        .padding(top = 8.dp, bottom = 8.dp),
+                    modifier = Modifier.padding(vertical = 8.dp),
                     text = "퀴즈 풀고 탐험하기!",
                     color = Blue_Netural,
                     style = AppTextStyles.Body1.bold

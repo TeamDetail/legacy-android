@@ -65,8 +65,9 @@ class HomeViewModel @Inject constructor(
 
     val profileFlow = userRepository.profile
 
-    var answerOption = mutableListOf<String>()
     var minLat: Double = 0.0
+    var answerOption = mutableListOf<String>()
+    var quizIndex = mutableListOf<Int>()
     var maxLat: Double = 0.0
     var minLng: Double = 0.0
     var maxLng: Double = 0.0
@@ -99,30 +100,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun fetchQuizAnswer(quizId: Int) {
+    fun fetchQuizAnswer() {
         viewModelScope.launch {
             try {
-                val requests = listOfNotNull(
-                    answerOption.getOrNull(0)?.let { PostQuizAnswerRequest(quizId = quizId, answerOption = it) },
-                    answerOption.getOrNull(1)?.let { PostQuizAnswerRequest(quizId = quizId + 1, answerOption = it) },
-                    answerOption.getOrNull(2)?.let { PostQuizAnswerRequest(quizId = quizId + 2, answerOption = it) },
-                )
-
+                val requests = answerOption.zip(quizIndex) { answer, id ->
+                    PostQuizAnswerRequest(quizId = id, answerOption = answer)
+                }
                 val response = postQuizAnswerService.answer(requests)
                 val results = response.data.results
 
-                // 틀린 문제들 모으기
                 wrongAnswers.clear()
-                results.filter { !it.isCorrect }
-                    .map { it.quizId }
-                    .also { wrongAnswers.addAll(it) }
+                results.forEachIndexed { index, result ->
+                    if (!result.isCorrect) {
+                        wrongAnswers.add(index)
+                    }
+                }
 
                 answerOption.clear()
 
                 if (wrongAnswers.isEmpty()) {
-                    quizStatus.value = 3 // 모두 맞음
+                    quizStatus.value = 3
                 } else {
-                    quizStatus.value = 5 // 일부 혹은 전부 틀림
+                    quizStatus.value = 5
                 }
 
             } catch (e: Exception) {
@@ -131,6 +130,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
 
     fun fetchBlock(latitude: Double?, longitude: Double?) {
@@ -199,11 +199,14 @@ class HomeViewModel @Inject constructor(
     fun fetchQuiz(ruinsId: Int?) {
         viewModelScope.launch {
             try {
+                Log.d("Quiz", "요청 ID: $ruinsId")
                 val response = getQuizService.getQuizById(ruinsId)
-                quizIdData.value = response.data
-                Log.d("Quiz", "성공: ${response.data}")
-            } catch (e: Exception) {
+                Log.d("Quiz", "응답 결과: ${response.data}")
                 println(ruinsId)
+                if (!response.data.isNullOrEmpty()) {
+                    quizIdData.value = response.data
+                }
+            } catch (e: Exception) {
                 Log.e("GetQuiz", "에러: ${e}")
             }
         }

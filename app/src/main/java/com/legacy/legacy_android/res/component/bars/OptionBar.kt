@@ -22,14 +22,14 @@ import com.legacy.legacy_android.feature.data.user.clearToken
 import com.legacy.legacy_android.ui.theme.Background_Normal
 
 @Composable
-fun OptionBar(navHostController: NavHostController) {
+fun OptionBar(navHostController: NavHostController, setIsTabClicked: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .background(Background_Normal, shape = RoundedCornerShape(16.dp))
             .padding(12.dp)
     ) {
-        val context = LocalContext.current
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -37,6 +37,7 @@ fun OptionBar(navHostController: NavHostController) {
             val iconModifier = Modifier.size(30.dp)
             Image(painter = painterResource(R.drawable.friends), contentDescription = null,
                 modifier = iconModifier.clickable {
+                    setIsTabClicked()
                 navHostController.navigate("friend")
             })
             Box {
@@ -44,18 +45,21 @@ fun OptionBar(navHostController: NavHostController) {
             }
             Image(painter = painterResource(R.drawable.setting), contentDescription = null,
                 modifier = iconModifier.clickable {
+                    setIsTabClicked()
                     navHostController.navigate("setting")
                 })
             Image(
                 painter = painterResource(R.drawable.info),
                 contentDescription = null,
                 modifier = iconModifier.clickable {
+                    setIsTabClicked()
                 }
             )
             Image(
                 painter = painterResource(R.drawable.logout),
                 contentDescription = null,
                 modifier = iconModifier.clickable {
+                    setIsTabClicked()
                     coroutineScope.launch {
                         clearToken(context)
                         navHostController.navigate("login") {

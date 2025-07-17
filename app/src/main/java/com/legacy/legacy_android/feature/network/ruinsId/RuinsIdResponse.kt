@@ -17,4 +17,15 @@ data class RuinsIdResponse (
     val manager: String,
     val latitude: Double,
     val longitude: Double,
+//    val cards: Cards?
+)
+
+data class Cards(
+    val cardId: Int,
+    val cardName: String,
+    val cardImageUrl: String,
+    val cardType: String,
+    val nationAttributeName: String,
+    val lineAttributeName: String,
+    val regionAttributeName: String
 )

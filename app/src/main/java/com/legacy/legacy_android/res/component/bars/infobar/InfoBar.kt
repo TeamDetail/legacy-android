@@ -159,7 +159,9 @@ fun InfoBar(
                         .zIndex(11f)
                         .background(Background_Normal)
                 ) {
-                    OptionBar(navHostController)
+                    OptionBar(navHostController, setIsTabClicked = {
+                        viewModel.setIsTabClicked()
+                    } )
                 }
             }
         }

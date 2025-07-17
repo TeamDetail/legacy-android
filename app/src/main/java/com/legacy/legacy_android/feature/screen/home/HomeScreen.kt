@@ -32,21 +32,23 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.adventure.LocationDialog
+import com.legacy.legacy_android.res.component.adventure.MapStyle
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.modal.CreditModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Green_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
+import com.legacy.legacy_android.ui.theme.White
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -67,327 +69,6 @@ fun HomeScreen(
     } else {
         null
     }
-
-
-    val mapStyle = remember {
-        MapStyleOptions(
-            """
-        [ 
-          {
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#1d2c4d"
-              }
-            ]
-          },
-          {
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#8ec3b9"
-              }
-            ]
-          },
-          {
-            "elementType": "labels.text.stroke",
-            "stylers": [
-              {
-                "color": "#1a3646"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative.country",
-            "elementType": "geometry.stroke",
-            "stylers": [
-              {
-                "color": "#4b6878"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#64779e"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative.locality",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "administrative.province",
-            "elementType": "geometry.stroke",
-            "stylers": [
-              {
-                "color": "#4b6878"
-              }
-            ]
-          },
-          {
-            "featureType": "landscape.man_made",
-            "elementType": "geometry.stroke",
-            "stylers": [
-              {
-                "color": "#334e87"
-              }
-            ]
-          },
-          {
-            "featureType": "landscape.natural",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#023e58"
-              }
-            ]
-          },
-          {
-            "featureType": "landscape.natural",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#283d6a"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#6f9ba5"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-              {
-                "color": "#1d2c4d"
-              }
-            ]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "geometry.fill",
-            "stylers": [
-              {
-                "color": "#023e58"
-              }
-            ]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#3C7680"
-              }
-            ]
-          },
-          {
-            "featureType": "road",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#304a7d"
-              }
-            ]
-          },
-          {
-            "featureType": "road",
-            "elementType": "labels.icon",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "road",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#98a5be"
-              }
-            ]
-          },
-          {
-            "featureType": "road",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-              {
-                "color": "#1d2c4d"
-              }
-            ]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#2c6675"
-              }
-            ]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "geometry.stroke",
-            "stylers": [
-              {
-                "color": "#255763"
-              }
-            ]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#b0d5ce"
-              }
-            ]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-              {
-                "color": "#023e58"
-              }
-            ]
-          },
-          {
-            "featureType": "road.local",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "transit",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "transit",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#98a5be"
-              }
-            ]
-          },
-          {
-            "featureType": "transit",
-            "elementType": "labels.text.stroke",
-            "stylers": [
-              {
-                "color": "#1d2c4d"
-              }
-            ]
-          },
-          {
-            "featureType": "transit.line",
-            "elementType": "geometry.fill",
-            "stylers": [
-              {
-                "color": "#283d6a"
-              }
-            ]
-          },
-          {
-            "featureType": "transit.station",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#3a4762"
-              }
-            ]
-          },
-          {
-            "featureType": "water",
-            "elementType": "geometry",
-            "stylers": [
-              {
-                "color": "#0e1626"
-              }
-            ]
-          },
-          {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
-            "stylers": [
-              {
-                "color": "#4e6d70"
-              }
-            ]
-          }
-        ]
-        """.trimIndent()
-        )
-    }
-
 
 
     LaunchedEffect(Unit) {
@@ -457,6 +138,7 @@ fun HomeScreen(
         }
     }
 
+
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
             cameraPositionState.projection?.visibleRegion?.latLngBounds?.let { bounds ->
@@ -464,7 +146,7 @@ fun HomeScreen(
                 viewModel.maxLat = bounds.northeast.latitude
                 viewModel.minLng = bounds.southwest.longitude
                 viewModel.maxLng = bounds.northeast.longitude
-                if (cameraPositionState.position.zoom >= 14.0f) {
+                if (cameraPositionState.position.zoom >= 13.5f) {
                     showWarning = false
                     viewModel.fetchRuinsMap(
                         viewModel.minLat, viewModel.maxLat,
@@ -574,7 +256,7 @@ fun HomeScreen(
             properties = MapProperties(
                 isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
                 minZoomPreference = 8f,
-                mapStyleOptions = mapStyle
+                mapStyleOptions = MapStyle().mapStyle
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
@@ -614,6 +296,7 @@ fun HomeScreen(
             }
         }
 
+
         // NavBar + Adventure Info
         Box(
             modifier = Modifier
@@ -624,13 +307,12 @@ fun HomeScreen(
             NavBar(navHostController = navHostController)
             if (viewModel.selectedId.value > -1) {
                 AdventureInfo(
+                    id = viewModel.ruinsIdData.value?.ruinsId,
                     viewModel = viewModel,
                     name = viewModel.ruinsIdData.value?.name ?: "이름 없음",
                     img = viewModel.ruinsIdData.value?.ruinsImage,
-                    info = viewModel.ruinsIdData.value?.name,
+                    info = viewModel.ruinsIdData.value?.detailAddress,
                     tags = listOf("IT", "마이스터", "대구", "고등학교"),
-                    latitude = viewModel.ruinsIdData.value?.longitude,
-                    longitude = viewModel.ruinsIdData.value?.latitude,
                     ruinsId = viewModel.ruinsIdData.value?.ruinsId
                 )
             }
@@ -644,7 +326,7 @@ fun HomeScreen(
                     cameraPositionState.move(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(it.latitude, it.longitude),
-                            16f
+                            13.5f
                         )
                     )
                 }
@@ -654,12 +336,12 @@ fun HomeScreen(
                 .padding(end = 20.dp, bottom = 120.dp)
                 .zIndex(8f)
                 .size(48.dp)
-                .background(Color.White, shape = androidx.compose.foundation.shape.CircleShape)
+                .background(Black, shape = androidx.compose.foundation.shape.CircleShape)
         ) {
             Icon(
                 imageVector = Icons.Default.Place,
                 contentDescription = "내 위치로 이동",
-                tint = Color.Black
+                tint = White
             )
         }
         }
