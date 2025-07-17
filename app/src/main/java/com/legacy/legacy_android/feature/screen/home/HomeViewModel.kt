@@ -170,7 +170,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val currentSet = visibleRuins.map { it.ruinsId }.toSet()
             val newRuins = inBoundsRuins.filter { it.ruinsId !in currentSet }
-            val chunked = newRuins.chunked(1)
+            val chunked = newRuins.chunked(2)
 
             chunked.forEach { chunk ->
                 visibleRuins = visibleRuins + chunk

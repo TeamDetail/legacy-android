@@ -4,14 +4,20 @@ import android.Manifest
 import com.legacy.legacy_android.res.component.quiz.QuizBox
 import androidx.compose.foundation.background
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +44,12 @@ import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.modal.CreditModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
+import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Green_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.Red_Netural
+import org.w3c.dom.Text
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -72,6 +82,9 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
+
+    var showWarning by remember { mutableStateOf(false) }
+
 
     val ruins = viewModel.visibleRuins
     val blocks = viewModel.blockData
@@ -125,7 +138,7 @@ fun HomeScreen(
                 CameraUpdateFactory.newCameraPosition(
                     CameraPosition.fromLatLngZoom(
                         LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
-                        16f
+                        14f
                     )
                 )
             )
@@ -140,11 +153,14 @@ fun HomeScreen(
                 viewModel.maxLat = bounds.northeast.latitude
                 viewModel.minLng = bounds.southwest.longitude
                 viewModel.maxLng = bounds.northeast.longitude
-                if (cameraPositionState.position.zoom > 13.0f) {
+                if (cameraPositionState.position.zoom >= 14.0f) {
+                    showWarning = false
                     viewModel.fetchRuinsMap(
                         viewModel.minLat, viewModel.maxLat,
                         viewModel.minLng, viewModel.maxLng
                     )
+                }else{
+                    showWarning = true
                 }
             }
         }
@@ -202,6 +218,40 @@ fun HomeScreen(
                 }
             }
         }
+
+        // 경고 띄우기
+        AnimatedVisibility(
+            visible = showWarning,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = 12.dp, top = 120.dp)
+                .zIndex(50f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Red_Netural.copy(alpha = 0.75f), shape = RoundedCornerShape(16.dp))
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "info",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "데이터를 불러오려면\n지도를 더 확대시켜주세요.",
+                        style = AppTextStyles.Caption2.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+
 
         // Google Map
         GoogleMap(
