@@ -5,6 +5,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface TokenService {
-    @POST("auth/refresh")
+    @POST("/auth/refresh")
     suspend fun token(@Body refresh: AccTokenRequest) : BaseResponse<AccTokenResponse>
 }

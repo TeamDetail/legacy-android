@@ -22,6 +22,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
@@ -45,13 +46,30 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    val profile by viewModel.profileFlow.collectAsState()
+
+    val mapStyle = remember {
+        MapStyleOptions(
+            """
+        [
+          {
+            "featureType": "poi",
+            "elementType": "all",
+            "stylers": [
+              { "visibility": "off" }
+            ]
+          }
+        ]
+        """.trimIndent()
+        )
+    }
+
+
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
 
-    val ruins = viewModel.ruinsData
     val blocks = viewModel.blockData
+    val ruins = viewModel.ruinsData
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     var showPermissionDialog by remember {
         mutableStateOf(false)
@@ -87,10 +105,10 @@ fun HomeScreen(
     }
 
     LaunchedEffect(currentLocation) {
-        if (allRequiredPermission && currentLocation != null && profile?.userId != null) {
+        if (allRequiredPermission && currentLocation != null) {
             val loc = currentLocation!!
             viewModel.fetchBlock(loc.latitude, loc.longitude)
-            viewModel.fetchGetBlock(profile?.userId)
+            viewModel.fetchGetBlock()
             println("Current location: $currentLocation")
         }
     }
@@ -146,18 +164,22 @@ fun HomeScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .fillMaxSize()
-                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.7f))
+                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
                     .zIndex(500f)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {}
             ) {
-                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus, ruinName = "이름", hintStatus = viewModel.hintStatus)
-                if (viewModel.hintStatus.value == 1){
-                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {viewModel.hintStatus.value = 2}, onDismiss = {viewModel.hintStatus.value = 0})
-                }else if (viewModel.hintStatus.value == 2){
-                    QuizModal(title = viewModel.quizIdData?.value?.quizProblem, questionNumber = viewModel.quizStatus.value+1, hint = "힌트", onConfirm = {viewModel.hintStatus.value = 0},)
+                QuizBox(name = viewModel.quizIdData?.value?.quizProblem, optionValue = viewModel.quizIdData?.value?.optionValue, quizStatus = viewModel.quizStatus, ruinName = "이름",
+                    onConfirm = { viewModel.hintStatus.value = HintStatus.CREDIT }
+                )
+                if (viewModel.hintStatus.value == HintStatus.CREDIT) {
+                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {viewModel.hintStatus.value =
+                        HintStatus.HINT}, onDismiss = {viewModel.hintStatus.value = HintStatus.NO})
+                }else if (viewModel.hintStatus.value == HintStatus.HINT){
+                    QuizModal(title = viewModel.quizIdData?.value?.quizProblem, questionNumber = viewModel.quizStatus.value+1, hint = "힌트", onConfirm = {viewModel.hintStatus.value =
+                        HintStatus.NO},)
                 }
             }
         }
@@ -166,44 +188,49 @@ fun HomeScreen(
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            onMapClick = { viewModel.selectedId.value = -1
-                         viewModel.ruinsIdData = mutableStateOf(null)},
+            onMapClick = {
+                viewModel.selectedId.value = -1
+                viewModel.ruinsIdData = mutableStateOf(null)
+            },
             properties = MapProperties(
                 isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
-                minZoomPreference = 10f
+                minZoomPreference = 8f,
+                mapStyleOptions = mapStyle
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
                 zoomControlsEnabled = false
-            ),
+            )
         ) {
             ruins.forEach { ruin ->
-                Polygon(
-                    tag = ruin.ruinsId,
-                    points = PolygonStyle.getPolygonPointsFromLocation(
-                        latitude = ruin.latitude,
-                        longitude = ruin.longitude
-                    ),
-                    strokeColor = Primary,
-                    strokeWidth = 1f,
-                    fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
-                    clickable = true,
-                    onClick = {
-                        viewModel.selectedId.value = ruin.ruinsId
-                        viewModel.fetchRuinsId(ruin.ruinsId)
-                    }
-                )
+                key(ruin.ruinsId) {
+                    Polygon(
+                        tag = ruin.ruinsId,
+                        points = PolygonStyle.getPolygonPointsFromLocation(
+                            latitude = ruin.latitude,
+                            longitude = ruin.longitude
+                        ),
+                        strokeColor = Primary,
+                        strokeWidth = 1f,
+                        fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
+                        clickable = true,
+                        onClick = {
+                            viewModel.selectedId.value = ruin.ruinsId
+                            viewModel.fetchRuinsId(ruin.ruinsId)
+                        }
+                    )
+                }
             }
-            blocks.forEach { blocks ->
+            blocks.forEach { block ->
                 Polygon(
-                    tag = blocks.blockId,
+                    tag = block.blockId,
                     points = PolygonStyle.getPolygonPointsFromLocation(
-                        latitude = blocks.latitude,
-                        longitude = blocks.longitude
+                        latitude = block.latitude,
+                        longitude = block.longitude
                     ),
                     strokeWidth = 1f,
                     strokeColor = Green_Alternative,
-                    fillColor = Color(0xFF07C002).copy(alpha = 0.75f),
+                    fillColor = Color(0xFF07C002).copy(alpha = 0.40f),
                 )
             }
         }

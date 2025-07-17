@@ -19,35 +19,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
-import com.legacy.legacy_android.res.component.button.BackArrow
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.Statbar
+import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Blue_Netural
-import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
-import com.legacy.legacy_android.ui.theme.pretendard
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -83,15 +80,9 @@ fun ProfileScreen(
                         modifier.padding(top = 24.dp)
                 ) {
                     // 프로필 이미지
-                    AsyncImage(
-                        model = profile?.imageUrl,
-                        contentDescription = "프로필 이미지",
+                    ProfileImageWithSkeleton(
+                        imageUrl = profile?.imageUrl,
                         modifier = modifier
-                            .size(100.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                        error = painterResource(R.drawable.temp_profile)
                     )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -120,9 +111,9 @@ fun ProfileScreen(
                             style = AppTextStyles.Body1.bold
                         )
                         // 칭호
-                        TitleBar(
-                            title = profile?.title?.name ?: "칭호가 없습니다"
-                        )
+                        profile?.title?.name?.takeIf { !it.isNullOrBlank() }?.let { titleName ->
+                            TitleBar(title = titleName)
+                        }
                     }
                 }
                 Column(
@@ -240,4 +231,43 @@ fun TitleScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ){
 
+}
+
+
+@Composable
+fun ProfileImageWithSkeleton(
+    imageUrl: String?,
+    modifier: Modifier = Modifier
+) {
+    var isLoading by remember { mutableStateOf(true) }
+    var isError by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.size(100.dp)) {
+        if (isLoading && !isError) {
+            SkeletonBox(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+            )
+        }
+
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = "프로필 이미지",
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            onLoading = { isLoading = true },
+            onSuccess = {
+                isLoading = false
+                isError = false
+            },
+            onError = {
+                isLoading = false
+                isError = true
+            },
+            error = painterResource(R.drawable.temp_profile)
+        )
+    }
 }

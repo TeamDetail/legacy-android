@@ -15,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 
 @Composable
 fun QuizModal(
@@ -27,8 +29,8 @@ fun QuizModal(
     hint: String?,
     onConfirm: () -> Unit
 ) {
+    val (soundPool, soundId) = RememberClickSound()
     Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Background_Normal, shape = RoundedCornerShape(20.dp))
@@ -37,9 +39,12 @@ fun QuizModal(
     ) {
         Column(
             modifier = Modifier
-                .padding(vertical = 27.dp, horizontal = 37.dp)
+                .fillMaxWidth()
+                .padding(vertical = 27.dp, horizontal = 37.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             Column (
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -48,7 +53,9 @@ fun QuizModal(
                     style = AppTextStyles.Heading1.bold
                 )
                 Text(
-                    text = "힌트 : ${hint}"
+                    text = "힌트 : ${hint}",
+                    style = AppTextStyles.Headline.medium,
+                    color = Label_Alternative
                 )
             }
             Box(
@@ -58,7 +65,8 @@ fun QuizModal(
                     .fillMaxWidth()
                     .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(8.dp))
                     .clickable(
-                        onClick = {onConfirm()}
+                        onClick = {onConfirm()
+                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)}
                     )
             ){
                 Text(

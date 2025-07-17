@@ -1,7 +1,14 @@
 package com.legacy.legacy_android.res.component.adventure
 
 import com.google.android.gms.maps.model.LatLng
+import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import kotlin.math.floor
+
+data class Block(
+    val blockId: String,
+    val latitude: Double,
+    val longitude: Double
+)
 
 object PolygonStyle {
 
@@ -20,6 +27,13 @@ object PolygonStyle {
         val sortedLng = koreaTopLeftCorner.longitude + (lonPerPixel * subY)
         return LatLng(sortedLat, sortedLng)
     }
+
+    fun getGridKey(latitude: Double, longitude: Double): Pair<Int, Int> {
+        val subX = floor((koreaTopLeftCorner.latitude - latitude) / latPerPixel).toInt()
+        val subY = floor((longitude - koreaTopLeftCorner.longitude) / lonPerPixel).toInt()
+        return Pair(subX, subY)
+    }
+
 
     // 해당 좌표 기준 사각형 polygon 반환
     fun getRectanglePoints(topLeft: LatLng): List<LatLng> {
@@ -44,5 +58,23 @@ object PolygonStyle {
     fun getPolygonPointsFromLocation(latitude: Double, longitude: Double): List<LatLng> {
         val topLeft = getSortedTopLeft(latitude, longitude)
         return getRectanglePoints(topLeft)
+    }
+
+    fun isPointInsideBlock(latitude: Double, longitude: Double, blockLatitude: Double, blockLongitude: Double): Boolean {
+        val blockTopLeft = getSortedTopLeft(blockLatitude, blockLongitude)
+        val blockPoints = getRectanglePoints(blockTopLeft)
+
+        val minLat = blockPoints.minOf { it.latitude }
+        val maxLat = blockPoints.maxOf { it.latitude }
+        val minLng = blockPoints.minOf { it.longitude }
+        val maxLng = blockPoints.maxOf { it.longitude }
+
+        return latitude >= minLat && latitude <= maxLat && longitude >= minLng && longitude <= maxLng
+    }
+
+    fun isPointInsideAnyBlock(latitude: Double, longitude: Double, blocks: List<GetBlockResponse>): Boolean {
+        return blocks.any { block ->
+            isPointInsideBlock(latitude, longitude, block.latitude, block.longitude)
+        }
     }
 }

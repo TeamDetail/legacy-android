@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.network.Nav
+import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label_Strong
@@ -30,6 +31,8 @@ import com.legacy.legacy_android.ui.theme.Primary
 fun NavBar(navHostController: NavHostController) {
     val navList = Nav.navList
     val selectedId = Nav.getNavStatus()
+    val (soundPool, soundId) = RememberClickSound()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,6 +52,7 @@ fun NavBar(navHostController: NavHostController) {
                         .fillMaxHeight()
                         .clickable {
                             if (selectedId != item.id) {
+                                soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                 Nav.setNavStatus(item.id)
                                 navHostController.navigate(item.onClick.name)
                             }

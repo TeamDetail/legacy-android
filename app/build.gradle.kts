@@ -62,6 +62,7 @@ android {
 dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
+    implementation("androidx.lifecycle:lifecycle-process:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

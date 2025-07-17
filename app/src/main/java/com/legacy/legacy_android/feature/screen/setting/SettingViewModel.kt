@@ -1,10 +1,10 @@
-package com.legacy.legacy_android.feature.screen.friend
+package com.legacy.legacy_android.feature.screen.setting
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import javax.inject.Inject
 
-class FriendViewModel @Inject constructor(
+class SettingViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 }

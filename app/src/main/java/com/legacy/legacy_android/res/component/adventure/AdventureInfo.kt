@@ -127,28 +127,28 @@ fun AdventureInfo(
                             .clip(RoundedCornerShape(12.dp))
                     )
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-
-                    ) {
-                        
-                        // 태그 매핑
-                        tags?.forEach { item ->
-                            Box(
-                                modifier = Modifier
-                                    .background(Purple_Netural, shape = RoundedCornerShape(24.dp))
-                            ) {
-                                Text(
-                                    text = item,
-                                    style = AppTextStyles.Label.Bold,
-                                    modifier = Modifier
-                                        .padding(horizontal = 12.dp, vertical = 4.dp)
-                                )
-                            }
-                        }
-                    }
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(2.dp),
+//                        modifier = Modifier
+//                            .align(Alignment.TopStart)
+//
+//                    ) {
+//
+//                        // 태그 매핑
+//                        tags?.forEach { item ->
+//                            Box(
+//                                modifier = Modifier
+//                                    .background(Purple_Netural, shape = RoundedCornerShape(24.dp))
+//                            ) {
+//                                Text(
+//                                    text = item,
+//                                    style = AppTextStyles.Label.Bold,
+//                                    modifier = Modifier
+//                                        .padding(horizontal = 12.dp, vertical = 4.dp)
+//                                )
+//                            }
+//                        }
+//                    }
 
                     Text(
                         modifier = Modifier

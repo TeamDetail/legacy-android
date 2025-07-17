@@ -1,1 +1,0 @@
-package com.legacy.legacy_android.feature.screen.ranking.navigation

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import androidx.compose.ui.unit.dp
+import com.legacy.legacy_android.feature.screen.home.HintStatus
+import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -39,9 +41,10 @@ fun QuizBox(
     name : String?,
     optionValue: List<String>?,
     quizStatus: MutableState<Int>,
-    hintStatus: MutableState<Int>,
+    onConfirm: () -> Unit,
     ruinName: String,
 ){
+    val (soundPool, soundId) = RememberClickSound()
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,7 +110,9 @@ fun QuizBox(
                                     shape = RoundedCornerShape(12.dp)
                                 )
                                 .padding(4.dp)
-                                .clickable {}
+                                .clickable {
+                                    soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                                }
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center,
@@ -133,7 +138,9 @@ fun QuizBox(
                     modifier = Modifier
                         .border(width = 4.dp, color = Fill_Normal, shape = RoundedCornerShape(12.dp))
                         .padding(4.dp)
-                        .clickable{hintStatus.value = 1}
+                        .clickable{
+                            onConfirm()
+                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)}
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,

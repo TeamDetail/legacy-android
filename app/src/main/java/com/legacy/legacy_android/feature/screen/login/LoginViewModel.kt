@@ -3,6 +3,7 @@ package com.legacy.legacy_android.feature.screen.login
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -26,6 +27,8 @@ class LoginViewModel @Inject constructor(
     application: Application,
     private val loginService: LoginService
 ) : AndroidViewModel(application) {
+
+    var loadingState = mutableStateOf(false)
 
     fun loginWithKakao(
         context: Context,
@@ -121,6 +124,7 @@ class LoginViewModel @Inject constructor(
     private fun callBackendLogin(
         kakaoAccessToken: String,
         kakaoRefreshToken: String,
+
         onBackendLoginSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
         context: Context,
@@ -128,12 +132,13 @@ class LoginViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
+                loadingState.value = true
                 val request = LoginRequest(accessToken = kakaoAccessToken, refreshToken = kakaoRefreshToken)
                 val response = loginService.login(request)
                 Log.i(TAG, "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = $response.data.accessToken}")
                 onBackendLoginSuccess()
-                saveAccToken(context, response.data.accessToken)
-                saveRefToken(context, response.data.refreshToken)
+                saveAccToken(context.applicationContext, response.data.accessToken)
+                saveRefToken(context.applicationContext, response.data.refreshToken)
                 navHostController.navigate(ScreenNavigate.HOME.name)
             } catch (e: Exception) {
                 Log.e(TAG, "백엔드 로그인 실패", e)

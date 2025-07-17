@@ -32,6 +32,7 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
@@ -43,7 +44,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-
     val context = LocalContext.current
     Box(modifier = modifier.fillMaxSize()) {
         Image(
@@ -85,7 +85,6 @@ fun LoginScreen(
                     text = "소셜 로그인하고 곧바로 뛰어드세요!",
                     style = AppTextStyles.Body2.bold
                 )
-
                 Box(
                     modifier = modifier
                         .width(321.dp)
@@ -102,22 +101,35 @@ fun LoginScreen(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.kakao),
-                            contentDescription = null,
+                    if (viewModel.loadingState.value != true) {
+                        Row(
                             modifier = Modifier
-                                .width(20.dp)
-                                .height(20.dp)
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = "카카오 로그인",
+                                .fillMaxSize()
+                                .padding(horizontal = 20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.kakao),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .height(20.dp)
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = "카카오 로그인",
+                                style = AppTextStyles.Body2.medium.merge(
+                                    TextStyle(
+                                        color = Color(0xFF181600),
+                                        textAlign = TextAlign.Center,
+                                    )
+                                )
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(modifier = Modifier.width(20.dp))
+                        }
+                    }else{
+                        Text("로그인 중입니다...",
                             style = AppTextStyles.Body2.medium.merge(
                                 TextStyle(
                                     color = Color(0xFF181600),
@@ -125,8 +137,7 @@ fun LoginScreen(
                                 )
                             )
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(modifier = Modifier.width(20.dp))
+
                     }
                 }
             }

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Blue_Netural
@@ -38,8 +39,8 @@ fun CreditModal(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ){
+    val (soundPool, soundId) = RememberClickSound()
     Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Background_Normal, shape = RoundedCornerShape(20.dp))
@@ -48,7 +49,8 @@ fun CreditModal(
     ) {
         Column(
             modifier = Modifier
-                .padding(vertical = 27.dp, horizontal = 37.dp)
+                .padding(vertical = 27.dp, horizontal = 37.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             Column (
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -82,7 +84,8 @@ fun CreditModal(
                         modifier = Modifier
                             .border(width = 4.dp, color = Fill_Normal, shape = RoundedCornerShape(12.dp))
                             .padding(4.dp)
-                            .clickable {onDismiss}
+                            .clickable {onDismiss()
+                                soundPool.play(soundId, 1f, 1f, 0, 0, 1f)}
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -101,7 +104,8 @@ fun CreditModal(
                         modifier = Modifier
                             .border(width = 4.dp, color = Fill_Normal, shape = RoundedCornerShape(12.dp))
                             .padding(4.dp)
-                            .clickable {onConfirm}
+                            .clickable {onConfirm()
+                                soundPool.play(soundId, 1f, 1f, 0, 0, 1f)}
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,

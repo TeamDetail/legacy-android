@@ -28,7 +28,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -36,15 +35,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.ui.theme.Background_Normal
-import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.bars.OptionBar
+import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Yellow
 import com.legacy.legacy_android.ui.theme.bitbit
-import com.legacy.legacy_android.ui.theme.pretendard
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -52,6 +50,7 @@ import java.util.Locale
 fun InfoBar(
     navHostController: NavHostController
 ) {
+    val (soundPool, soundId) = RememberClickSound()
     val viewModel: InfoBarViewModel = hiltViewModel()
     val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
@@ -95,7 +94,7 @@ fun InfoBar(
                             .size(40.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop,
-                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        placeholder = painterResource(R.drawable.temp_profile),
                         error = painterResource(R.drawable.temp_profile)
                     )
                     Column(
