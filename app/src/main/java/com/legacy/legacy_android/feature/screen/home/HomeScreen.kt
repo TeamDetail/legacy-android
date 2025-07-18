@@ -124,7 +124,7 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect(currentLocation, allRequiredPermission) {
+    LaunchedEffect( allRequiredPermission) {
         if (allRequiredPermission && !hasMovedToCurrentLocation && currentLocation != null) {
             cameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(

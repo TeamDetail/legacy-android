@@ -104,7 +104,7 @@ fun InfoBar(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
-                            .fillMaxWidth(0.3f)
+                            .fillMaxWidth(0.5f)
                             .fillMaxHeight()
                             .clickable { navHostController.navigate("profile") }
                     ) {

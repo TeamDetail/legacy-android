@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 handleDestinationChange(destination.route)
             }
