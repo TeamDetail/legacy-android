@@ -80,6 +80,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")

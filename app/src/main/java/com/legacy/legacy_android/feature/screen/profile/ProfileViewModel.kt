@@ -1,13 +1,8 @@
 package com.legacy.legacy_android.feature.screen.profile
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.legacy.legacy_android.feature.network.user.GetMeService
-import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.legacy.legacy_android.domain.repository.UserRepository
@@ -28,10 +23,13 @@ class ProfileViewModel @Inject constructor(
     val profileMode = listOf("내 기록", "칭호", "도감")
     var profileStatus by mutableStateOf(0)
 
-    fun fetchProfile() {
+    fun fetchProfile(force: Boolean = false) {
         viewModelScope.launch {
-            userRepository.fetchProfile()
+            userRepository.fetchProfile(force)
         }
     }
 
+    fun clearProfile() {
+        userRepository.clearProfile()
+    }
 }

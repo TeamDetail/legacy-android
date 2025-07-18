@@ -11,6 +11,8 @@ import android.view.WindowInsetsController
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleEventObserver
@@ -56,8 +58,10 @@ enum class ScreenNavigate {
     SETTING
 }
 
-enum class BgmType {
-    MAIN, MARKET, LOGIN
+enum class BgmType(val resourceId: Int, val volume: Float) {
+    MAIN(R.raw.mainbgm, 0.6f),
+    MARKET(R.raw.loginbgm, 0.4f),
+    LOGIN(R.raw.loginbgm, 0.6f)
 }
 
 @AndroidEntryPoint
@@ -69,100 +73,38 @@ class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     private var currentBgm: BgmType? = null
 
+    private val lifecycleObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_START -> resumeMusic()
+            Lifecycle.Event.ON_STOP -> pauseMusic()
+            else -> Unit
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
+        setupFullScreenMode()
+        initializeSoundPool()
+        registerLifecycleObserver()
+        val startDestination = determineStartDestination()
 
-            window.decorView.post {
-                window.insetsController?.let { controller ->
-                    controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-                    controller.systemBarsBehavior =
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                }
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    )
-        }
-
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(5)
-            .build()
-        soundId = soundPool.load(this, R.raw.click, 1)
-        val refreshToken = getRefToken(this)
-        val accessToken = getAccToken(this)
-        val startDestination = when {
-            isTokenValid(accessToken) -> {
-                ScreenNavigate.HOME.name
-            }
-            isTokenValid(refreshToken) -> {
-                ScreenNavigate.HOME.name
-            }
-            else -> {
-                ScreenNavigate.LOGIN.name
-            }
-        }
-
-        ProcessLifecycleOwner.get().lifecycle.addObserver(LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> mediaPlayer?.start()
-                Lifecycle.Event.ON_STOP -> mediaPlayer?.pause()
-                else -> Unit
-            }
-        })
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            navController.addOnDestinationChangedListener { _: NavController, destination, _ ->
-                when (destination.route) {
-                    ScreenNavigate.MARKET.name -> {
-                        if (currentBgm != BgmType.LOGIN) {
-                            mediaPlayer?.stop()
-                            mediaPlayer?.release()
-                            mediaPlayer = MediaPlayer.create(this, R.raw.loginbgm).apply {
-                                isLooping = true
-                                setVolume(0.4f, 0.4f)
-                                start()
-                            }
-                            currentBgm = BgmType.LOGIN
-                        }
-                    }
 
-                    ScreenNavigate.LOGIN.name -> {
-                        if (currentBgm != BgmType.LOGIN) {
-                            mediaPlayer?.stop()
-                            mediaPlayer?.release()
-                            mediaPlayer = MediaPlayer.create(this, R.raw.loginbgm).apply {
-                                isLooping = true
-                                setVolume(0.6f, 0.6f)
-                                start()
-                            }
-                            currentBgm = BgmType.LOGIN
-                        }
-                    }
-
-                    else -> {
-                        if (currentBgm != BgmType.MAIN) {
-                            mediaPlayer?.stop()
-                            mediaPlayer?.release()
-                            mediaPlayer = MediaPlayer.create(this, R.raw.mainbgm).apply {
-                                isLooping = true
-                                setVolume(0.6f, 0.6f)
-                                start()
-                            }
-                            currentBgm = BgmType.MAIN
-                        }
-                    }
-                }
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                handleDestinationChange(destination.route)
             }
 
-            NavHost(navController = navController, startDestination = startDestination) {
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
+            ) {
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
                     LoginScreen(Modifier, loginViewModel, navController)
@@ -205,10 +147,101 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
+    private fun setupFullScreenMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+            window.decorView.post {
+                window.insetsController?.let { controller ->
+                    controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                    controller.systemBarsBehavior =
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                }
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+        }
+    }
+
+    private fun initializeSoundPool() {
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(5)
+            .build()
+        soundId = soundPool.load(this, R.raw.click, 1)
+    }
+
+    private fun registerLifecycleObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleObserver)
+    }
+
+    private fun determineStartDestination(): String {
+        val refreshToken = getRefToken(this)
+        val accessToken = getAccToken(this)
+
+        return when {
+            isTokenValid(accessToken) -> ScreenNavigate.HOME.name
+            isTokenValid(refreshToken) -> ScreenNavigate.HOME.name
+            else -> ScreenNavigate.LOGIN.name
+        }
+    }
+
+    private fun handleDestinationChange(route: String?) {
+        val targetBgm = when (route) {
+            ScreenNavigate.MARKET.name -> BgmType.MARKET
+            ScreenNavigate.LOGIN.name -> BgmType.LOGIN
+            else -> BgmType.MAIN
+        }
+
+        if (currentBgm != targetBgm) {
+            switchBgm(targetBgm)
+        }
+    }
+
+    private fun switchBgm(bgmType: BgmType) {
+        try {
+            stopAndReleaseMediaPlayer()
+
+            mediaPlayer = MediaPlayer.create(this, bgmType.resourceId)?.apply {
+                isLooping = true
+                setVolume(bgmType.volume, bgmType.volume)
+                start()
+            }
+            currentBgm = bgmType
+        } catch (e: Exception) {
+            Log.e("MainActivity", "BGM 전환 중 오류 발생: ${e.message}")
+        }
+    }
+
+    private fun resumeMusic() {
+        mediaPlayer?.start()
+    }
+
+    private fun pauseMusic() {
+        mediaPlayer?.pause()
+    }
+
+    private fun stopAndReleaseMediaPlayer() {
+        mediaPlayer?.apply {
+            if (isPlaying) {
+                stop()
+            }
+            release()
+        }
         mediaPlayer = null
+    }
+
+    override fun onDestroy() {
         super.onDestroy()
+        try {
+            ProcessLifecycleOwner.get().lifecycle.removeObserver(lifecycleObserver)
+            stopAndReleaseMediaPlayer()
+            soundPool.release()
+        } catch (e: Exception) {
+            Log.e("MainActivity", "리소스 해제 중 오류 발생: ${e.message}")
+        }
     }
 }

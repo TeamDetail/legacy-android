@@ -20,7 +20,6 @@ class LoadingRepository @Inject constructor(
 
     suspend fun fetchProfile() {
         if (hasLoaded) return
-
         try {
             val response = getMeService.getMe()
             _profile.value = response.data

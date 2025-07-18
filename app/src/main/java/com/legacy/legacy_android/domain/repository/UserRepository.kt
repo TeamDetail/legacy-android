@@ -18,16 +18,20 @@ class UserRepository @Inject constructor(
 
     private var hasLoaded = false
 
-    suspend fun fetchProfile() {
-        if (hasLoaded) return
+    suspend fun fetchProfile(force: Boolean = false) {
+        if (hasLoaded && !force) return
 
         try {
             val response = getMeService.getMe()
             _profile.value = response.data
-            Log.d("UserRepository",  response.data?.userId.toString())
             hasLoaded = true
         } catch (error: Exception) {
             Log.e("UserRepository", "프로필 로드 실패", error)
         }
+    }
+
+    fun clearProfile() {
+        _profile.value = null
+        hasLoaded = false
     }
 }
