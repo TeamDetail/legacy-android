@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import com.legacy.legacy_android.ui.theme.bitbit
 @Composable
 fun TitleBox(image : Int, title : String) {
     Column {
+        Spacer(Modifier.height(12.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -35,6 +38,7 @@ fun TitleBox(image : Int, title : String) {
                 fontFamily = bitbit,
                 fontWeight = FontWeight.Normal
             )
+            Spacer(Modifier.height(12.dp))
         }
     }
 }

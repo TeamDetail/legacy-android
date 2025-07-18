@@ -1,11 +1,10 @@
 package com.legacy.legacy_android.res.component.adventure
 
-import androidx.compose.runtime.remember
 import com.google.android.gms.maps.model.MapStyleOptions
 
 class MapStyle {
     val mapStyle = MapStyleOptions(
-            """
+        """
         [
           {
             "elementType": "geometry",
@@ -156,8 +155,18 @@ class MapStyle {
                 "color": "#17263c"
               }
             ]
+          },
+          {
+            "featureType": "poi.business",
+            "elementType": "all",
+            "stylers": [
+              {
+                "visibility": "off"
+              }
+            ]
           }
         ]
         """.trimIndent()
-        )
-    }
+    )
+}
+

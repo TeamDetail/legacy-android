@@ -68,7 +68,7 @@ fun NavBar(navHostController: NavHostController) {
                                 Nav.setNavStatus(item.id)
 
                                 coroutineScope.launch {
-                                    delay(20)
+                                    delay(100)
                                     navHostController.navigate(item.onClick.name) {
                                         popUpTo(navHostController.graph.startDestinationId) {
                                             saveState = true

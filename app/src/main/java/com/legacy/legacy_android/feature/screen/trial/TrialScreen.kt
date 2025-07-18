@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.feature.screen.ComingSoon
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Label
@@ -27,18 +28,6 @@ fun TrialScreen(
     ) {
         TitleBox(title = "시련", image = R.drawable.fight)
         // 여기부터 다음에 없애기
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ){
-            Text(
-                text = "다음 업데이트에서 만나요👋",
-                fontFamily = bitbit,
-                color = Label,
-                fontSize = 20.sp
-            )
-        }
-            }
-        }
+        ComingSoon()
+    }
+}

@@ -162,7 +162,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
             NavHost(navController = navController, startDestination = startDestination) {
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()

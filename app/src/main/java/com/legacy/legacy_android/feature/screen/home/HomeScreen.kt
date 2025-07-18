@@ -275,7 +275,8 @@ fun HomeScreen(
             ),
             uiSettings = MapUiSettings(
                 myLocationButtonEnabled = false,
-                zoomControlsEnabled = false
+                zoomControlsEnabled = false,
+                compassEnabled = false
             )
         ) {
             ruins.forEach { ruin ->
