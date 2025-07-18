@@ -36,6 +36,7 @@ fun InfoBar(
     val profile by viewModel.profileFlow.collectAsState()
 
     LaunchedEffect(Unit) {
+        viewModel.clearProfile()
         viewModel.fetchProfile()
     }
 

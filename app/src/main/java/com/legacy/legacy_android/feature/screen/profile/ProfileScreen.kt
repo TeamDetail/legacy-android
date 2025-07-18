@@ -14,12 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,8 +45,6 @@ import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -56,6 +54,7 @@ fun ProfileScreen(
 ){
     val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
+        viewModel.clearProfile()
         viewModel.fetchProfile()
     }
     val selectedId = Nav.getNavStatus()
@@ -79,43 +78,82 @@ fun ProfileScreen(
                     modifier =
                         modifier.padding(top = 24.dp)
                 ) {
-                    // 프로필 이미지
-                    ProfileImageWithSkeleton(
-                        imageUrl = profile?.imageUrl,
-                        modifier = modifier
-                    )
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        // 이름
-                        Row(
-                            modifier = modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                    if (profile == null) {
+                        Box(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .background(Label_Alternative.copy(alpha = 0.3f))
+                        )
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(
-                                text = profile?.nickname ?: "null",
-                                style = AppTextStyles.Title3.bold
+                            Box(
+                                modifier = Modifier
+                                    .height(24.dp)
+                                    .fillMaxWidth(0.4f)
+                                    .clip(CircleShape)
+                                    .background(Label_Alternative.copy(alpha = 0.3f))
                             )
-                            Image(
-                                painter = painterResource(R.drawable.edit),
-                                contentDescription = null,
-                                modifier = modifier.size(32.dp)
+                            Box(
+                                modifier = Modifier
+                                    .height(16.dp)
+                                    .fillMaxWidth(0.2f)
+                                    .clip(CircleShape)
+                                    .background(Label_Alternative.copy(alpha = 0.3f))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .height(20.dp)
+                                    .fillMaxWidth(0.3f)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Label_Alternative.copy(alpha = 0.3f))
                             )
                         }
-                        // level
-                        Text(
-                            text = "LV. ${profile?.level}",
-                            color = Label_Alternative,
-                            style = AppTextStyles.Body1.bold
+                    } else {
+                        AsyncImage(
+                            model = profile?.imageUrl,
+                            contentDescription = "프로필 이미지",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.temp_profile),
+                            error = painterResource(R.drawable.temp_profile)
                         )
-                        // 칭호
-                        profile?.title?.name?.takeIf { !it.isNullOrBlank() }?.let { titleName ->
-                            TitleBar(title = titleName)
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = profile?.nickname ?: "없음",
+                                    style = AppTextStyles.Title3.bold
+                                )
+                                Image(
+                                    painter = painterResource(R.drawable.edit),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                            Text(
+                                text = "LV. ${profile?.level}",
+                                color = Label_Alternative,
+                                style = AppTextStyles.Body1.bold
+                            )
+                            profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
+                                TitleBar(title = it)
+                            }
                         }
                     }
-                }
+
+        }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -205,22 +243,22 @@ fun RecordScreen(
         Scorebar(
             modifier =  modifier,
             title = "시련 최고 점수",
-            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.maxScore)} 문명 점수"
+            text = "${profile?.maxScore.toString()} 문명 점수"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 일반 블록 수",
-            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.allBlocks)} 블록"
+            text = "${profile?.allBlocks.toString()} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 유적지 블록 수",
-            text = "${NumberFormat.getNumberInstance(Locale.US).format(profile?.ruinsBlocks)} 블록"
+            text = "${profile?.ruinsBlocks.toString()} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "사용한 크레딧",
-            text = NumberFormat.getNumberInstance(Locale.US).format(profile?.stats?.creditCollect)
+            text = "${profile?.stats?.creditCollect.toString()} 크레딧"
         )
     }
 }
@@ -231,43 +269,4 @@ fun TitleScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ){
 
-}
-
-
-@Composable
-fun ProfileImageWithSkeleton(
-    imageUrl: String?,
-    modifier: Modifier = Modifier
-) {
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier.size(100.dp)) {
-        if (isLoading && !isError) {
-            SkeletonBox(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-            )
-        }
-
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "프로필 이미지",
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            onLoading = { isLoading = true },
-            onSuccess = {
-                isLoading = false
-                isError = false
-            },
-            onError = {
-                isLoading = false
-                isError = true
-            },
-            error = painterResource(R.drawable.temp_profile)
-        )
-    }
 }

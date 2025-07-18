@@ -66,7 +66,6 @@ enum class BgmType(val resourceId: Int, val volume: Float) {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
 

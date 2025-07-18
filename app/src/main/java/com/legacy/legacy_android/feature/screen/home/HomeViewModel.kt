@@ -144,7 +144,6 @@ class HomeViewModel @Inject constructor(
                     Log.d("PostMap", "현재 위치가 이미 생성된 블록 내부에 있습니다.")
                     return@launch
                 }
-
                 val request = PostBlockRequest(
                     latitude = latitude,
                     longitude = longitude,

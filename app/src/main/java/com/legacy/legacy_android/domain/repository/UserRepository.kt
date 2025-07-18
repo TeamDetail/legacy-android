@@ -20,7 +20,6 @@ class UserRepository @Inject constructor(
 
     suspend fun fetchProfile(force: Boolean = false) {
         if (hasLoaded && !force) return
-
         try {
             val response = getMeService.getMe()
             _profile.value = response.data

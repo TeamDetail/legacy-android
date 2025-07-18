@@ -20,6 +20,10 @@ class InfoBarViewModel @Inject constructor(
 
     var isTabClicked by mutableStateOf(false)
 
+    init {
+        fetchProfile()
+    }
+
     fun setIsTabClicked() {
         isTabClicked = !isTabClicked
     }
