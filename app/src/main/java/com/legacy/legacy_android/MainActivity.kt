@@ -1,5 +1,7 @@
 package com.legacy.legacy_android
 
+import android.content.Context
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
@@ -79,6 +81,13 @@ class MainActivity : AppCompatActivity() {
             Lifecycle.Event.ON_STOP -> pauseMusic()
             else -> Unit
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val configuration = Configuration(newBase.resources.configuration)
+        configuration.fontScale = 1.0f
+        val context = newBase.createConfigurationContext(configuration)
+        super.attachBaseContext(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

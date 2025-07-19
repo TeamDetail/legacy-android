@@ -71,114 +71,110 @@ fun ProfileScreen(
                 .align(Alignment.TopStart)
         ) {
             BackButton(selectedId = selectedId, title = "프로필", navHostController = navHostController)
-                // 여기서 프로필 윗부분
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier =
-                        modifier.padding(top = 24.dp)
-                ) {
-                    if (profile == null) {
-                        Box(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape)
-                                .background(Label_Alternative.copy(alpha = 0.3f))
-                        )
+            // 여기서 프로필 윗부분
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier =
+                    modifier.padding(top = 24.dp)
+            ) {
+                if (profile == null) {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                    )
 
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .height(24.dp)
-                                    .fillMaxWidth(0.4f)
-                                    .clip(CircleShape)
-                                    .background(Label_Alternative.copy(alpha = 0.3f))
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .height(16.dp)
-                                    .fillMaxWidth(0.2f)
-                                    .clip(CircleShape)
-                                    .background(Label_Alternative.copy(alpha = 0.3f))
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .height(20.dp)
-                                    .fillMaxWidth(0.3f)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(Label_Alternative.copy(alpha = 0.3f))
-                            )
-                        }
-                    } else {
-                        AsyncImage(
-                            model = profile?.imageUrl,
-                            contentDescription = "프로필 이미지",
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        SkeletonBox(
                             modifier = Modifier
-                                .size(100.dp)
+                                .height(24.dp)
+                                .fillMaxWidth(0.4f)
                                 .clip(CircleShape),
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(R.drawable.temp_profile),
-                            error = painterResource(R.drawable.temp_profile)
                         )
-
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = profile?.nickname ?: "없음",
-                                    style = AppTextStyles.Title3.bold
-                                )
-                                Image(
-                                    painter = painterResource(R.drawable.edit),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                            Text(
-                                text = "LV. ${profile?.level}",
-                                color = Label_Alternative,
-                                style = AppTextStyles.Body1.bold
-                            )
-                            profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
-                                TitleBar(title = it)
-                            }
-                        }
+                        SkeletonBox(
+                            modifier = Modifier
+                                .height(16.dp)
+                                .fillMaxWidth(0.2f)
+                                .clip(CircleShape),
+                        )
+                        SkeletonBox(
+                            modifier = Modifier
+                                .height(20.dp)
+                                .fillMaxWidth(0.3f)
+                                .clip(RoundedCornerShape(4.dp)),
+                        )
                     }
+                } else {
+                    AsyncImage(
+                        model = profile?.imageUrl,
+                        contentDescription = "프로필 이미지",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.temp_profile),
+                        error = painterResource(R.drawable.temp_profile)
+                    )
 
-        }
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            viewModel.profileMode.forEachIndexed { index, item ->
-                                StatusButton(
-                                    selectedValue = viewModel.profileStatus,
-                                    onClick = { viewModel.profileStatus = index },
-                                    text = item,
-                                    id = index,
-                                    selectedColor = Primary,
-                                    nonSelectedColor = Line_Netural
-                                )
-                            }
+                            Text(
+                                text = profile?.nickname ?: "없음",
+                                style = AppTextStyles.Title3.bold
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.edit),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                        Text(
+                            text = "LV. ${profile?.level}",
+                            color = Label_Alternative,
+                            style = AppTextStyles.Body1.bold
+                        )
+                        profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
+                            TitleBar(title = it)
                         }
                     }
                 }
+
+            }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        viewModel.profileMode.forEachIndexed { index, item ->
+                            StatusButton(
+                                selectedValue = viewModel.profileStatus,
+                                onClick = { viewModel.profileStatus = index },
+                                text = item,
+                                id = index,
+                                selectedColor = Primary,
+                                nonSelectedColor = Line_Netural
+                            )
+                        }
+                    }
+                }
+            }
             when (viewModel.profileStatus) {
                 0 -> RecordScreen(
                     modifier = modifier,
@@ -211,7 +207,7 @@ fun RecordScreen(
         Statbar(
             modifier = modifier,
             title = "숙련",
-            text = "Lv. ${profile?.level}",
+            text = "Lv. ${profile?.level ?: "-"}",
             percent = 0.6f,
             subtext = "(7000/13000)",
             barColor = Red_Normal
@@ -243,22 +239,22 @@ fun RecordScreen(
         Scorebar(
             modifier =  modifier,
             title = "시련 최고 점수",
-            text = "${profile?.maxScore.toString()} 문명 점수"
+            text = "${profile?.maxScore ?: "-"} 문명 점수"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 일반 블록 수",
-            text = "${profile?.allBlocks.toString()} 블록"
+            text = "${profile?.allBlocks ?: "-"} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "탐험한 유적지 블록 수",
-            text = "${profile?.ruinsBlocks.toString()} 블록"
+            text = "${profile?.ruinsBlocks ?: "-"} 블록"
         )
         Scorebar(
             modifier = modifier,
             title = "사용한 크레딧",
-            text = "${profile?.stats?.creditCollect.toString()} 크레딧"
+            text = "${profile?.stats?.creditCollect ?: "-"} 크레딧"
         )
     }
 }

@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.legacy.legacy_android.feature.data.LocationViewModel
+import com.legacy.legacy_android.feature.screen.home.model.HintStatus
+import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
 import com.legacy.legacy_android.res.component.adventure.LocationDialog
@@ -67,17 +69,7 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-
-    val quizList = viewModel.quizIdData.value
-    val quizIndex = viewModel.quizStatus.value
-
-    val quizTitle = if (!quizList.isNullOrEmpty() && quizIndex in quizList.indices) {
-        quizList[viewModel.quizStatus.value].quizProblem
-    } else {
-        null
-    }
     var mapLoaded by remember { mutableStateOf(false) }
-
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
@@ -85,9 +77,8 @@ fun HomeScreen(
 
     var showWarning by remember { mutableStateOf(false) }
 
-
-    val ruins = viewModel.visibleRuins
-    val blocks = viewModel.blockData
+    val ruins = viewModel.uiState.visibleRuins
+    val blocks = viewModel.uiState.blocks
     val locationPermissionState =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     var showPermissionDialog by remember {
@@ -126,8 +117,8 @@ fun HomeScreen(
     LaunchedEffect(currentLocation) {
         if (allRequiredPermission && currentLocation != null) {
             val loc = currentLocation!!
-            viewModel.fetchBlock(loc.latitude, loc.longitude)
-            viewModel.fetchGetBlock()
+            viewModel.createBlock(loc.latitude, loc.longitude)
+            viewModel.loadBlocks()
             println("Current location: $currentLocation")
         }
     }
@@ -150,27 +141,25 @@ fun HomeScreen(
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
             cameraPositionState.projection?.visibleRegion?.latLngBounds?.let { bounds ->
-                viewModel.minLat = bounds.southwest.latitude
-                viewModel.maxLat = bounds.northeast.latitude
-                viewModel.minLng = bounds.southwest.longitude
-                viewModel.maxLng = bounds.northeast.longitude
+                viewModel.updateMapBounds(
+                    minLat = bounds.southwest.latitude,
+                    maxLat = bounds.northeast.latitude,
+                    minLng = bounds.southwest.longitude,
+                    maxLng = bounds.northeast.longitude
+                )
                 if (cameraPositionState.position.zoom >= 13.5f) {
                     showWarning = false
-                    viewModel.fetchRuinsMap(
-                        viewModel.minLat, viewModel.maxLat,
-                        viewModel.minLng, viewModel.maxLng
+                    viewModel.loadRuinsMap(
+                        viewModel.uiState.mapBounds.minLat,
+                        viewModel.uiState.mapBounds.maxLat,
+                        viewModel.uiState.mapBounds.minLng,
+                        viewModel.uiState.mapBounds.maxLng
                     )
                 }else{
                     showWarning = true
                 }
             }
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.loading = mutableStateOf(true)
-        delay(1000)
-        viewModel.loading = mutableStateOf(false)
     }
 
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
@@ -233,7 +222,7 @@ fun HomeScreen(
                 }
             }
         }
-        if (viewModel.quizIdData.value != null) {
+        if (viewModel.uiState.quizStatus != QuizStatus.NONE) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = modifier
@@ -247,25 +236,23 @@ fun HomeScreen(
                     ) {}
             ) {
                 QuizBox(
-                    data = viewModel.quizIdData.value ?: emptyList(),
-                    quizStatus = viewModel.quizStatus,
-                    onConfirm = { viewModel.hintStatus.value = HintStatus.CREDIT },
+                    data = viewModel.uiState.quizData ?: emptyList(),
+                    quizStatus = viewModel.uiState.quizStatus,
+                    onConfirm = { viewModel.updateHintStatus(HintStatus.CREDIT) },
                     viewModel = viewModel,
-                    ruinsId = viewModel.ruinsIdData.value?.ruinsId,
-                    image = viewModel.ruinsIdData.value?.ruinsImage,
-                    name = viewModel.ruinsIdData.value?.name,
+                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
+                    image = viewModel.uiState.ruinsDetail?.ruinsImage,
+                    name = viewModel.uiState.ruinsDetail?.name,
                 )
-                if (viewModel.hintStatus.value == HintStatus.CREDIT) {
+                if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
                     CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {
-                        viewModel.hintStatus.value =
-                            HintStatus.HINT
-                    }, onDismiss = { viewModel.hintStatus.value = HintStatus.NO })
-                } else if (viewModel.hintStatus.value == HintStatus.HINT) {
+                        viewModel.updateHintStatus(HintStatus.HINT)
+                    }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO)})
+                } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(
-                        title = quizTitle,
-                        questionNumber = viewModel.quizStatus.value + 1,
+                        title = "",
                         hint = "힌트",
-                        onConfirm = { viewModel.hintStatus.value = HintStatus.NO }
+                        onConfirm = { viewModel.updateHintStatus(HintStatus.NO)}
                     )
                 }
             }
@@ -312,8 +299,8 @@ fun HomeScreen(
                 mapLoaded = true
             },
             onMapClick = {
-                viewModel.selectedId.value = -1
-                viewModel.ruinsIdData = mutableStateOf(null)
+                viewModel.updateSelectedId(-1)
+                viewModel.fetchRuinsDetail(-1)
             },
             properties = MapProperties(
                 isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
@@ -339,8 +326,8 @@ fun HomeScreen(
                     fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
                     clickable = true,
                     onClick = {
-                        viewModel.selectedId.value = ruin.ruinsId
-                        viewModel.fetchRuinsId(ruin.ruinsId)
+                        viewModel.updateSelectedId(ruin.ruinsId)
+                        viewModel.fetchRuinsDetail(ruin.ruinsId)
                     }
                 )
             }
@@ -368,21 +355,21 @@ fun HomeScreen(
                 .zIndex(7f)
         ) {
             NavBar(navHostController = navHostController)
-            if (viewModel.selectedId.value > -1) {
+            if (viewModel.uiState.selectedId > -1) {
                 AdventureInfo(
-                    id = viewModel.ruinsIdData.value?.ruinsId,
+                    id = viewModel.uiState.ruinsDetail?.ruinsId,
                     viewModel = viewModel,
-                    name = viewModel.ruinsIdData.value?.name ?: "이름 없음",
-                    img = viewModel.ruinsIdData.value?.ruinsImage,
-                    info = viewModel.ruinsIdData.value?.detailAddress,
+                    name = viewModel.uiState.ruinsDetail?.name ?: "이름 없음",
+                    img = viewModel.uiState.ruinsDetail?.ruinsImage,
+                    info = viewModel.uiState.ruinsDetail?.detailAddress,
                     tags = listOf("IT", "마이스터", "대구", "고등학교"),
-                    ruinsId = viewModel.ruinsIdData.value?.ruinsId
+                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId
                 )
             }
         }
 
         // 내 위치 이동아이코ㅓㄴ
-        if (viewModel.selectedId.value ==  -1) {
+        if (viewModel.uiState.selectedId == -1) {
         IconButton(
             onClick = {
                 currentLocation?.let {
@@ -399,7 +386,7 @@ fun HomeScreen(
                 .padding(end = 20.dp, bottom = 120.dp)
                 .zIndex(8f)
                 .size(48.dp)
-                .background(Black, shape = androidx.compose.foundation.shape.CircleShape)
+                .background(Black, shape = CircleShape)
         ) {
             Icon(
                 imageVector = Icons.Default.Place,

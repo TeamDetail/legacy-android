@@ -17,7 +17,9 @@ import com.legacy.legacy_android.feature.data.user.saveRefToken
 import com.legacy.legacy_android.feature.network.login.LoginRequest
 import com.legacy.legacy_android.feature.network.login.LoginService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "LoginViewModel"
@@ -96,7 +98,6 @@ class LoginViewModel @Inject constructor(
                 }
             }
         } else {
-
             UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
                 if (error != null) {
                     Log.e(TAG, "웹 로그인 실패", error)
@@ -124,7 +125,6 @@ class LoginViewModel @Inject constructor(
     private fun callBackendLogin(
         kakaoAccessToken: String,
         kakaoRefreshToken: String,
-
         onBackendLoginSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
         context: Context,
@@ -133,17 +133,41 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 loadingState.value = true
-                val request = LoginRequest(accessToken = kakaoAccessToken, refreshToken = kakaoRefreshToken)
+                val request = LoginRequest(
+                    accessToken = kakaoAccessToken,
+                    refreshToken = kakaoRefreshToken
+                )
                 val response = loginService.login(request)
-                Log.i(TAG, "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = $response.data.accessToken}")
-                onBackendLoginSuccess()
-                println(response.data.accessToken)
+                Log.i(
+                    TAG,
+                    "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = ${response.data.refreshToken}"
+                )
                 saveAccToken(context.applicationContext, response.data.accessToken)
                 saveRefToken(context.applicationContext, response.data.refreshToken)
-                navHostController.navigate(ScreenNavigate.HOME.name)
+                onBackendLoginSuccess()
+                withContext(Dispatchers.Main) {
+                    try {
+                        kotlinx.coroutines.delay(100)
+                        if (navHostController.currentBackStackEntry != null) {
+                            navHostController.navigate(ScreenNavigate.HOME.name) {
+                                popUpTo(ScreenNavigate.LOGIN.name) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        } else {
+
+                        }
+                    } catch (navError: Exception) {
+                        Log.e(TAG, "네비게이션 실패: ${navError.message}", navError)
+                    }
+                }
+
             } catch (e: Exception) {
                 Log.e(TAG, "백엔드 로그인 실패", e)
-                onFailure(e)
+                withContext(Dispatchers.Main) {
+                    onFailure(e)
+                }
+            } finally {
+                loadingState.value = false
             }
         }
     }

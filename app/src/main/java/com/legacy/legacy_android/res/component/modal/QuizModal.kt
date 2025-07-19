@@ -24,9 +24,7 @@ import com.legacy.legacy_android.ui.theme.Label_Alternative
 
 @Composable
 fun QuizModal(
-
     title: String?,
-    questionNumber: Int?,
     hint: String?,
     onConfirm: () -> Unit
 ) {
@@ -46,13 +44,8 @@ fun QuizModal(
         ) {
             Column (
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Q${questionNumber}. ${title}",
-                    style = AppTextStyles.Heading1.bold
-                )
                 Text(
                     text = "힌트 : ${hint}",
                     style = AppTextStyles.Headline.medium,

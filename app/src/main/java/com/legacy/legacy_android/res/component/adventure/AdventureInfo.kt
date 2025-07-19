@@ -18,6 +18,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
+import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.*
 import java.text.NumberFormat
 import java.util.Locale
@@ -30,7 +31,7 @@ fun AdventureInfo(
     info: String?,
     tags: List<String>?,
     img: String?,
-    ruinsId: Int?
+    ruinsId: Int?,
 ) {
     Box(
         modifier = Modifier
@@ -39,7 +40,7 @@ fun AdventureInfo(
             .height(300.dp)
             .padding(12.dp)
             .zIndex(50f)
-            .clickable(enabled = false){}
+            .clickable(enabled = false) {}
     ) {
         Column(
             modifier = Modifier
@@ -72,10 +73,19 @@ fun AdventureInfo(
                             color = Label_Alternative,
                             style = AppTextStyles.Body2.medium
                         )
-                        Text(
-                            text = "#" + NumberFormat.getNumberInstance(Locale.US).format(id ?: 0),
-                            style = AppTextStyles.Headline.medium
-                        )
+                        if (id == null) {
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .height(24.dp)
+                                    .fillMaxWidth(0.3f)
+                                    .clip(RoundedCornerShape(4.dp)),
+                            )
+                        } else {
+                            Text(
+                                text = "#" + NumberFormat.getNumberInstance(Locale.US).format(id),
+                                style = AppTextStyles.Headline.medium
+                            )
+                        }
                     }
                     Column(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -85,10 +95,19 @@ fun AdventureInfo(
                             color = Label_Alternative,
                             style = AppTextStyles.Body2.medium
                         )
-                        Text(
-                            text = info ?: "",
-                            style = AppTextStyles.Body1.bold
-                        )
+                        if (info.isNullOrBlank()) {
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .height(24.dp)
+                                    .fillMaxWidth(0.6f)
+                                    .clip(RoundedCornerShape(4.dp)),
+                            )
+                        } else {
+                            Text(
+                                text = info,
+                                style = AppTextStyles.Body1.bold
+                            )
+                        }
                     }
                 }
                 Box(
@@ -98,32 +117,39 @@ fun AdventureInfo(
                         .clip(RoundedCornerShape(12.dp))
                         .padding(5.dp)
                 ) {
-                    AsyncImage(
-                        model = img,
-                        contentDescription = "유적지 이미지",
-                        modifier = Modifier
-                            .matchParentSize()
-                            .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop,
-                        error = painterResource(R.drawable.school_img),
-                        placeholder = painterResource(R.drawable.school_img)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(Background_Normal.copy(alpha = 0.5f))
-                            .clip(RoundedCornerShape(12.dp))
-                    )
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(12.dp),
-                        text = name ?: "",
-                        fontFamily = bitbit,
-                        fontSize = 16.sp,
-                        color = Label
-                    )
+                    if (img.isNullOrBlank()) {
+                        SkeletonBox(
+                            modifier = Modifier
+                                .matchParentSize()
+                        )
+                    } else {
+                        AsyncImage(
+                            model = img,
+                            contentDescription = "유적지 이미지",
+                            modifier = Modifier
+                                .matchParentSize()
+                                .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(R.drawable.school_img),
+                            placeholder = painterResource(R.drawable.school_img)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(Background_Normal.copy(alpha = 0.5f))
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(12.dp),
+                            text = name ?: "",
+                            fontFamily = bitbit,
+                            fontSize = 16.sp,
+                            color = Label
+                        )
+                    }
                 }
             }
             Box(
@@ -134,7 +160,7 @@ fun AdventureInfo(
                     .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(8.dp))
                     .clickable(
                         onClick = {
-                            viewModel.fetchQuiz(ruinsId)
+                            viewModel.loadQuiz(ruinsId)
                         }
                     )
             ) {
