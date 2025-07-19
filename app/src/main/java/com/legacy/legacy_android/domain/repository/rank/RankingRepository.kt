@@ -14,6 +14,7 @@ class RankingRepository @Inject constructor(
             val response = rankingService.rank()
             Result.success(if(!response.data.isNullOrEmpty())response.data else null)
         }catch(e: Exception){
+            println("실패")
             Result.failure(e)
         }
     }

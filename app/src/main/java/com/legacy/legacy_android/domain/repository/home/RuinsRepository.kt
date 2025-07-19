@@ -26,9 +26,6 @@ class RuinsRepository @Inject constructor(
                 minLng = request.minLng,
                 maxLng = request.maxLng
             )
-            println("들고왔다 이색기들아")
-            println(response.data)
-            println(request)
             Result.success(response.data ?: emptyList())
         } catch (e: Exception) {
             Log.e("RuinsRepository", "ruins repository 오류 ${e.message}")

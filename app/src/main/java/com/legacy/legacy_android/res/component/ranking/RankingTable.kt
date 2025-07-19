@@ -27,12 +27,15 @@ fun RankingTable(
             modifier = modifier.padding(vertical = 12.dp)
         ) {
             rankingData.forEachIndexed { index, item ->
-                RankingRowBar(
-                    rank = index,
-                    blocks = item?.allBlocks ?: 0,
-                    level = item?.level ?: 0,
-                    name = item?.nickname ?: "",
-                    title = item?.title?.name ?: "");
+                if (index > 2) {
+                    RankingRowBar(
+                        rank = index,
+                        blocks = item?.allBlocks ?: 0,
+                        level = item?.level ?: 0,
+                        name = item?.nickname ?: "",
+                        title = item?.title?.name ?: ""
+                    );
+                }
             }
         }
     }

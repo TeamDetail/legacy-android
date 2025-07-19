@@ -78,7 +78,8 @@ fun RankingBar(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.width(120.dp)
                 ) {
                     if (rank == null || blocks == null || name == null || title == null) {
                         SkeletonBox(
@@ -157,7 +158,7 @@ fun RankingBar(
                                 fontSize = 16.sp
                             )
                         }
-                        SmallTitleBar(title = title)
+                        if (title != "")SmallTitleBar(title = title)
                     }
                 }
             }

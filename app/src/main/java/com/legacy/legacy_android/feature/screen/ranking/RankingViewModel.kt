@@ -21,7 +21,12 @@ class RankingViewModel @Inject constructor(
 
     fun fetchRanking() {
         viewModelScope.launch {
-            rankingRepository.fetchRanking()
+            val result = rankingRepository.fetchRanking()
+            result.onSuccess { data ->
+                if (data != null) {
+                    uiState = uiState.copy(rankingData = data)
+                }
+            }
         }
     }
     fun changeRankingStatus(status: Int){
