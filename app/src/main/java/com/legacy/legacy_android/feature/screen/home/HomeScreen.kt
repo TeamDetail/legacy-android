@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -20,8 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -46,9 +50,12 @@ import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Green_Alternative
+import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.bitbit
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -69,6 +76,7 @@ fun HomeScreen(
     } else {
         null
     }
+    var mapLoaded by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -159,6 +167,12 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loading = mutableStateOf(true)
+        delay(1000)
+        viewModel.loading = mutableStateOf(false)
+    }
+
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
         // InfoBar
         Row(
@@ -171,8 +185,54 @@ fun HomeScreen(
         ) {
             InfoBar(navHostController)
         }
+        if (!mapLoaded) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(1500f)
+                    .background(Black.copy(alpha = 0.75f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { },
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    var scale by remember { mutableStateOf(1f) }
 
-//         QuizBox
+                    LaunchedEffect(Unit) {
+                        while (true) {
+                            scale = 1.2f
+                            delay(300)
+                            scale = 1f
+                            delay(300)
+                        }
+                    }
+                    Row (
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ){
+                        repeat(3) {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .scale(scale)
+                                    .background(Primary, shape = CircleShape)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "지도를 불러오는 중...",
+                        color = Label,
+                        style = AppTextStyles.Caption1.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+        }
         if (viewModel.quizIdData.value != null) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -244,19 +304,6 @@ fun HomeScreen(
             }
         }
 
-        var mapLoaded by remember { mutableStateOf(false) }
-        if (!mapLoaded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(1500f)
-                    .background(Color.Transparent)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { }
-            )
-        }
         // Google Map
         GoogleMap(
             modifier = Modifier.fillMaxSize(),

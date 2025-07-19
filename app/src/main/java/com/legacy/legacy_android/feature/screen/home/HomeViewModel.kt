@@ -64,6 +64,8 @@ class HomeViewModel @Inject constructor(
 
     val profileFlow = userRepository.profile
 
+    var loading = mutableStateOf(false)
+
     var minLat: Double = 0.0
     var answerOption = mutableListOf<String>()
     var quizIndex = mutableListOf<Int>()
