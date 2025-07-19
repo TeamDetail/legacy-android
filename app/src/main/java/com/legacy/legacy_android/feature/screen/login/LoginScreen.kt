@@ -25,18 +25,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Netural80
-import com.legacy.legacy_android.ui.theme.White
-import com.legacy.legacy_android.ui.theme.pretendard
 
 @Composable
 fun LoginScreen(

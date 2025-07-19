@@ -5,7 +5,6 @@ import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
-import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerRequest
 import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
@@ -17,6 +16,42 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
+import android.content.Context
+import com.legacy.legacy_android.domain.repository.TokenRepository
+import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
+import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
+import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
+import dagger.Binds
+import dagger.hilt.android.qualifiers.ApplicationContext
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AuthModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindKakaoLoginManager(
+        kakaoLoginManagerImpl: KakaoLoginManagerImpl
+    ): KakaoLoginManager
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenRepository(
+        tokenRepositoryImpl: TokenRepositoryImpl
+    ): TokenRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ContextModule {
+
+    @Provides
+    @Singleton
+    fun provideApplicationContext(@ApplicationContext context: Context): Context {
+        return context.applicationContext
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)

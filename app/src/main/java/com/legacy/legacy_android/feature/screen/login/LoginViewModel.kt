@@ -7,17 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.legacy.legacy_android.ScreenNavigate
-import com.legacy.legacy_android.feature.data.user.saveAccToken
-import com.legacy.legacy_android.feature.data.user.saveRefToken
-import com.legacy.legacy_android.feature.network.login.LoginRequest
-import com.legacy.legacy_android.feature.network.login.LoginService
+import com.legacy.legacy_android.feature.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,147 +21,52 @@ private const val TAG = "LoginViewModel"
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     application: Application,
-    private val loginService: LoginService
+    private val loginUseCase: LoginUseCase
 ) : AndroidViewModel(application) {
 
     var loadingState = mutableStateOf(false)
+        private set
 
     fun loginWithKakao(
         context: Context,
         navHostController: NavHostController,
         onFailure: (Throwable) -> Unit
     ) {
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                Log.e(TAG, "카카오계정으로 로그인 실패", error)
-                onFailure(error)
-            } else if (token != null) {
-                Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+        viewModelScope.launch {
+            try {
+                loadingState.value = true
 
-                UserApiClient.instance.me { user, error ->
-                    if (error != null) {
-                        Log.e(TAG, "사용자 정보 요청 실패", error)
-                    } else if (user != null) {
-                        val kakaoAccount = user.kakaoAccount
+                val result = loginUseCase.execute(context)
 
-                        if (kakaoAccount?.emailNeedsAgreement == true) {
-                            UserApiClient.instance.loginWithNewScopes(
-                                context,
-                                listOf("account_email")
-                            ) { token, error ->
-                                if (error != null) {
-                                    Log.e(TAG, "이메일 동의 실패", error)
-                                } else {
-                                    Log.i(TAG, "이메일 동의 성공: ${token?.accessToken}")
-                                }
-                            }
-                        }
-                        callBackendLogin(
-                            kakaoAccessToken = token.accessToken,
-                            kakaoRefreshToken = token.refreshToken,
-                            onBackendLoginSuccess = { Log.i("성공", "벡엔드") },
-                            onFailure = onFailure,
-                            context = context,
-                            navHostController = navHostController
-                        )
-                    }
-                }
-            }
-        }
-
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                if (error != null) {
-                    Log.e(TAG, "카카오톡으로 로그인 실패", error)
-
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    }
-
-                    UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
-                } else if (token != null) {
-                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    callBackendLogin(
-                        kakaoAccessToken = token.accessToken,
-                        kakaoRefreshToken = token.refreshToken,
-                        onBackendLoginSuccess = { Log.i("성공", "벡엔드") },
-                        onFailure = onFailure,
-                        context = context,
-                        navHostController = navHostController
-                    )
-                }
-            }
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
-                if (error != null) {
-                    Log.e(TAG, "웹 로그인 실패", error)
-                    onFailure(error)
-                } else if (token != null) {
-                    Log.i(
-                        TAG,
-                        "웹 로그인 성공: accessToken=${token.accessToken}, refreshToken=${token.refreshToken}"
-                    )
-                    callBackendLogin(
-                        kakaoAccessToken = token.accessToken,
-                        kakaoRefreshToken = token.refreshToken,
-                        onBackendLoginSuccess = { Log.i("성공", "벡엔드") },
-                        onFailure = onFailure,
-                        context = context,
-                        navHostController = navHostController
-                    )
+                if (result.isSuccess) {
+                    navigateToHome(navHostController)
                 } else {
-                    Log.w(TAG, "웹 로그인 콜백은 왔지만 token과 error가 모두 null임")
+                    result.error?.let { onFailure(it) }
                 }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "로그인 처리 중 오류", e)
+                onFailure(e)
+            } finally {
+                loadingState.value = false
             }
         }
     }
 
-    private fun callBackendLogin(
-        kakaoAccessToken: String,
-        kakaoRefreshToken: String,
-        onBackendLoginSuccess: () -> Unit,
-        onFailure: (Throwable) -> Unit,
-        context: Context,
-        navHostController: NavHostController
-    ) {
-        viewModelScope.launch {
+    private suspend fun navigateToHome(navHostController: NavHostController) {
+        withContext(Dispatchers.Main) {
             try {
-                loadingState.value = true
-                val request = LoginRequest(
-                    accessToken = kakaoAccessToken,
-                    refreshToken = kakaoRefreshToken
-                )
-                val response = loginService.login(request)
-                Log.i(
-                    TAG,
-                    "백엔드 로그인 성공: AccessToken = ${response.data.accessToken}, RefreshToken = ${response.data.refreshToken}"
-                )
-                saveAccToken(context.applicationContext, response.data.accessToken)
-                saveRefToken(context.applicationContext, response.data.refreshToken)
-                onBackendLoginSuccess()
-                withContext(Dispatchers.Main) {
-                    try {
-                        kotlinx.coroutines.delay(100)
-                        if (navHostController.currentBackStackEntry != null) {
-                            navHostController.navigate(ScreenNavigate.HOME.name) {
-                                popUpTo(ScreenNavigate.LOGIN.name) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        } else {
-
-                        }
-                    } catch (navError: Exception) {
-                        Log.e(TAG, "네비게이션 실패: ${navError.message}", navError)
+                delay(100)
+                if (navHostController.currentBackStackEntry != null) {
+                    navHostController.navigate(ScreenNavigate.HOME.name) {
+                        popUpTo(ScreenNavigate.LOGIN.name) { inclusive = true }
+                        launchSingleTop = true
                     }
+                }else{
+                    println("로그인 안됨")
                 }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "백엔드 로그인 실패", e)
-                withContext(Dispatchers.Main) {
-                    onFailure(e)
-                }
-            } finally {
-                loadingState.value = false
+            } catch (navError: Exception) {
+                Log.e(TAG, "네비게이션 실패: ${navError.message}", navError)
             }
         }
     }
