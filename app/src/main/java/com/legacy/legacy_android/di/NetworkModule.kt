@@ -21,6 +21,7 @@ import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
+import com.legacy.legacy_android.feature.network.rank.RankingService
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -113,5 +114,11 @@ object NetworkModule {
     @Singleton
     fun providePostQuizAnswerService(retrofit: Retrofit): PostQuizAnswerService{
         return retrofit.create(PostQuizAnswerService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRankService(retrofit: Retrofit): RankingService{
+        return retrofit.create(RankingService::class.java)
     }
 }

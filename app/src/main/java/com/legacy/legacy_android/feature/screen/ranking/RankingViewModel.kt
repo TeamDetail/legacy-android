@@ -1,16 +1,30 @@
 package com.legacy.legacy_android.feature.screen.ranking
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.legacy.legacy_android.domain.repository.rank.RankingRepository
+import com.legacy.legacy_android.feature.screen.ranking.model.RankingUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class RankingViewModel @Inject constructor(
-    application: Application
-) : AndroidViewModel(application) {
-    val friendmode = listOf("친구", "전체")
-    var friendStatus by mutableStateOf(0)
+    private val rankingRepository: RankingRepository
+) : ViewModel() {
 
+    var uiState by mutableStateOf(RankingUiState())
+        private set
+
+    fun fetchRanking() {
+        viewModelScope.launch {
+            rankingRepository.fetchRanking()
+        }
+    }
+    fun changeRankingStatus(status: Int){
+        uiState = uiState.copy(rankingStatus = status)
+    }
 }

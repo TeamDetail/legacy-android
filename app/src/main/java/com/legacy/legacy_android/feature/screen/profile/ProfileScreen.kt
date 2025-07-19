@@ -52,6 +52,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navHostController: NavHostController,
 ){
+    val statusList = listOf("기록", "칭호", "도감")
     val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.clearProfile()
@@ -155,35 +156,30 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
-                    modifier = modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        viewModel.profileMode.forEachIndexed { index, item ->
-                            StatusButton(
-                                selectedValue = viewModel.profileStatus,
-                                onClick = { viewModel.profileStatus = index },
-                                text = item,
-                                id = index,
-                                selectedColor = Primary,
-                                nonSelectedColor = Line_Netural
-                            )
-                        }
+                    statusList.forEachIndexed { index, item ->
+                        StatusButton(
+                            selectedValue = viewModel.uiState.profileStatus,
+                            onClick = { viewModel.changeProfileStatus(index) },
+                            text = item,
+                            id = index,
+                            selectedColor = Primary,
+                            nonSelectedColor = Line_Netural
+                        )
                     }
                 }
             }
-            when (viewModel.profileStatus) {
+            when (viewModel.uiState.profileStatus) {
                 0 -> RecordScreen(
                     modifier = modifier,
                     viewModel = viewModel,
                 )
-                1 ->TitleScreen(
+                1 -> TitleScreen(
                     modifier = modifier,
                     viewModel = viewModel
                 )
+                2 -> { }
             }
         }
     }

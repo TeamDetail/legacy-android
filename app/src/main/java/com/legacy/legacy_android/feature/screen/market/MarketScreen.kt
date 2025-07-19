@@ -27,12 +27,7 @@ fun MarketScreen(modifier: Modifier = Modifier,
                  viewModel: MarketViewModel = hiltViewModel(),
                  navHostController: NavHostController
 ) {
-    LaunchedEffect(Unit) {
-        while (true) {
-            viewModel.updateTimeLeft()
-            delay(1000)
-        }
-    }
+    val packList = listOf("카드 팩", "크레딧 충전")
 
     CommonScreenLayout(
         modifier = modifier,
@@ -42,10 +37,10 @@ fun MarketScreen(modifier: Modifier = Modifier,
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel.packList.forEachIndexed { index, item ->
+                    packList.forEachIndexed { index, item ->
                         StatusButton(
-                            selectedValue = viewModel.packStatus,
-                            onClick = { viewModel.packStatus = index },
+                            selectedValue = viewModel.uiState.packStatus,
+                            onClick = { viewModel.changePackStatus(index) },
                             text = item,
                             id = index,
                             selectedColor = Primary,

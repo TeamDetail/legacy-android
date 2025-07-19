@@ -26,22 +26,23 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.legacy.legacy_android.res.component.title.SmallTitleBar
+import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun RankingBar(
-    rank : Int,
-    blocks : Int,
-    name : String,
-    title : String,
+    rank : Int?,
+    blocks : Int?,
+    name : String?,
+    title : String?,
     zIndex: Float,
 ) {
-    val normalized = blocks % 1000
     Box(
         modifier = Modifier
             .border(2.dp, Background_Normal, shape = RoundedCornerShape(20.dp))
@@ -79,48 +80,86 @@ fun RankingBar(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Image(
-                        modifier = Modifier
-                            .width(40.dp)
-                            .height(40.dp)
-                            .clip(RoundedCornerShape(30.dp)),
-                        painter = painterResource(R.drawable.temp_profile),
-                        contentDescription = null
-                    )
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "${rank}위",
-                            color = if (rank == 1) {
-                                Primary
-                            } else if (rank == 2) {
-                                Red_Netural
-                            } else {
-                                Blue_Netural
-                            },
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                    if (rank == null || blocks == null || name == null || title == null) {
+                        SkeletonBox(
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(40.dp)
+                                .clip(CircleShape)
                         )
-                        Text(
-                            text = "${blocks}블록",
-                            color = Yellow_Netural,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .height(20.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                            )
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .height(15.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                            )
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .width(60.dp)
+                                    .height(16.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                            )
+                        }
+                        SkeletonBox(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(24.dp)
+                                .clip(RoundedCornerShape(8.dp))
                         )
-                        Text(
-                            text = name,
-                            color = Label,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                    } else {
+                        Image(
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(40.dp)
+                                .clip(RoundedCornerShape(30.dp)),
+                            painter = painterResource(R.drawable.temp_profile),
+                            contentDescription = null
                         )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "${rank}위",
+                                color = if (rank == 1) {
+                                    Primary
+                                } else if (rank == 2) {
+                                    Red_Netural
+                                } else {
+                                    Blue_Netural
+                                },
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
+                            Text(
+                                text = "${blocks}블록",
+                                color = Yellow_Netural,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp
+                            )
+                            Text(
+                                text = name,
+                                color = Label,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
+                        SmallTitleBar(title = title)
                     }
                 }
-                SmallTitleBar(title = title)
             }
         }
     }

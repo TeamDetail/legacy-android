@@ -7,27 +7,20 @@ import androidx.lifecycle.AndroidViewModel
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.legacy.legacy_android.feature.screen.market.model.MarketUiState
 
 class MarketViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
-    private var _marketStatus by mutableStateOf(true)
-    val marketStatus: Boolean get() = _marketStatus
-
-
-    fun setMarketStatus(value: Boolean) {
-        _marketStatus = value
-    }
-
-    val     packList = listOf("카드 팩", "크레딧 충전")
-
-    var packStatus by mutableStateOf(0)
 
     var timeUntilMidnight by mutableStateOf(getTimeUntilMidnightFormatted())
         private set
 
-    fun updateTimeLeft() {
-        timeUntilMidnight = getTimeUntilMidnightFormatted()
+    var uiState by mutableStateOf(MarketUiState())
+        private set
+
+    fun changePackStatus(status: Int){
+        uiState = uiState.copy(packStatus = status)
     }
 
     private fun getTimeUntilMidnightFormatted(): String {
