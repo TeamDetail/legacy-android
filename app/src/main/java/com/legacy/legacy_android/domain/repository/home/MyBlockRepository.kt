@@ -39,7 +39,4 @@ class BlockRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    suspend fun isInsideBlock(latitude: Double, longitude: Double, blocks: List<GetBlockResponse>):Boolean{
-        return PolygonStyle.isPointInsideAnyBlock(latitude, longitude, blocks)
-    }
 }

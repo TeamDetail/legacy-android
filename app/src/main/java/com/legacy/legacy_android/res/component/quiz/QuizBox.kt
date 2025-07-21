@@ -132,6 +132,7 @@ fun QuizBox(
                                                 quizNum.value = 0
                                                 selectedOption.value = null
                                                 viewModel.clearQuizAnswers()
+                                                viewModel.updateQuizStatus(QuizStatus.NONE)
                                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                             }
                                     ) {

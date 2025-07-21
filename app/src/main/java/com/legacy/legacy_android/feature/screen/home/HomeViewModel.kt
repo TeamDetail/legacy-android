@@ -86,9 +86,6 @@ class HomeViewModel @Inject constructor(
         if (latitude == null || longitude == null) return
 
         viewModelScope.launch {
-            if (blockRepository.isInsideBlock(latitude, longitude, uiState.blocks)) {
-                return@launch
-            }
             blockRepository.createBlock(latitude, longitude)
         }
     }

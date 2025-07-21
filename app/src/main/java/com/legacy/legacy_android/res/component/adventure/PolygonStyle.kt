@@ -54,27 +54,9 @@ object PolygonStyle {
         )
     }
 
-    // 위도/경도 → 격자 polygon 좌표 반환
     fun getPolygonPointsFromLocation(latitude: Double, longitude: Double): List<LatLng> {
         val topLeft = getSortedTopLeft(latitude, longitude)
         return getRectanglePoints(topLeft)
     }
 
-    fun isPointInsideBlock(latitude: Double, longitude: Double, blockLatitude: Double, blockLongitude: Double): Boolean {
-        val blockTopLeft = getSortedTopLeft(blockLatitude, blockLongitude)
-        val blockPoints = getRectanglePoints(blockTopLeft)
-
-        val minLat = blockPoints.minOf { it.latitude }
-        val maxLat = blockPoints.maxOf { it.latitude }
-        val minLng = blockPoints.minOf { it.longitude }
-        val maxLng = blockPoints.maxOf { it.longitude }
-
-        return latitude >= minLat && latitude <= maxLat && longitude >= minLng && longitude <= maxLng
-    }
-
-    fun isPointInsideAnyBlock(latitude: Double, longitude: Double, blocks: List<GetBlockResponse>): Boolean {
-        return blocks.any { block ->
-            isPointInsideBlock(latitude, longitude, block.latitude, block.longitude)
-        }
-    }
 }
