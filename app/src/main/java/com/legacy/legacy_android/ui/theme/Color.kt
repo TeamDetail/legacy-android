@@ -8,6 +8,7 @@ val Yellow_Netural = Color(0xFFEDB900)
 val Black = Color(0xFF232424)
 val White = Color(0xFFFFFFFF)
 val Primary = Color(0xFFA05AE8)
+val Primary_Alternative = Color(0xFF8540CC)
 
 val Green = Color(0xFF07C002)
 val Green_Alternative = Color(0xFF0A573B)

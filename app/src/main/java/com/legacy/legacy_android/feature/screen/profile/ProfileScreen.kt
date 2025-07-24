@@ -34,8 +34,10 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.profile.DictionaryInfo
 import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.Statbar
+import com.legacy.legacy_android.res.component.profile.TitleSelector
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -179,7 +181,10 @@ fun ProfileScreen(
                     modifier = modifier,
                     viewModel = viewModel
                 )
-                2 -> { }
+                2 -> { DictionaryScreen(
+                    modifier = modifier,
+                    viewModel = viewModel
+                )}
             }
         }
     }
@@ -261,4 +266,35 @@ fun TitleScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ){
 
+}
+
+@Composable
+fun DictionaryScreen(
+    modifier: Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
+){
+    val statusList = listOf("경기", "강원", "경북", "경남", "전북", "전남", "충북", "충남", "제주")
+    Row (
+        modifier = modifier.fillMaxSize()
+    ){
+        Row(
+            modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Column (
+                modifier.fillMaxWidth(0.3f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                statusList.forEachIndexed { index, item ->
+                    TitleSelector(18, 30, onClick = { viewModel.changeTitleStatus(index)}, id = index, selectedValue = viewModel.uiState.titleStatus, text = item, modifier)
+                }
+            }
+            Row (modifier.fillMaxWidth(1f)
+                .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween){
+                DictionaryInfo(modifier = modifier, title = "이름", img = "")
+                DictionaryInfo(modifier = modifier, title = "이름", img = "")
+            }
+        }
+    }
 }

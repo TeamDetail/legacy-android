@@ -8,8 +8,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.ui.theme.Label_Netural
 
 @Composable
@@ -31,7 +33,7 @@ fun SkeletonBox(
         modifier = modifier
             .background(
                 Label_Netural.copy(alpha = alpha),
-                shape = CircleShape
+                shape = RoundedCornerShape(12.dp)
             )
     )
 }

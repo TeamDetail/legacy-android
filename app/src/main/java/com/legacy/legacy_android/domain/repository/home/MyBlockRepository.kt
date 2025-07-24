@@ -15,13 +15,14 @@ class BlockRepository @Inject constructor(
     private val getBlockService: GetBlockService
 ) {
     suspend fun createBlock(latitude: Double, longitude: Double): Result<Unit> {
+        println()
         return try {
             val request = PostBlockRequest(latitude = latitude, longitude = longitude)
-            val response = postBlockService.block(request)
-            Log.d("BlockRepository", "Block creation success: ${response.blockId}")
+            postBlockService.block(request)
+            Log.d("BlockRepository", "블록 추가 성공")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("BlockRepository", "Error creating block: ${e.message}")
+            Log.e("BlockRepository", "이미 추가 된 곳입니다.")
             Result.failure(e)
         }
     }

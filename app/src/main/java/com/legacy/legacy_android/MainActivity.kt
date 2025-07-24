@@ -216,11 +216,11 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer = MediaPlayer.create(this, bgmType.resourceId)?.apply {
                 isLooping = true
                 setVolume(bgmType.volume, bgmType.volume)
-                start()
+//                start()
             }
             currentBgm = bgmType
         } catch (e: Exception) {
-            Log.e("MainActivity", "BGM 전환 중 오류 발생: ${e.message}")
+                Log.e("MainActivity", "BGM 전환 중 오류 발생: ${e.message}")
         }
     }
 

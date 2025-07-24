@@ -28,6 +28,10 @@ class ProfileViewModel @Inject constructor(
         uiState = uiState.copy(profileStatus = status)
     }
 
+    fun changeTitleStatus(status: Int){
+        uiState = uiState.copy(titleStatus = status)
+    }
+
     fun fetchProfile(force: Boolean = false) {
         viewModelScope.launch {
             userRepository.fetchProfile(force)

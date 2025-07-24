@@ -30,7 +30,7 @@ fun RankingScreen(
     viewModel: RankingViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    val friendmode = listOf("친구", "전체")
+    val statusList = listOf("친구", "전체")
 
     LaunchedEffect(Unit) {
         viewModel.fetchRanking()
@@ -52,7 +52,7 @@ fun RankingScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    friendmode.forEachIndexed { index, item ->
+                    statusList.forEachIndexed { index, item ->
                         StatusButton(
                             selectedValue = viewModel.uiState.rankingStatus,
                             onClick = {viewModel.changeRankingStatus(index) },
