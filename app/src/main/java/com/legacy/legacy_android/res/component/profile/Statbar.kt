@@ -41,7 +41,7 @@ fun Statbar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = if (!title.isEmpty()) {20.dp}else{0.dp})
     ) {
         Text(
             text = title,
@@ -51,7 +51,7 @@ fun Statbar(
 
         Box(
             modifier = modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(if (!title.isEmpty()) {0.9f}else{1f})
                 .height(32.dp)
                 .clip(RoundedCornerShape(12.dp))
         ) {

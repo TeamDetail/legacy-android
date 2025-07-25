@@ -264,7 +264,6 @@ object AppTextStyles {
             fontFamily = pretendard,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
-            
             letterSpacing = (0.02).em,
             color = com.legacy.legacy_android.ui.theme.Label
         )

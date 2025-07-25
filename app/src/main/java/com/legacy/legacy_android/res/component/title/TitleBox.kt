@@ -34,7 +34,7 @@ fun TitleBox(image : Int, title : String) {
             Text(
                 text = title,
                 color = Label,
-                fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontFamily = bitbit,
                 fontWeight = FontWeight.Normal
             )
