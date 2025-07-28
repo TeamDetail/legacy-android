@@ -21,6 +21,10 @@ import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
+import com.legacy.legacy_android.feature.network.course.all.AllCourseService
+import com.legacy.legacy_android.feature.network.course.all.EventCourseService
+import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
+import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -120,5 +124,28 @@ object NetworkModule {
     @Singleton
     fun provideRankService(retrofit: Retrofit): RankingService{
         return retrofit.create(RankingService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAllCourseService(retrofit: Retrofit): AllCourseService{
+        return retrofit.create(AllCourseService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentCourseService(retrofit: Retrofit): RecentCourseService{
+        return retrofit.create(RecentCourseService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventCourseService(retrofit: Retrofit): EventCourseService{
+        return retrofit.create(EventCourseService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providePopularCourseService(retrofit: Retrofit): PopularCourseService{
+        return retrofit.create(PopularCourseService::class.java)
     }
 }

@@ -15,7 +15,6 @@ class BlockRepository @Inject constructor(
     private val getBlockService: GetBlockService
 ) {
     suspend fun createBlock(latitude: Double, longitude: Double): Result<Unit> {
-        println()
         return try {
             val request = PostBlockRequest(latitude = latitude, longitude = longitude)
             postBlockService.block(request)

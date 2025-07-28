@@ -21,12 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
@@ -39,20 +42,18 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 
 @Composable
-fun SmallCourseWrap(modifier: Modifier, type: String, img: String) {
-    Column {
+fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllCourseResponse>?) {
+    Column(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
-                append(
-                    when (type) {
-                        "hot" -> "현재 최고 "
-                        else -> ""
-                    }
-                )
+                append(when (type) {
+                    "popular" -> "현재 최고 "
+                    else -> ""
+                })
                 withStyle(
                     style = SpanStyle(
                         color = when (type) {
-                            "hot" -> Red_Netural
+                            "popular" -> Red_Netural
                             "event" -> Yellow_Netural
                             else -> Green_Netural
                         }
@@ -60,7 +61,7 @@ fun SmallCourseWrap(modifier: Modifier, type: String, img: String) {
                 ) {
                     append(
                         when (type) {
-                            "hot" -> "인기 "
+                            "popular" -> "인기 "
                             "event" -> "이벤트 "
                             else -> "최근 제작 "
                         }
@@ -69,7 +70,7 @@ fun SmallCourseWrap(modifier: Modifier, type: String, img: String) {
                 withStyle(style = SpanStyle(color = Label_Netural)) {
                     append(
                         when (type) {
-                            "hot" -> "코스"
+                            "popular" -> "코스"
                             "event" -> "진행 중인 코스"
                             else -> "된 코스"
                         }
@@ -80,105 +81,97 @@ fun SmallCourseWrap(modifier: Modifier, type: String, img: String) {
             color = Label_Netural
         )
 
-        Spacer(modifier.height(4.dp))
-        LazyRow(modifier = Modifier.fillMaxWidth().height(220.dp)) {
-            item {
-                // 박스
-                Box(
-                    modifier = Modifier
-                        .width(144.dp)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(5.dp)
-                ) {
-                    if (img.isBlank()) {
-                        SkeletonBox(
-                            modifier = Modifier.matchParentSize()
-                        )
-                    } else {
-                        //                AsyncImage(
-//                    model = img,
-//                    contentDescription = "유적지 이미지",
-//                    modifier = Modifier
-//                        .matchParentSize()
-//                        .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-//                        .clip(RoundedCornerShape(12.dp)),
-//                    contentScale = ContentScale.Crop,
-//                    error = painterResource(R.drawable.school_img),
-//                    placeholder = painterResource(R.drawable.school_img)
-//                )
-                        Image(
-                            painter = painterResource(R.drawable.shop),
-                            contentDescription = "유적지 이미지",
-                            modifier = Modifier.matchParentSize()
-                                .clip(RoundedCornerShape(12.dp))
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            Background_Normal.copy(alpha = 1f),
-                                            Background_Normal.copy(alpha = 0.2f)
-                                        ),
-                                        startY = Float.POSITIVE_INFINITY,
-                                        endY = 0f
-                                    )
-                                )
-                                .clip(RoundedCornerShape(12.dp))
-                        )
-                        Column(
-                            modifier = Modifier.padding(top = 150.dp)
-                        ) {
-                            Text(
-                                text = "2025 안동 최신 코스",
-                                style = AppTextStyles.Body2.bold,
-                                color = Label
-                            )
-                            Text(
-                                text = "유저이름",
-                                style = AppTextStyles.Caption2.Medium,
-                                color = Label_Alternative
-                            )
-                            Spacer(modifier.height(4.dp))
-                            // 좋아요 개수
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // 하트 아이콘과 숫자
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.heart),
-                                        contentDescription = "하트 아이콘",
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Text(
-                                        text = "999+",
-                                        style = AppTextStyles.Caption2.Medium,
-                                        color = Label_Assitive
-                                    )
-                                }
+        Spacer(modifier = Modifier.height(4.dp))
 
-                                // 깃발 아이콘과 숫자
+        LazyRow(modifier = Modifier.fillMaxWidth().height(220.dp)) {
+            data?.forEach { course ->
+                item {
+                    Box(
+                        modifier = Modifier
+                            .width(144.dp)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(12.dp))
+                            .padding(5.dp)
+                    ) {
+                        if (course.thumbnail.isBlank()) {
+                            SkeletonBox(modifier = Modifier.matchParentSize())
+                        } else {
+                            AsyncImage(
+                                model = course.thumbnail,
+                                contentDescription = "유적지 이미지",
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop,
+                                error = painterResource(R.drawable.school_img),
+                                placeholder = painterResource(R.drawable.school_img)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Background_Normal.copy(alpha = 1f),
+                                                Background_Normal.copy(alpha = 0.2f)
+                                            ),
+                                            startY = Float.POSITIVE_INFINITY,
+                                            endY = 0f
+                                        )
+                                    )
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+
+                            Column(
+                                modifier = Modifier.padding(top = 150.dp, start = 4.dp)
+                            ) {
+                                Text(
+                                    text = course.courseName,
+                                    style = AppTextStyles.Body2.bold,
+                                    color = Label
+                                )
+                                Text(
+                                    text = course.creator,
+                                    style = AppTextStyles.Caption2.Medium,
+                                    color = Label_Alternative
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.green_flag),
-                                        contentDescription = "깃발 아이콘",
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Text(
-                                        text = "105",
-                                        style = AppTextStyles.Caption2.Medium,
-                                        color = Label_Assitive
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.heart),
+                                            contentDescription = "하트 아이콘",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Text(
+                                            text = if (course.heartCount > 999) "999+" else course.heartCount.toString(),
+                                            style = AppTextStyles.Caption2.Medium,
+                                            color = Label_Assitive
+                                        )
+                                    }
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.green_flag),
+                                            contentDescription = "깃발 아이콘",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Text(
+                                            text = course.clearCount.toString(),
+                                            style = AppTextStyles.Caption2.Medium,
+                                            color = Label_Assitive
+                                        )
+                                    }
                                 }
                             }
                         }
