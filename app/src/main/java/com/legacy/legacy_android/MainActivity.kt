@@ -1,5 +1,7 @@
 package com.legacy.legacy_android
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Configuration
 import android.media.MediaPlayer
@@ -13,6 +15,7 @@ import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -46,8 +49,8 @@ import com.legacy.legacy_android.feature.screen.ranking.RankingScreen
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
-import com.legacy.legacy_android.feature.screen.trial.CourseScreen
-import com.legacy.legacy_android.feature.screen.trial.CourseViewModel
+import com.legacy.legacy_android.feature.screen.course.CourseScreen
+import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 enum class ScreenNavigate {
@@ -71,6 +74,18 @@ enum class BgmType(val resourceId: Int, val volume: Float) {
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    // Notification 수신을 위한 체널 추가
+    private fun createNotificationChannel(id: String, name: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+
+        val notificationManager: NotificationManager
+                = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannel(channel)
+    }
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
 
@@ -99,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         initializeSoundPool()
         registerLifecycleObserver()
         val startDestination = determineStartDestination()
+
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {

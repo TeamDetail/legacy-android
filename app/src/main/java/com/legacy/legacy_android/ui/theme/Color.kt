@@ -12,6 +12,7 @@ val Primary_Alternative = Color(0xFF8540CC)
 
 val Green = Color(0xFF07C002)
 val Green_Alternative = Color(0xFF0A573B)
+val Green_Netural = Color(0xFF508050)
 
 val Red_Normal = Color(0xFFD05458)
 val Red_Netural = Color(0xFFF06969)

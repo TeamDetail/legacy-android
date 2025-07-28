@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.screen.trial
+package com.legacy.legacy_android.feature.screen.course
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
