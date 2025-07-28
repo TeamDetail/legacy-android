@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import javax.inject.Inject
 
-class TrialViewModel @Inject constructor(
+class CourseViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application){
 }

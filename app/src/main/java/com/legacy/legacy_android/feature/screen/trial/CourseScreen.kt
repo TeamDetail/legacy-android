@@ -1,32 +1,24 @@
 package com.legacy.legacy_android.feature.screen.trial
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.ComingSoon
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
-import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
-fun TrialScreen(
+fun CourseScreen(
     modifier: Modifier = Modifier,
-    viewModel: TrialViewModel = hiltViewModel(),
+    viewModel: CourseViewModel = hiltViewModel(),
     navHostController: NavHostController){
     CommonScreenLayout(
         modifier = modifier,
         navHostController = navHostController
     ) {
-        TitleBox(title = "시련", image = R.drawable.fight)
+        TitleBox(title = "코스", image = R.drawable.course)
         // 여기부터 다음에 없애기
         ComingSoon()
     }

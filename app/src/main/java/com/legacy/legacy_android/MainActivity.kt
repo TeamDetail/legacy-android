@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -20,10 +21,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.getRefToken
@@ -44,8 +46,8 @@ import com.legacy.legacy_android.feature.screen.ranking.RankingScreen
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
-import com.legacy.legacy_android.feature.screen.trial.TrialScreen
-import com.legacy.legacy_android.feature.screen.trial.TrialViewModel
+import com.legacy.legacy_android.feature.screen.trial.CourseScreen
+import com.legacy.legacy_android.feature.screen.trial.CourseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 enum class ScreenNavigate {
@@ -54,7 +56,7 @@ enum class ScreenNavigate {
     MARKET,
     RANKING,
     ACHIEVE,
-    TRIAL,
+    COURSE,
     PROFILE,
     FRIEND,
     SETTING
@@ -98,6 +100,17 @@ class MainActivity : AppCompatActivity() {
         registerLifecycleObserver()
         val startDestination = determineStartDestination()
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            val token= task.result
+
+            val msg = getString(R.string.msg_token_token_fmt, token)
+            Log.d("MainActivity", msg)
+            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+        })
+
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
@@ -131,9 +144,9 @@ class MainActivity : AppCompatActivity() {
                     val achieveViewModel: AchieveViewModel = hiltViewModel()
                     AchieveScreen(Modifier, achieveViewModel, navController)
                 }
-                composable(route = ScreenNavigate.TRIAL.name) {
-                    val trialViewModel: TrialViewModel = hiltViewModel()
-                    TrialScreen(Modifier, trialViewModel, navController)
+                composable(route = ScreenNavigate.COURSE.name) {
+                    val courseViewModel: CourseViewModel = hiltViewModel()
+                    CourseScreen(Modifier, courseViewModel, navController)
                 }
                 composable(route = ScreenNavigate.RANKING.name) {
                     val rankingViewModel: RankingViewModel = hiltViewModel()

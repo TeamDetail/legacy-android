@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android") version "2.52"
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 android {
     val localProperties = Properties()
@@ -62,6 +63,9 @@ android {
 dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
+    implementation("com.google.firebase:firebase-messaging")
+    implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
+    implementation("com.google.firebase:firebase-messaging")
     implementation("androidx.lifecycle:lifecycle-process:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -72,6 +76,8 @@ dependencies {
     implementation ("com.kakao.sdk:v2-user:2.20.1")
     implementation ("com.kakao.sdk:v2-share:2.20.1")
     implementation ("com.kakao.sdk:v2-talk:2.20.1")
+    implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
     implementation ("androidx.security:security-crypto:1.1.0-alpha06")
     implementation ("com.kakao.sdk:v2-friend:2.20.1")
     implementation ("com.kakao.sdk:v2-navi:2.20.1")

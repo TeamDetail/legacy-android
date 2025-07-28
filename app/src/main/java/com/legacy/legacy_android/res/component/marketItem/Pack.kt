@@ -48,8 +48,8 @@ fun Pack(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(12.dp)
+                    .height(160.dp)
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Column {
                     Text(
