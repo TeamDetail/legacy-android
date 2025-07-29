@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
@@ -46,7 +48,7 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 
 @Composable
-fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllCourseResponse>?) {
+fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllCourseResponse>?, viewModel: CourseViewModel) {
     Column(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
@@ -96,6 +98,8 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllC
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(12.dp))
                             .padding(5.dp)
+                            .clickable{viewModel.setCurrentCourse(course)
+                                viewModel.updateCourseStatus(CourseStatus.INFO)}
                     ) {
                         if (course.thumbnail.isBlank()) {
                             SkeletonBox(modifier = Modifier.matchParentSize())

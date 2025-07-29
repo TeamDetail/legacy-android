@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -45,17 +46,17 @@ fun RankingScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row (
+            Row(
                 modifier = modifier
                     .fillMaxWidth()
-            ){
+            ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     statusList.forEachIndexed { index, item ->
                         StatusButton(
                             selectedValue = viewModel.uiState.rankingStatus,
-                            onClick = {viewModel.changeRankingStatus(index) },
+                            onClick = { viewModel.changeRankingStatus(index) },
                             text = item,
                             id = index,
                             selectedColor = Primary,
@@ -64,7 +65,6 @@ fun RankingScreen(
                     }
                 }
             }
-            Spacer(modifier = modifier.height(30.dp))
             // 여기서부터 랭킹바 Wrapper
             Row(
                 horizontalArrangement = Arrangement.spacedBy(-6.dp),
@@ -79,14 +79,16 @@ fun RankingScreen(
                         blocks = viewModel.uiState.rankingData?.get(1)?.allBlocks ?: 0,
                         name = viewModel.uiState.rankingData?.get(1)?.nickname ?: "이름 없음",
                         title = viewModel.uiState.rankingData?.get(1)?.title?.name ?: " ",
-                        zIndex = 2f)
+                        zIndex = 2f
+                    )
                 }
                 RankingBar(
                     rank = 1,
                     blocks = viewModel.uiState.rankingData?.get(0)?.allBlocks ?: 0,
                     name = viewModel.uiState.rankingData?.get(0)?.nickname ?: "이름 없음",
                     title = viewModel.uiState.rankingData?.get(0)?.title?.name ?: " ",
-                    zIndex = 3f)
+                    zIndex = 3f
+                )
                 Box(
                     modifier = modifier
                         .offset(0.dp, 50.dp)
@@ -96,10 +98,16 @@ fun RankingScreen(
                         blocks = viewModel.uiState.rankingData?.get(2)?.allBlocks ?: 0,
                         name = viewModel.uiState.rankingData?.get(2)?.nickname ?: "이름 없음",
                         title = viewModel.uiState.rankingData?.get(2)?.title?.name ?: " ",
-                        zIndex = 1f)
+                        zIndex = 1f
+                    )
                 }
             }
-            RankingTable(modifier = modifier, rankingData = viewModel.uiState.rankingData ?: emptyList())
+            Column(modifier.offset(0.dp, -120.dp)){
+                RankingTable(
+                    modifier,
+                    rankingData = viewModel.uiState.rankingData ?: emptyList()
+                )
+            }
         }
     }
 }

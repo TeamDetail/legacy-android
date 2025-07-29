@@ -9,5 +9,6 @@ data class CourseUiState(
     val popularCourse: List<AllCourseResponse> = emptyList(),
     val recentCourse: List<AllCourseResponse> = emptyList(),
     val eventCourse: List<AllCourseResponse> = emptyList(),
-    val courseStatus: CourseStatus = CourseStatus.CATEGORY
+    val courseStatus: CourseStatus = CourseStatus.CATEGORY,
+    val currentCourse: AllCourseResponse? = null
 )

@@ -2,6 +2,7 @@ package com.legacy.legacy_android.res.component.course
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
@@ -37,7 +40,7 @@ import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Netural
 
 @Composable
-fun CourseBox (course: AllCourseResponse) {
+fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
     val clearSize = course.clearRuins?.size ?: 0
     val ruinSize = course.ruins?.size ?: 0
     Box(
@@ -46,6 +49,8 @@ fun CourseBox (course: AllCourseResponse) {
             .height(200.dp)
             .clip(RoundedCornerShape(12.dp))
             .padding(5.dp)
+            .clickable{viewModel.setCurrentCourse(course)
+            viewModel.updateCourseStatus(CourseStatus.INFO)}
     ) {
         if (course.thumbnail.isBlank()) {
             SkeletonBox(modifier = Modifier.matchParentSize())
@@ -61,7 +66,6 @@ fun CourseBox (course: AllCourseResponse) {
                 placeholder = painterResource(R.drawable.school_img)
             )
         }
-
         Box(
             modifier = Modifier
                 .matchParentSize()

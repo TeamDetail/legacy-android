@@ -52,6 +52,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun fetchRuinsDetail(id: Int) {
+        if (id == -1) {
+            uiState = uiState.copy(ruinsDetail = null)
+            return
+        }
         viewModelScope.launch {
             uiState = uiState.copy(loading = true)
             ruinsRepository.getRuinsById(id)

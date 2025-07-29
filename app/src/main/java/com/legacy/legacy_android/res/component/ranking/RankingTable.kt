@@ -21,8 +21,9 @@ fun RankingTable(
         modifier = modifier
             .fillMaxWidth()
             .background(Background_Netural, shape = RoundedCornerShape(12.dp))
-            .offset(0.dp, -144.dp))
-    {
+    )
+            {
+
         Column (
             modifier = modifier.padding(vertical = 12.dp)
         ) {

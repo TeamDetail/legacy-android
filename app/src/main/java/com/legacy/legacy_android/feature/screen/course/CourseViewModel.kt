@@ -52,4 +52,7 @@ class CourseViewModel @Inject constructor(
                 .onSuccess { course -> uiState = uiState.copy(eventCourse = course) }
         }
     }
+    fun setCurrentCourse(course: AllCourseResponse){
+        uiState = uiState.copy(currentCourse = course)
+    }
 }
