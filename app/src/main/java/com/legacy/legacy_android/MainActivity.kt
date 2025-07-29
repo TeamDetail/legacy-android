@@ -122,9 +122,9 @@ class MainActivity : AppCompatActivity() {
             }
             val token= task.result
 
-            val msg = getString(R.string.msg_token_token_fmt, token)
-            Log.d("MainActivity", msg)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+//            val msg = getString(R.string.msg_token_token_fmt, token)
+//            Log.d("MainActivity", msg)
+//            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
         })
 
         enableEdgeToEdge()
@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer = MediaPlayer.create(this, bgmType.resourceId)?.apply {
                 isLooping = true
                 setVolume(bgmType.volume, bgmType.volume)
-//                start()
+                start()
             }
             currentBgm = bgmType
         } catch (e: Exception) {

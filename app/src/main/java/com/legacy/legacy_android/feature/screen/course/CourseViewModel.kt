@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.course.CourseRepository
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.feature.screen.course.model.CourseUiState
+import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,10 +22,8 @@ class CourseViewModel @Inject constructor(
     var uiState by mutableStateOf(CourseUiState())
         private set
 
-    fun updateAllCourse(allCourse: List<AllCourseResponse>) {
-        uiState = uiState.copy(
-           allCourse = allCourse
-        )
+    fun updateCourseStatus(status: CourseStatus){
+        uiState = uiState.copy(courseStatus = status)
     }
 
     fun loadAllCourses() {

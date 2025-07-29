@@ -155,9 +155,9 @@ fun AdventureInfo(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
+                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                     .fillMaxWidth()
-                    .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(12.dp))
                     .clickable(
                         onClick = {
                             viewModel.loadQuiz(ruinsId)

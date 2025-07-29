@@ -6,11 +6,13 @@ data class AllCourseResponse (
     val creator: String,
     val tag: List<String>,
     val ruinsID: List<Int>,
+    val ruins: List<String>,
     val description: String,
     val heartCount: Int,
     val clearCount: Int,
     val thumbnail: String,
     val clearRuins: List<String>,
+    val isClear: Boolean,
     val clear: Boolean,
     val eventCourse: Boolean,
     val heart: Boolean
