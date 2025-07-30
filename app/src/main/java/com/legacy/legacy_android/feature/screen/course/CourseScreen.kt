@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
+import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.course.CourseInfo
 import com.legacy.legacy_android.res.component.course.SmallCourseWrap
@@ -35,6 +38,7 @@ fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+    val query = remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         viewModel.loadAllCourses()
         viewModel.loadPopularCourses()
@@ -100,6 +104,30 @@ fun CourseScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                                .fillMaxWidth()
+                                .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
+                                .clickable {
+                                    viewModel.updateCourseStatus(CourseStatus.CATEGORY)
+
+                                }
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                text = "추천 페이지로 보기",
+                                color = Label,
+                                style = AppTextStyles.Body1.bold
+                            )
+                            CustomSearchBar(
+                                query = query,
+                                placeholder = "코스 이름으로 검색",
+                                onSearch = { keyword -> println("검색 실행: $keyword") },
+                                modifier = modifier
+                            )
+                        }
                         viewModel.uiState.allCourse.forEach { course ->
                             CourseBox(course = course, viewModel = viewModel)
                         }
