@@ -1,5 +1,6 @@
 package com.legacy.legacy_android
 
+import com.legacy.legacy_android.BuildConfig
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -15,6 +16,7 @@ import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
@@ -24,15 +26,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.legacy.legacy_android.feature.data.LocationViewModel
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.getRefToken
 import com.legacy.legacy_android.feature.data.user.isTokenValid
+import com.legacy.legacy_android.feature.network.fcm.FcmRequest
+import com.legacy.legacy_android.feature.network.fcm.FcmService
+import com.legacy.legacy_android.feature.screen.LocationViewModel
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
@@ -52,6 +58,17 @@ import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseScreen
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
+import javax.inject.Inject
 
 enum class ScreenNavigate {
     LOGIN,
@@ -73,7 +90,9 @@ enum class BgmType(val resourceId: Int, val volume: Float) {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    @Inject
+    lateinit var fcmService: FcmService
+    private val locationViewModel: LocationViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     // Notification 수신을 위한 체널 추가
@@ -110,22 +129,39 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        createNotificationChannel("channel_id", "Default Channel")
         setupFullScreenMode()
         initializeSoundPool()
         registerLifecycleObserver()
         val startDestination = determineStartDestination()
 
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@OnCompleteListener
+        locationViewModel.getCurrentLocation { location ->
+            if (location == null) {
+                Log.e("FCM", "위치를 가져오지 못했습니다.")
+                return@getCurrentLocation
             }
-            val token= task.result
 
-//            val msg = getString(R.string.msg_token_token_fmt, token)
-//            Log.d("MainActivity", msg)
-//            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-        })
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) return@addOnCompleteListener
+
+                val token = task.result
+                Log.d("FCM", "토큰: $token")
+                lifecycleScope.launch {
+                    try {
+                         fcmService.location(
+                            FcmRequest(
+                                lat = location.latitude,
+                                lng = location.longitude,
+                                title = "앱 시작 시 위치 등록",
+                                targetToken = token
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FCM", "FCM 위치 등록 실패: ${e.message}")
+                    }
+                }
+            }
+        }
 
         enableEdgeToEdge()
         setContent {
@@ -183,7 +219,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setupFullScreenMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)

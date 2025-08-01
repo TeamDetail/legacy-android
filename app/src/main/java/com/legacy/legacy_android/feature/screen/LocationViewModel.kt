@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.data
+package com.legacy.legacy_android.feature.screen
 
 import android.Manifest
 import android.content.Context

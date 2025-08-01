@@ -16,6 +16,7 @@ android {
     }
     val MAPS_API_KEY = localProperties.getProperty("MAPS_API_KEY") ?: ""
     val KAKAO_API_KEY = localProperties.getProperty("KAKAO_API_KEY") ?: ""
+
     val SERVER_API_KEY = localProperties.getProperty("SERVER_API_KEY") ?: ""
 
     namespace = "com.legacy.legacy_android"
@@ -82,7 +83,6 @@ dependencies {
     implementation ("com.kakao.sdk:v2-friend:2.20.1")
     implementation ("com.kakao.sdk:v2-navi:2.20.1")
     implementation ("com.kakao.sdk:v2-cert:2.20.1")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("com.github.bumptech.glide:glide:4.16.0")

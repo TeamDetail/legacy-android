@@ -25,6 +25,7 @@ import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
+import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -147,5 +148,10 @@ object NetworkModule {
     @Singleton
     fun providePopularCourseService(retrofit: Retrofit): PopularCourseService{
         return retrofit.create(PopularCourseService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFcmService(retrofit: Retrofit): FcmService{
+        return retrofit.create(FcmService::class.java)
     }
 }

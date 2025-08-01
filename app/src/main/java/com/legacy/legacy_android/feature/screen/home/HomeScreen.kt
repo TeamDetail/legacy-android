@@ -37,7 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import com.legacy.legacy_android.feature.data.LocationViewModel
+import com.legacy.legacy_android.feature.screen.LocationViewModel
 import com.legacy.legacy_android.feature.screen.home.model.HintStatus
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
