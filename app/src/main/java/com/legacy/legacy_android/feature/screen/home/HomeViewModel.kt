@@ -3,6 +3,9 @@ package com.legacy.legacy_android.feature.screen.home
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.home.*
 import com.legacy.legacy_android.feature.screen.home.helper.RuinsAnimationHelper
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
@@ -15,12 +18,17 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val ruinsRepository: RuinsRepository,
     private val blockRepository: BlockRepository,
+    private val userRepository: UserRepository,
     private val quizRepository: QuizRepository,
     private val animationHelper: RuinsAnimationHelper,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
         private set
+
+    var cameraPosition by mutableStateOf(
+        CameraPosition.fromLatLngZoom(LatLng(35.0, 128.0), 14f)
+    )
 
     private val quizAnswers = mutableListOf<QuizAnswer>()
 

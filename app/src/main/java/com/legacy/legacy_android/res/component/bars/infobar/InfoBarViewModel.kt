@@ -24,11 +24,23 @@ class InfoBarViewModel @Inject constructor(
         fetchProfile()
     }
 
+    var isMailOpen = userRepository.isMailOpen.value
+
     fun setIsTabClicked() {
         isTabClicked = !isTabClicked
     }
-
     val profileFlow = userRepository.profile
+
+    fun fetchMail() {
+        viewModelScope.launch {
+            try {
+//                userRepository.fetchMail()
+                userRepository.isMailOpen.value = !userRepository.isMailOpen.value
+            } catch (e: Exception) {
+                Log.e("InfoBarViewModel", "메일 로드 실패", e)
+            }
+        }
+    }
 
     fun fetchProfile() {
         viewModelScope.launch {

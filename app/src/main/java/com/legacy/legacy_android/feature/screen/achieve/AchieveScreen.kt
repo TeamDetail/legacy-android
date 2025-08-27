@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.ComingSoon
 import com.legacy.legacy_android.res.component.achieve.AchieveBox
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.profile.Statbar
@@ -40,7 +41,7 @@ fun AchieveScreen(
     navHostController: NavHostController){
     CommonScreenLayout(
         modifier = modifier,
-        navHostController = navHostController
+        navHostController = navHostController,
     ) {
         val statusList = listOf("전체", "일일", "탐험", "숙련", "시련", "히든")
         TitleBox(title = "도전과제", image = R.drawable.medal)

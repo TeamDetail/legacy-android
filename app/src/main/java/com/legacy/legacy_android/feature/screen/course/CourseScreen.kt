@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.course.CourseInfo
 import com.legacy.legacy_android.res.component.course.SmallCourseWrap
@@ -36,7 +38,7 @@ import com.legacy.legacy_android.ui.theme.Line_Alternative
 fun CourseScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseViewModel = hiltViewModel(),
-    navHostController: NavHostController
+    navHostController: NavHostController,
 ) {
     val query = remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
@@ -54,7 +56,7 @@ fun CourseScreen(
         else -> {
             CommonScreenLayout(
                 modifier = modifier,
-                navHostController = navHostController
+                navHostController = navHostController,
             ) {
                 TitleBox(title = "코스", image = R.drawable.course)
 

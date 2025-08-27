@@ -33,15 +33,15 @@ fun CommonScreenLayout(
 ) {
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
         // InfoBar
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .absoluteOffset(0.dp, 10.dp)
-                    .zIndex(5f)
-            ) {
-                InfoBar(navHostController)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .absoluteOffset(0.dp, 10.dp)
+                .zIndex(5f)
+        ) {
+            InfoBar(navHostController)
         }
 
         // 콘텐츠
@@ -68,13 +68,13 @@ fun CommonScreenLayout(
             }
         }
         //navbar
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(vertical = 40.dp, horizontal = 12.dp)
-                    .zIndex(7f)
-            ) {
-                NavBar(navHostController = navHostController)
-            }
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 40.dp, horizontal = 12.dp)
+                .zIndex(7f)
+        ) {
+            NavBar(navHostController = navHostController)
+        }
     }
 }

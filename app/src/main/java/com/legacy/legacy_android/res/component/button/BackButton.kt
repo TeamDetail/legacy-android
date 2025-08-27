@@ -34,7 +34,6 @@ fun BackButton(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-
             .clickable(enabled = !isLoading.value) {
                 coroutineScope.launch {
                     isLoading.value = true

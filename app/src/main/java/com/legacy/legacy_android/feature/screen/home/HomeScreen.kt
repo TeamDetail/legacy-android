@@ -19,11 +19,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -37,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.screen.LocationViewModel
 import com.legacy.legacy_android.feature.screen.home.model.HintStatus
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
@@ -47,6 +48,7 @@ import com.legacy.legacy_android.res.component.adventure.MapStyle
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.modal.CreditModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -56,7 +58,6 @@ import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.White
-import com.legacy.legacy_android.ui.theme.bitbit
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -70,7 +71,6 @@ fun HomeScreen(
     navHostController: NavHostController
 ) {
     var mapLoaded by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
@@ -92,7 +92,18 @@ fun HomeScreen(
 
     val allRequiredPermission = permissionState.allPermissionsGranted
 
-    val cameraPositionState = rememberCameraPositionState()
+    val cameraPositionState = rememberSaveable(saver = CameraPositionState.Saver) {
+        CameraPositionState(
+            position = viewModel.cameraPosition
+        )
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.cameraPosition = cameraPositionState.position
+        }
+    }
+
     val currentLocation by locationViewModel.locationFlow.collectAsState()
     var hasMovedToCurrentLocation by remember { mutableStateOf(false) }
 
@@ -140,6 +151,7 @@ fun HomeScreen(
 
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
+            viewModel.cameraPosition = cameraPositionState.position
             cameraPositionState.projection?.visibleRegion?.latLngBounds?.let { bounds ->
                 viewModel.updateMapBounds(
                     minLat = bounds.southwest.latitude,
@@ -162,7 +174,9 @@ fun HomeScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
+    Box(modifier = modifier
+        .fillMaxSize()
+        .zIndex(99f)) {
         // InfoBar
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -223,6 +237,7 @@ fun HomeScreen(
             }
         }
         if (viewModel.uiState.quizStatus != QuizStatus.NONE) {
+            // quizbox의 맨 뒷 배경
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = modifier

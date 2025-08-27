@@ -1,17 +1,23 @@
 package com.legacy.legacy_android.feature.screen.market
 
-import android.app.Application
 import android.icu.util.Calendar
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.legacy.legacy_android.domain.repository.UserRepository
+import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.screen.market.model.MarketUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 
+@HiltViewModel
 class MarketViewModel @Inject constructor(
-    application: Application
-) : AndroidViewModel(application) {
+    private val marketRepository: MarketRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     var timeUntilMidnight by mutableStateOf(getTimeUntilMidnightFormatted())
         private set
@@ -22,6 +28,18 @@ class MarketViewModel @Inject constructor(
     fun changePackStatus(status: Int){
         uiState = uiState.copy(packStatus = status)
     }
+
+    fun fetchMarketData() {
+        viewModelScope.launch {
+            val result = marketRepository.getMarketData()
+            result.onSuccess { packs ->
+                uiState = uiState.copy(packs = packs)
+            }.onFailure {
+                uiState = uiState.copy(packs = null)
+            }
+        }
+    }
+
 
     private fun getTimeUntilMidnightFormatted(): String {
         val now = Calendar.getInstance()

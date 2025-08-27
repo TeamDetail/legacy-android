@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.domain.repository
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.user.GetMeService
 import com.legacy.legacy_android.feature.network.user.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +14,8 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(
     private val getMeService: GetMeService
 ) {
+
+    val isMailOpen = mutableStateOf(false)
     private val _profile = MutableStateFlow<UserData?>(null)
     val profile: StateFlow<UserData?> = _profile.asStateFlow()
 

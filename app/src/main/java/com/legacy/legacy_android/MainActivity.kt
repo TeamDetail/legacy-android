@@ -57,6 +57,7 @@ import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseScreen
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import okhttp3.Call
@@ -169,6 +170,7 @@ class MainActivity : AppCompatActivity() {
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 handleDestinationChange(destination.route)
             }
+            val infoBarViewModel: InfoBarViewModel = hiltViewModel()
 
             NavHost(
                 navController = navController,
@@ -186,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     val profileViewModel: ProfileViewModel = hiltViewModel()
                     val locationViewModel: LocationViewModel = hiltViewModel()
-                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel, navController)
+                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel,  navController)
                 }
                 composable(route = ScreenNavigate.MARKET.name) {
                     val marketViewModel: MarketViewModel = hiltViewModel()
@@ -194,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable(route = ScreenNavigate.ACHIEVE.name) {
                     val achieveViewModel: AchieveViewModel = hiltViewModel()
-                    AchieveScreen(Modifier, achieveViewModel, navController)
+                    AchieveScreen(Modifier, achieveViewModel,   navHostController = navController)
                 }
                 composable(route = ScreenNavigate.COURSE.name) {
                     val courseViewModel: CourseViewModel = hiltViewModel()

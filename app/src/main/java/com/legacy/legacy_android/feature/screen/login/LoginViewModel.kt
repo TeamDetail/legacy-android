@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.ScreenNavigate
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ private const val TAG = "LoginViewModel"
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     application: Application,
+    private val userRepository: UserRepository,
     private val loginUseCase: LoginUseCase
 ) : AndroidViewModel(application) {
 
@@ -59,10 +61,14 @@ class LoginViewModel @Inject constructor(
                 delay(100)
                 if (navHostController.currentBackStackEntry != null) {
                     navHostController.navigate(ScreenNavigate.HOME.name) {
-                        popUpTo(ScreenNavigate.LOGIN.name) { inclusive = true }
+                        popUpTo(ScreenNavigate.LOGIN.name) {
+                            inclusive = true
+                            saveState = true
+                        }
                         launchSingleTop = true
+                        restoreState = true
                     }
-                }else{
+                } else {
                     println("로그인 안됨")
                 }
             } catch (navError: Exception) {

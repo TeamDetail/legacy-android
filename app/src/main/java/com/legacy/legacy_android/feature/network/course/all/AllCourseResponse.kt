@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.network.course.all
+ package com.legacy.legacy_android.feature.network.course.all
 
 data class AllCourseResponse (
     val courseId: Int,

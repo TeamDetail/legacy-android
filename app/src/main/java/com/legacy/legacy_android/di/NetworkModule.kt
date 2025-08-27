@@ -19,6 +19,7 @@ import javax.inject.Singleton
 import android.content.Context
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
+import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
@@ -26,6 +27,7 @@ import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
 import com.legacy.legacy_android.feature.network.fcm.FcmService
+import com.legacy.legacy_android.feature.network.market.MarketService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -153,5 +155,14 @@ object NetworkModule {
     @Singleton
     fun provideFcmService(retrofit: Retrofit): FcmService{
         return retrofit.create(FcmService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideMarketService(retrofit: Retrofit): MarketService{
+        return retrofit.create(MarketService::class.java)
+    }
+    @Provides
+    fun provideMarketRepository(service: MarketService): MarketRepository {
+        return MarketRepository(service)
     }
 }

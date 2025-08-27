@@ -4,11 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -17,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.ranking.RankingBar
@@ -29,7 +27,7 @@ import com.legacy.legacy_android.ui.theme.Primary
 fun RankingScreen(
     modifier: Modifier = Modifier,
     viewModel: RankingViewModel = hiltViewModel(),
-    navHostController: NavHostController
+    navHostController: NavHostController,
 ) {
     val statusList = listOf("친구", "전체")
 
@@ -39,7 +37,7 @@ fun RankingScreen(
 
     CommonScreenLayout(
         modifier = modifier,
-        navHostController = navHostController
+        navHostController = navHostController,
     ) {
         TitleBox(title = "랭킹", image = R.drawable.trophy)
         Column(

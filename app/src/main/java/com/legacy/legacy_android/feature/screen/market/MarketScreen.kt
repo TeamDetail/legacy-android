@@ -13,25 +13,27 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.res.component.marketItem.MarketInfo
-import com.legacy.legacy_android.res.component.marketItem.PackWrap
-import com.legacy.legacy_android.res.component.marketItem.Packs
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
+import com.legacy.legacy_android.res.component.marketItem.PackWrap
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
-import kotlinx.coroutines.delay
 
 @Composable
 fun MarketScreen(modifier: Modifier = Modifier,
                  viewModel: MarketViewModel = hiltViewModel(),
-                 navHostController: NavHostController
+                 navHostController: NavHostController,
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMarketData()
+    }
     val packList = listOf("카드 팩", "크레딧 충전")
 
     CommonScreenLayout(
         modifier = modifier,
-        navHostController = navHostController
+        navHostController = navHostController,
     ) {
         TitleBox(title = "상점", image = R.drawable.shop)
         Row(
@@ -53,9 +55,7 @@ fun MarketScreen(modifier: Modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     // 팩 파는 구간
-                    PackWrap(newList = Packs.bluePackList)
-                    PackWrap(newList = Packs.purplePackList)
-                    PackWrap(newList = Packs.redPackList)
+                    PackWrap(newList = viewModel.uiState.packs)
                 }
             }
             Spacer(
