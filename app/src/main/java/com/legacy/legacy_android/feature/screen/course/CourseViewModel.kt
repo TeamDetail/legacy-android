@@ -55,4 +55,26 @@ class CourseViewModel @Inject constructor(
     fun setCurrentCourse(course: AllCourseResponse){
         uiState = uiState.copy(currentCourse = course)
     }
+
+    // 여기가 createCourse
+    fun initCreateCourse(){
+        uiState = uiState.copy(
+            createCourseName = "",
+            createCourseHashName = "",
+            createCourseHashTags = emptyList(),
+            isHashTag = mutableStateOf(false)
+        )
+    }
+    fun setCreateCourseName(name: String){
+        uiState = uiState.copy(createCourseName = name)
+    }
+    fun setCreateCourseHashName(name: String){
+        uiState = uiState.copy(createCourseHashName = name)
+    }
+    fun setCreateCourseHashTags(tag: String){
+        uiState = uiState.copy(createCourseHashTags = uiState.createCourseHashTags + tag)
+    }
+    fun setIsHashTag(){
+        uiState = uiState.copy(isHashTag = mutableStateOf(!uiState.isHashTag.value))
+    }
 }

@@ -19,9 +19,11 @@ import javax.inject.Singleton
 import android.content.Context
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
+import com.legacy.legacy_android.domain.repository.card.CardRepository
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
+import com.legacy.legacy_android.feature.network.card.CardService
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
@@ -164,5 +166,11 @@ object NetworkModule {
     @Provides
     fun provideMarketRepository(service: MarketService): MarketRepository {
         return MarketRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCardService(retrofit: Retrofit): CardService{
+        return retrofit.create(CardService::class.java)
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.feature.network.ruinsId.Cards
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label
@@ -28,28 +29,25 @@ import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
 fun DictionaryInfo(
-    modifier: Modifier,
-//    tags: List<String>?,
-    title: String?,
-    img: String,
+    item: Cards? = null,
 ){
     Box(
-        modifier = modifier
+        modifier = Modifier
             .width(122.dp)
             .height(160.dp)
             .clip(RoundedCornerShape(12.dp))
             .padding(5.dp)
     ) {
-        if (img.isNullOrBlank()) {
+        if (item?.cardImageUrl.isNullOrBlank()) {
             SkeletonBox(
-                modifier = modifier
+                modifier = Modifier
                     .matchParentSize()
             )
         } else {
             AsyncImage(
-                model = img,
+                model = item.cardImageUrl,
                 contentDescription = "유적지 이미지",
-                modifier = modifier
+                modifier = Modifier
                     .matchParentSize()
                     .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp)),
@@ -58,16 +56,16 @@ fun DictionaryInfo(
                 placeholder = painterResource(R.drawable.school_img)
             )
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .matchParentSize()
                     .background(Background_Normal.copy(alpha = 0.5f))
                     .clip(RoundedCornerShape(12.dp))
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(12.dp),
-                text = title ?: "",
+                text = item.cardName,
                 fontFamily = bitbit,
                 fontSize = 16.sp,
                 color = Label

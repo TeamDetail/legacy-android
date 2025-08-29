@@ -4,5 +4,7 @@ import com.legacy.legacy_android.feature.network.achieve.CardPack
 
 data class MarketUiState(
     val packStatus: Int = 0,
-    val packs: List<CardPack>? = null
+    val packs: List<CardPack>? = null,
+    val isModalOpen: Boolean = false,
+    val currentCardPack: CardPack? = null
 )

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.feature.network.achieve.CardPack
+import com.legacy.legacy_android.feature.screen.market.MarketViewModel
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -41,7 +42,9 @@ import java.util.Locale
 
 @Composable
 fun Pack(
-    cardPack: CardPack) {
+    cardPack: CardPack,
+    viewModel: MarketViewModel
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,6 +52,7 @@ fun Pack(
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
@@ -80,7 +84,9 @@ fun Pack(
                         .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                         .fillMaxWidth()
                         .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                        .clickable {}
+                        .clickable {viewModel.setModal()
+                        viewModel.setCardPack(cardPack)}
+//                            viewModel.buyCardPack(cardPack.cardpackId)
                 ) {
                     Text(
                         modifier = Modifier

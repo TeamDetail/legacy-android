@@ -37,6 +37,7 @@ import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Green_Netural
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Assitive
 import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Netural
@@ -115,6 +116,12 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                     .padding(horizontal = 0.dp, vertical = 4.dp)
                                     .background(Red_Netural, RoundedCornerShape(999.dp))
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }else{
+                            Text(
+                                text=it.creator,
+                                style = AppTextStyles.Body2.medium,
+                                color = Label_Alternative
                             )
                         }
                         Column {
@@ -205,7 +212,7 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                     text = if (clearSize != 0 && clearSize != ruinSize) {
                                         "${clearSize + 1}/${ruinSize + 1}"
                                     } else {
-                                        "탐험 완료"
+                                        "탐험 완료!"
                                     },
                                     style = AppTextStyles.Label.Bold,
                                 )

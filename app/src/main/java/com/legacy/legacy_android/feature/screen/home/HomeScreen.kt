@@ -213,9 +213,9 @@ fun HomeScreen(
                             delay(300)
                         }
                     }
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ){
+                    ) {
                         repeat(3) {
                             Box(
                                 modifier = Modifier
@@ -262,12 +262,12 @@ fun HomeScreen(
                 if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
                     CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {
                         viewModel.updateHintStatus(HintStatus.HINT)
-                    }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO)})
+                    }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
                 } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(
                         title = "",
                         hint = "힌트",
-                        onConfirm = { viewModel.updateHintStatus(HintStatus.NO)}
+                        onConfirm = { viewModel.updateHintStatus(HintStatus.NO) }
                     )
                 }
             }
@@ -385,30 +385,30 @@ fun HomeScreen(
 
         // 내 위치 이동아이코ㅓㄴ
         if (viewModel.uiState.selectedId == -1) {
-        IconButton(
-            onClick = {
-                currentLocation?.let {
-                    cameraPositionState.move(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(it.latitude, it.longitude),
-                            13.5f
+            IconButton(
+                onClick = {
+                    currentLocation?.let {
+                        cameraPositionState.move(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(it.latitude, it.longitude),
+                                13.5f
+                            )
                         )
-                    )
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 20.dp, bottom = 120.dp)
-                .zIndex(8f)
-                .size(48.dp)
-                .background(Black, shape = CircleShape)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "내 위치로 이동",
-                tint = White
-            )
-        }
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 20.dp, bottom = 120.dp)
+                    .zIndex(8f)
+                    .size(48.dp)
+                    .background(Black, shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Place,
+                    contentDescription = "내 위치로 이동",
+                    tint = White
+                )
+            }
         }
     }
 }

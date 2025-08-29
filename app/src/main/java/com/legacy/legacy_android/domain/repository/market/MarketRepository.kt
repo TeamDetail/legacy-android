@@ -21,4 +21,13 @@ class MarketRepository(
             Result.failure(e)
         }
     }
+
+    suspend fun buyCardPack(id: Int): Result<BaseResponse<Nothing>> {
+        return try {
+            val response: BaseResponse<Nothing> = marketService.buyCardPack(id)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -20,14 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
-import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.course.CourseInfo
 import com.legacy.legacy_android.res.component.course.SmallCourseWrap
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
+import com.legacy.legacy_android.res.component.layout.CourseScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -52,14 +51,17 @@ fun CourseScreen(
         CourseStatus.INFO-> {
             CourseInfo(course = viewModel.uiState.currentCourse, modifier = modifier, viewModel = viewModel)
         }
+        CourseStatus.CREATE -> {
+            CreateCourse(modifier, viewModel)
+        }
 
         else -> {
-            CommonScreenLayout(
+            CourseScreenLayout(
                 modifier = modifier,
                 navHostController = navHostController,
+                viewModel = viewModel
             ) {
                 TitleBox(title = "코스", image = R.drawable.course)
-
                 if (viewModel.uiState.courseStatus == CourseStatus.CATEGORY) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp),

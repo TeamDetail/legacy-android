@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -105,7 +106,7 @@ fun InfoBar(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
+                            .fillMaxWidth(0.4f)
                             .fillMaxHeight()
                             .clickable { navHostController.navigate("profile") }
                     ) {
@@ -126,7 +127,9 @@ fun InfoBar(
                         ) {
                             Text(
                                 text = profile?.nickname.toString(),
-                                style = AppTextStyles.Headline.bold
+                                style = AppTextStyles.Headline.bold,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
                             )
                             Text(
                                 text = "LV. ${profile?.level}",
@@ -138,22 +141,21 @@ fun InfoBar(
 
                     Row(
                         modifier = Modifier
-                            .padding(12.dp)
                             .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                            .fillMaxWidth(0.3f),
-                        horizontalArrangement = Arrangement.spacedBy(1.dp),
+                            .fillMaxWidth(0.7f),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
                             painter = painterResource(R.drawable.coin),
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(32.dp)
                         )
                         Text(
                             text = NumberFormat.getNumberInstance(Locale.US)
                                 .format(profile?.credit ?: 0),
                             color = Yellow,
-                            style = TextStyle(fontSize = 16.sp, fontFamily = bitbit)
+                            style = TextStyle(fontSize = 12.sp, fontFamily = bitbit)
                         )
                     }
                 }

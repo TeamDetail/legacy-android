@@ -36,7 +36,7 @@ class LoginUseCase @Inject constructor(
             )
 
             val response = loginService.login(request)
-            Log.i(TAG, "백엔드 로그인 성공")
+            Log.i(TAG, "백엔드 로그인 성공, ${response.data.accessToken}")
 
             tokenRepository.saveTokens(
                 response.data.accessToken,

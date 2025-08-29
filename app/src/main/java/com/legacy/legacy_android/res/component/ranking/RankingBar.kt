@@ -34,6 +34,7 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun RankingBar(
@@ -148,7 +149,8 @@ fun RankingBar(
                                 color = Yellow_Netural,
                                 fontFamily = pretendard,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center
                             )
                             Text(
                                 text = name,

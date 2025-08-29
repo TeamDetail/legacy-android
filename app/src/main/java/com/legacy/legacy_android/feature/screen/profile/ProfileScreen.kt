@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,6 +50,7 @@ import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
+import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun ProfileScreen(
@@ -163,7 +167,8 @@ fun ProfileScreen(
                     statusList.forEachIndexed { index, item ->
                         StatusButton(
                             selectedValue = viewModel.uiState.profileStatus,
-                            onClick = { viewModel.changeProfileStatus(index) },
+                            onClick = { viewModel.changeProfileStatus(index)
+                                if(item == "도감"){viewModel.fetchMyCollection("경기")} },
                             text = item,
                             id = index,
                             selectedColor = Primary,
@@ -280,20 +285,41 @@ fun DictionaryScreen(
         Row(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Column (
+        ) {
+            Column(
                 modifier.fillMaxWidth(0.3f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 statusList.forEachIndexed { index, item ->
-                    TitleSelector(18, 30, onClick = { viewModel.changeTitleStatus(index)}, id = index, selectedValue = viewModel.uiState.titleStatus, text = item, modifier)
+                    TitleSelector(
+                        18,
+                        30,
+                        onClick = {
+                            viewModel.changeTitleStatus(index)
+                            viewModel.fetchMyCollection(item)
+                        },
+                        id = index,
+                        selectedValue = viewModel.uiState.titleStatus,
+                        text = item,
+                        modifier
+                    )
                 }
             }
-            Row (modifier.fillMaxWidth(1f)
-                .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween){
-                DictionaryInfo(modifier = modifier, title = "이름", img = "")
-                DictionaryInfo(modifier = modifier, title = "이름", img = "")
+            LazyRow (
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = modifier.fillMaxWidth(0.95f)
+            ) {
+                items(viewModel.uiState.myCards.chunked(2)) { cardPair ->
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        cardPair.forEach { card ->
+                            DictionaryInfo(
+                                item = card
+                            )
+                        }
+                    }
+                }
             }
         }
     }

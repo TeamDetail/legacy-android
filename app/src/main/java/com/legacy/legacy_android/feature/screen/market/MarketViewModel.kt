@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
+import com.legacy.legacy_android.feature.network.achieve.CardPack
 import com.legacy.legacy_android.feature.screen.market.model.MarketUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +17,6 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MarketViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
-    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var timeUntilMidnight by mutableStateOf(getTimeUntilMidnightFormatted())
@@ -40,7 +40,21 @@ class MarketViewModel @Inject constructor(
         }
     }
 
+    fun buyCardPack(id: Int) {
+        viewModelScope.launch {
+            marketRepository.buyCardPack(id)
+            fetchMarketData()
+        }
+    }
 
+    fun setModal() {
+        uiState = uiState.copy(isModalOpen = !uiState.isModalOpen)
+    }
+
+    fun setCardPack(cardPack: CardPack) {
+        uiState = uiState.copy(currentCardPack = cardPack)
+    }
+    
     private fun getTimeUntilMidnightFormatted(): String {
         val now = Calendar.getInstance()
         val midnight = Calendar.getInstance().apply {

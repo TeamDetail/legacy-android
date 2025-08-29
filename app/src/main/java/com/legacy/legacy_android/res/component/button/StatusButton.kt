@@ -24,7 +24,6 @@ fun StatusButton(
     nonSelectedColor : Color
 ) {
     val isSelected = selectedValue == id
-
     Box(
         modifier = Modifier
             .background(

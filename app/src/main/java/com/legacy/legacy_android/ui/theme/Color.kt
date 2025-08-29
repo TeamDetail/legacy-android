@@ -19,6 +19,7 @@ val Red_Netural = Color(0xFFF06969)
 
 val Blue_Netural = Color(0xFF5B96C7)
 
+val Purple_Normal = Color(0xFFA980CF)
 val Purple_Netural = Color(0xFFA980CF)
 
 val Fill_Normal = Color(0xFF232424)

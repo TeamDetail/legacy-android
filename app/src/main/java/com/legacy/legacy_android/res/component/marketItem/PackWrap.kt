@@ -7,10 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.feature.network.achieve.CardPack
+import com.legacy.legacy_android.feature.screen.market.MarketViewModel
 
 @Composable
 fun PackWrap(
-    newList: List<CardPack>?){
+    newList: List<CardPack>?,
+    viewModel: MarketViewModel){
     val list = newList ?: emptyList()
     Column (
         modifier = Modifier
@@ -19,7 +21,7 @@ fun PackWrap(
 
     ) {
         list.forEach{ pack ->
-            Pack(cardPack = pack)
+            Pack(cardPack = pack, viewModel = viewModel)
         }
     }
 }
