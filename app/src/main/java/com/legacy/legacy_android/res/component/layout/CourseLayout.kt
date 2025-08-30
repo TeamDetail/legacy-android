@@ -12,8 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,10 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
-import com.legacy.legacy_android.res.component.course.CreateButton
 import com.legacy.legacy_android.ui.theme.Background_Alternative
+import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun CourseScreenLayout(
@@ -36,7 +44,23 @@ fun CourseScreenLayout(
     content: @Composable () -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
-        CreateButton(viewModel = viewModel)
+        IconButton(
+            onClick = {
+                viewModel.updateCourseStatus(CourseStatus.CREATE)
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 20.dp, bottom = 120.dp)
+                .zIndex(8f)
+                .size(48.dp)
+                .background(Primary, shape = CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Create,
+                contentDescription = "만들기",
+                tint = White
+            )
+        }
         // InfoBar
         Row(
             horizontalArrangement = Arrangement.Center,

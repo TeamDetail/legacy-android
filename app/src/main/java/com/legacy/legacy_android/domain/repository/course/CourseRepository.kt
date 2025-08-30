@@ -6,6 +6,8 @@ import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseService
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +16,8 @@ class CourseRepository @Inject constructor(
     private val allCourseService: AllCourseService,
     private val popularCourseService: PopularCourseService,
     private val recentCourseService: RecentCourseService,
-    private val eventCourseService: EventCourseService
+    private val eventCourseService: EventCourseService,
+    private val searchCourseService: SearchCourseService
 ) {
     suspend fun getAllCourse(): Result<List<AllCourseResponse>> {
         return try {
@@ -72,6 +75,21 @@ class CourseRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("CourseRepository", "코스를 불러올 수 없습니다.", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSearchCourse(name: String): Result<List<SearchCourseResponse>>{
+        return try{
+            val response = searchCourseService.getSearchCourse(name)
+            val data = response.data
+            if (data != null){
+                Result.success(data)
+            }else{
+                Result.failure(NullPointerException("SearchCourse data null"))
+            }
+        } catch (e: Exception){
+            Log.e("CourseRepository", "서치 코스 에러", e)
             Result.failure(e)
         }
     }

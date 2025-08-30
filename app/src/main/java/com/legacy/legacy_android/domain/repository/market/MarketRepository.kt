@@ -5,7 +5,7 @@ import com.legacy.legacy_android.feature.network.achieve.CardPack
 import com.legacy.legacy_android.feature.network.market.MarketResponse
 import com.legacy.legacy_android.feature.network.market.MarketService
 import javax.inject.Singleton
-
+import android.util.Log
 @Singleton
 class MarketRepository(
     private val marketService: MarketService
@@ -22,12 +22,16 @@ class MarketRepository(
         }
     }
 
+
     suspend fun buyCardPack(id: Int): Result<BaseResponse<Nothing>> {
         return try {
             val response: BaseResponse<Nothing> = marketService.buyCardPack(id)
+            Log.d("Market", "카드팩 구매 성공: $response")
             Result.success(response)
         } catch (e: Exception) {
+            Log.e("Market", "카드팩 구매 실패 ${id.toString()}", e)
             Result.failure(e)
         }
     }
+
 }

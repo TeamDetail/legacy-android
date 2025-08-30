@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MarketViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var timeUntilMidnight by mutableStateOf(getTimeUntilMidnightFormatted())
@@ -44,6 +45,7 @@ class MarketViewModel @Inject constructor(
         viewModelScope.launch {
             marketRepository.buyCardPack(id)
             fetchMarketData()
+            userRepository.fetchProfile()
         }
     }
 

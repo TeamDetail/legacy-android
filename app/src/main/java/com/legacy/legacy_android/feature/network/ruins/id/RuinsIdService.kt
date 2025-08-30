@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.network.ruinsId
+package com.legacy.legacy_android.feature.network.ruins.id
 
 import com.legacy.legacy_android.feature.data.core.BaseResponse
 import retrofit2.http.GET

@@ -3,7 +3,7 @@ package com.legacy.legacy_android.feature.screen.home.model
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
-import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdResponse
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 
 enum class HintStatus { NO, CREDIT, HINT }
 enum class QuizStatus { NONE, WORKING, LOADING, SUCCESS, RETRY }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.course.CourseRepository
+import com.legacy.legacy_android.domain.repository.home.RuinsRepository
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.feature.screen.course.model.CourseUiState
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CourseViewModel @Inject constructor(
-    private val courseRepository: CourseRepository
+    private val courseRepository: CourseRepository,
+    private val ruinsRepository: RuinsRepository
 ): ViewModel(){
 
     var uiState by mutableStateOf(CourseUiState())
@@ -40,6 +42,20 @@ class CourseViewModel @Inject constructor(
         }
     }
 
+    fun searchCourses(name: String){
+        viewModelScope.launch {
+            courseRepository.getSearchCourse(name)
+                .onSuccess { course -> uiState = uiState.copy(searchCourse = course) }
+        }
+    }
+
+    fun searchRuins(name: String){
+        viewModelScope.launch {
+            ruinsRepository.getSearchRuins(name)
+                .onSuccess { ruins -> uiState = uiState.copy(createSearchRuins = ruins) }
+        }
+    }
+
     fun loadRecentCourses() {
         viewModelScope.launch {
             courseRepository.getRecentCourse()
@@ -59,14 +75,15 @@ class CourseViewModel @Inject constructor(
     // 여기가 createCourse
     fun initCreateCourse(){
         uiState = uiState.copy(
-            createCourseName = "",
+            createRuinsName = "",
             createCourseHashName = "",
             createCourseHashTags = emptyList(),
             isHashTag = mutableStateOf(false)
         )
     }
-    fun setCreateCourseName(name: String){
-        uiState = uiState.copy(createCourseName = name)
+    fun setCreateRuinsName(name: String){
+        uiState = uiState.copy(createRuinsName = name)
+        searchRuins(name)
     }
     fun setCreateCourseHashName(name: String){
         uiState = uiState.copy(createCourseHashName = name)
@@ -77,4 +94,12 @@ class CourseViewModel @Inject constructor(
     fun setIsHashTag(){
         uiState = uiState.copy(isHashTag = mutableStateOf(!uiState.isHashTag.value))
     }
+    fun setCreateCourseName(name: String){
+        uiState = uiState.copy(createCourseName = name)
+    }
+
+//    fun setCreateSearchCourseName(name: String){
+//        uiState = uiState.copy(searchCourse = searchCourses())
+//        searchCourses(name)
+//    }
 }

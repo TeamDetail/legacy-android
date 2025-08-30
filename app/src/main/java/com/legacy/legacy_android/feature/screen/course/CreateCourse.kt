@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,11 +34,13 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.course.PlusButton
 import com.legacy.legacy_android.res.component.course.PlusInput
+import com.legacy.legacy_android.res.component.course.SearchCourseBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.White
 
 import kotlinx.coroutines.delay
@@ -55,7 +60,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
             .background(Background_Alternative)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
@@ -84,45 +89,67 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                 )
             }
             // 이름 적는 곳
-            OutlinedTextField(
-                modifier = modifier.fillMaxWidth().background(shape = RoundedCornerShape(12.dp), color = Background_Netural),
-                value = viewModel.uiState.createCourseName,
-                onValueChange = { viewModel.setCreateCourseName(it) },
-                placeholder = {Text(text = "코스 이름을 입력해주세요..", color = White)},
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Background_Normal,
-                    unfocusedContainerColor = Background_Normal,
-                    disabledContainerColor = Background_Normal,
-                    focusedIndicatorColor = Background_Normal,
-                    unfocusedIndicatorColor = Background_Normal,
-                    disabledIndicatorColor = Background_Normal
-                )
-            )
-            // 해시태그 설정
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                viewModel.uiState.createCourseHashTags.forEach { tag ->
-                    Box(
-                        modifier = Modifier
-                            .background(color = Fill_Normal, shape = RoundedCornerShape(4.dp))
-                            .height(32.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "# $tag",
-                            style = AppTextStyles.Body2.medium.copy(color = White),
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
+                OutlinedTextField(
+                    modifier = modifier.fillMaxWidth()
+                        .background(shape = RoundedCornerShape(12.dp), color = Background_Netural),
+                    value = viewModel.uiState.createCourseName,
+                    onValueChange = { viewModel.setCreateCourseName(it) },
+                    placeholder = { Text(text = "코스 이름을 입력해주세요..", color = White) },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = White,
+                        unfocusedTextColor = White,
+                        focusedContainerColor = Background_Normal,
+                        unfocusedContainerColor = Background_Normal,
+                        disabledContainerColor = Background_Normal,
+                        focusedIndicatorColor = Background_Normal,
+                        unfocusedIndicatorColor = Background_Normal,
+                        disabledIndicatorColor = Background_Normal
+                    )
+                )
+                // 해시태그 설정
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    viewModel.uiState.createCourseHashTags.forEach { tag ->
+                        Box(
+                            modifier = Modifier
+                                .background(color = Fill_Normal, shape = RoundedCornerShape(4.dp))
+                                .height(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "# $tag",
+                                style = AppTextStyles.Body2.medium.copy(color = White),
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
+                    }
+                    if (viewModel.uiState.isHashTag.value) {
+                        PlusInput(viewModel)
+                    } else {
+                        PlusButton(viewModel)
                     }
                 }
-                if (viewModel.uiState.isHashTag.value){
-                    PlusInput(viewModel)
-                }else {
-                    PlusButton(viewModel)
-                }
+            }
+            // 유적지 선택 파트
+            Column (
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+                Text(
+                    text = "선택된 유적지",
+                    style = AppTextStyles.Body1.bold,
+                    color = Label_Alternative
+                )
+            }
+            Column (
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+                SearchCourseBox(modifier, viewModel)
             }
         }
     }

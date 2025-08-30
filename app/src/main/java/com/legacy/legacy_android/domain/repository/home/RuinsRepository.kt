@@ -4,15 +4,17 @@ import android.util.Log
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapRequest
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
-import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdResponse
-import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdService
+import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RuinsRepository @Inject constructor(
     private val ruinsMapService: RuinsMapService,
-    private val ruinsIdService: RuinsIdService
+    private val ruinsIdService: RuinsIdService,
+    private val ruinsSearchService: RuinsSearchService
 ) {
     suspend fun getRuinsByBounds(
         minLat: Double, maxLat: Double,
@@ -39,6 +41,16 @@ class RuinsRepository @Inject constructor(
             Result.success(response.data)
         } catch (e: Exception) {
             Log.e("RuinsRepository", "getById 오류 ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSearchRuins(name: String): Result<List<RuinsIdResponse>?>{
+        return try{
+            val response = ruinsSearchService.getSearchRuins(name)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Log.e("RuinsRepository", "getSearchNameRuins 오류 ${e.message}")
             Result.failure(e)
         }
     }

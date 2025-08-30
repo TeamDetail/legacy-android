@@ -292,8 +292,7 @@ fun DictionaryScreen(
             ) {
                 statusList.forEachIndexed { index, item ->
                     TitleSelector(
-                        18,
-                        30,
+                        viewModel.uiState.myCards?.maxCount ?: 0, 42,
                         onClick = {
                             viewModel.changeTitleStatus(index)
                             viewModel.fetchMyCollection(item)
@@ -309,7 +308,7 @@ fun DictionaryScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = modifier.fillMaxWidth(0.95f)
             ) {
-                items(viewModel.uiState.myCards.chunked(2)) { cardPair ->
+                items(viewModel.uiState.myCards?.cards?.chunked(2) ?: emptyList()) { cardPair ->
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {

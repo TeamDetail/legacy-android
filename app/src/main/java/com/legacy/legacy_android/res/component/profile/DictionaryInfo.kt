@@ -3,8 +3,6 @@ package com.legacy.legacy_android.res.component.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.ruinsId.Cards
+import com.legacy.legacy_android.feature.network.ruins.id.Cards
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Label

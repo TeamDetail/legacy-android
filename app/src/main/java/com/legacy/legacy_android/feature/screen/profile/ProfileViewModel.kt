@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
             result.onSuccess {
                 Log.d("CardRepository", "카드 불러오기 성공: $region $it")
                 uiState = uiState.copy(
-                    myCards = it?.cards ?: emptyList()
+                    myCards = it
                 )
             }.onFailure { e ->
                 Log.e("CardRepository", "카드 불러오기 실패", e)

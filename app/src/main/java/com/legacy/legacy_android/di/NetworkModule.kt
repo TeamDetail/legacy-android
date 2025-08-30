@@ -7,7 +7,7 @@ import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
 import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
-import com.legacy.legacy_android.feature.network.ruinsId.RuinsIdService
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdService
 import com.legacy.legacy_android.feature.network.token.TokenService
 import com.legacy.legacy_android.feature.network.user.GetMeService
 import dagger.Module
@@ -19,7 +19,6 @@ import javax.inject.Singleton
 import android.content.Context
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
-import com.legacy.legacy_android.domain.repository.card.CardRepository
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
@@ -28,9 +27,11 @@ import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseService
 import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.network.market.MarketService
 import com.legacy.legacy_android.feature.network.rank.RankingService
+import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -102,6 +103,11 @@ object NetworkModule {
     fun provideRuinsIdService(retrofit: Retrofit): RuinsIdService {
         return retrofit.create(RuinsIdService::class.java)
     }
+    @Provides
+    @Singleton
+    fun provideRuinsSearchService(retrofit: Retrofit): RuinsSearchService {
+        return retrofit.create(RuinsSearchService::class.java)
+    }
 
     @Provides
     @Singleton
@@ -172,5 +178,10 @@ object NetworkModule {
     @Singleton
     fun provideCardService(retrofit: Retrofit): CardService{
         return retrofit.create(CardService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideSearchCourseService(retrofit: Retrofit): SearchCourseService{
+        return retrofit.create(SearchCourseService::class.java)
     }
 }
