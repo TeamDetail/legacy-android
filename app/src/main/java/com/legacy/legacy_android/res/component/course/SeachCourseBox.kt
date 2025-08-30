@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -13,6 +15,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
@@ -33,10 +36,18 @@ fun SearchCourseBox(
             .background(shape = RoundedCornerShape(12.dp), color = Background_Netural),
         value = viewModel.uiState.createRuinsName,
         shape = RoundedCornerShape(12.dp),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                viewModel.searchRuins(viewModel.uiState.createRuinsName)
+            }
+        ),
         onValueChange = {
-            viewModel.setCreateRuinsName(it) },
+            viewModel.setCreateRuinsName(it)},
         placeholder = { Text(text = "유적지 이름으로 검색", color = White, fontSize = 12.sp,
             textAlign = TextAlign.Center) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Search
+        ),
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,

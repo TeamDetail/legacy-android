@@ -48,9 +48,15 @@ class RuinsRepository @Inject constructor(
     suspend fun getSearchRuins(name: String): Result<List<RuinsIdResponse>?>{
         return try{
             val response = ruinsSearchService.getSearchRuins(name)
+            if (response.data != null){
+                println("search ruins성공")
             Result.success(response.data)
+            }
+            else {
+                Result.failure(NullPointerException("데이터 빔"))
+            }
         } catch (e: Exception) {
-            Log.e("RuinsRepository", "getSearchNameRuins 오류 ${e.message}")
+            Log.e("RuinsRepository", "getSearchNameRuins ${name} 오류 ${e.message}")
             Result.failure(e)
         }
     }

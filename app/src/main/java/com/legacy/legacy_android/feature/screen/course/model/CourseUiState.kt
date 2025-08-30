@@ -22,5 +22,6 @@ data class CourseUiState(
     val createCourseHashName: String ="",
     val createCourseHashTags: List<String> = emptyList(),
     val isHashTag: MutableState<Boolean> = mutableStateOf(false),
-    val createSearchRuins: List<RuinsIdResponse>? = emptyList()
+    val createSearchRuins: List<RuinsIdResponse>? = emptyList(),
+    val createSelectedRuins: List<RuinsIdResponse>? = emptyList()
 )

@@ -8,9 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.course.CourseRepository
 import com.legacy.legacy_android.domain.repository.home.RuinsRepository
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.network.course.all.CreateCourseRequest
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.feature.screen.course.model.CourseUiState
-import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -78,12 +79,14 @@ class CourseViewModel @Inject constructor(
             createRuinsName = "",
             createCourseHashName = "",
             createCourseHashTags = emptyList(),
-            isHashTag = mutableStateOf(false)
+            isHashTag = mutableStateOf(false),
+            createCourseName = "",
+            createSearchRuins = emptyList(),
+            createSelectedRuins = emptyList()
         )
     }
     fun setCreateRuinsName(name: String){
         uiState = uiState.copy(createRuinsName = name)
-        searchRuins(name)
     }
     fun setCreateCourseHashName(name: String){
         uiState = uiState.copy(createCourseHashName = name)
@@ -97,9 +100,46 @@ class CourseViewModel @Inject constructor(
     fun setCreateCourseName(name: String){
         uiState = uiState.copy(createCourseName = name)
     }
+    fun setCreateSelectedRuins(ruin: RuinsIdResponse?) {
+        if (ruin == null || uiState.createSelectedRuins!!.contains(ruin)) return
+        uiState = uiState.copy(
+            createSelectedRuins = (uiState.createSelectedRuins ?: emptyList()) + ruin
+        )
+    }
+    fun createCourse() {
+        val name = uiState.createCourseName
+        val tags = uiState.createCourseHashTags
+        val ruins = uiState.createSelectedRuins
 
-//    fun setCreateSearchCourseName(name: String){
-//        uiState = uiState.copy(searchCourse = searchCourses())
-//        searchCourses(name)
-//    }
+        if (name.isBlank() || tags.isEmpty() || ruins.isNullOrEmpty()) {
+            println("덜채움")
+            return
+        }
+
+        viewModelScope.launch {
+            val data = CreateCourseRequest(
+                name = name,
+                tag = tags,
+                description = "",
+                ruinsId = ruins.map { it.ruinsId }
+            )
+
+            courseRepository.createCourse(data)
+                .onSuccess {
+                    updateCourseStatus(CourseStatus.ALL)
+                    println("Course 만들기 성공")
+                    initCreateCourse()
+                    loadAllCourses()
+                }
+                .onFailure { e ->
+                    println("Course 만들기 실패: ${e.message}")
+                }
+        }
+    }
+
+
+    fun setCreateSearchCourseName(name: String){
+        uiState = uiState.copy(searchCourseName = name)
+        searchCourses(name)
+    }
 }

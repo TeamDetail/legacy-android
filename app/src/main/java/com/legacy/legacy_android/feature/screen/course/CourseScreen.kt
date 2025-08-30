@@ -116,7 +116,6 @@ fun CourseScreen(
                                 .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
                                 .clickable {
                                     viewModel.updateCourseStatus(CourseStatus.CATEGORY)
-
                                 }
                         ) {
                             Text(
@@ -128,7 +127,8 @@ fun CourseScreen(
                             CustomSearchBar(
                                 query = query,
                                 placeholder = "코스 이름으로 검색",
-                                onSearch = { keyword -> println("검색 실행: $keyword") },
+                                onSearch = { keyword -> println("검색 실행: $keyword")
+                                           viewModel.searchCourses(query.value)},
                                 modifier = modifier
                             )
                         }

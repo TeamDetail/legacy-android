@@ -1,7 +1,10 @@
 package com.legacy.legacy_android.feature.network.course.all
 
 import com.legacy.legacy_android.feature.data.core.BaseResponse
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface AllCourseService{
     @GET("/course")
@@ -19,4 +22,10 @@ interface RecentCourseService {
 interface EventCourseService {
     @GET("/course/event")
     suspend fun getEventCourse(): BaseResponse<List<AllCourseResponse>>
+}
+interface CreateCourseService {
+    @POST("/course")
+    suspend fun createCourse(
+        @Body data: CreateCourseRequest
+    ): BaseResponse<SearchCourseResponse>
 }

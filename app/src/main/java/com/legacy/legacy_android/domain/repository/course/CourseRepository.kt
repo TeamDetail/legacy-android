@@ -3,6 +3,8 @@ package com.legacy.legacy_android.domain.repository.course
 import android.util.Log
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
+import com.legacy.legacy_android.feature.network.course.all.CreateCourseRequest
+import com.legacy.legacy_android.feature.network.course.all.CreateCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
@@ -17,7 +19,8 @@ class CourseRepository @Inject constructor(
     private val popularCourseService: PopularCourseService,
     private val recentCourseService: RecentCourseService,
     private val eventCourseService: EventCourseService,
-    private val searchCourseService: SearchCourseService
+    private val searchCourseService: SearchCourseService,
+    private val createCourseService: CreateCourseService
 ) {
     suspend fun getAllCourse(): Result<List<AllCourseResponse>> {
         return try {
@@ -79,17 +82,38 @@ class CourseRepository @Inject constructor(
         }
     }
 
-    suspend fun getSearchCourse(name: String): Result<List<SearchCourseResponse>>{
-        return try{
+    suspend fun getSearchCourse(name: String): Result<List<SearchCourseResponse>> {
+        return try {
             val response = searchCourseService.getSearchCourse(name)
             val data = response.data
-            if (data != null){
+            if (data != null) {
+                println("search Course성공")
                 Result.success(data)
-            }else{
+            } else {
                 Result.failure(NullPointerException("SearchCourse data null"))
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("CourseRepository", "서치 코스 에러", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun createCourse(data: CreateCourseRequest): Result<SearchCourseResponse> {
+        return try {
+            val response = createCourseService.createCourse(data)
+            if (response.status == 200 || response.status == 201) {
+                val body = response.data
+                if (body != null) {
+                    println("Course 만들기 성공")
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception("Course 만들기 성공했지만 data가 null임"))
+                }
+            } else {
+                Result.failure(Exception("Course 만들기 실패: ${response.status}"))
+            }
+        } catch (e: Exception) {
+            Log.e("CourseRepository", "코스 만들기 에러", e)
             Result.failure(e)
         }
     }

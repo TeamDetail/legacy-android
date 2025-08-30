@@ -10,7 +10,7 @@ val White = Color(0xFFFFFFFF)
 val Primary = Color(0xFFA05AE8)
 val Primary_Alternative = Color(0xFF8540CC)
 
-val Green = Color(0xFF07C002)
+val Green_Normal =  Color(0xFF508050)
 val Green_Alternative = Color(0xFF0A573B)
 val Green_Netural = Color(0xFF508050)
 

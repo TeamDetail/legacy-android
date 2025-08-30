@@ -5,7 +5,7 @@ data class AllCourseResponse (
     val courseName: String,
     val creator: String,
     val tag: List<String>,
-    val ruinsID: List<Int>,
+    val ruinsId: List<Int>,
     val ruins: List<String>,
     val description: String,
     val heartCount: Int,

@@ -24,6 +24,7 @@ import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
 import com.legacy.legacy_android.feature.network.card.CardService
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
+import com.legacy.legacy_android.feature.network.course.all.CreateCourseService
 import com.legacy.legacy_android.feature.network.course.all.EventCourseService
 import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
@@ -107,6 +108,11 @@ object NetworkModule {
     @Singleton
     fun provideRuinsSearchService(retrofit: Retrofit): RuinsSearchService {
         return retrofit.create(RuinsSearchService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideCreateCourseService(retrofit: Retrofit): CreateCourseService {
+        return retrofit.create(CreateCourseService::class.java)
     }
 
     @Provides
