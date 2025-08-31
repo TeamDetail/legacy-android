@@ -1,13 +1,5 @@
 package com.legacy.legacy_android.feature.network.user
 
-import com.google.gson.annotations.SerializedName
-
-data class GetMeResponse(
-    val status: Int,
-    val message: String?,
-    val data: UserData?
-)
-
 data class UserData(
     val userId: Long,
     val nickname: String,

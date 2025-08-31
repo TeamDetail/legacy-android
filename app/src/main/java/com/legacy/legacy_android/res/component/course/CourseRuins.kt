@@ -2,7 +2,6 @@ package com.legacy.legacy_android.res.component.course
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
-import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.feature.network.ruins.id.CourseRuinsResponse
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
+import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Green_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -41,22 +41,38 @@ import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
 fun CourseRuins(
-    data: RuinsIdResponse?,
-    isClear: Boolean,
-    viewModel: CourseViewModel
+    data: CourseRuinsResponse,
+    index: Int
 ){
-    Row (
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.height(200.dp).clickable {viewModel.setCreateSelectedRuins(data)}
-    ){
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.height(200.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(0.15f)) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        if (data.clear) Green_Netural else Fill_Normal,
+                        shape = RoundedCornerShape(100.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = index.toString(),
+                    style = AppTextStyles.Heading2.bold,
+                    color = Label
+                )
+            }
+        }
         // 상세 정보
         Column (
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier.fillMaxWidth(0.5f),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start
         ){
             // 있는지 없는지
-            if (isClear) {
+            if (data.clear) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -64,7 +80,6 @@ fun CourseRuins(
                         .height(24.dp)
                         .background(Green_Netural, shape = RoundedCornerShape(12.dp))
                 ) {
-                    val index = viewModel.uiState.createSelectedRuins?.indexOf(data) ?: -1
                     Text(
                         text = if (index >= 0) (index + 1).toString() else "",
                         style = AppTextStyles.Body2.bold,
@@ -77,8 +92,8 @@ fun CourseRuins(
             Column (
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ){
-                Text(text = "#${data?.ruinsId}", color = Label_Alternative, style = AppTextStyles.Caption1.Medium)
-                Text(text = data?.name ?: "이름이 없습니다.", style = AppTextStyles.Headline.bold, color = Label)
+                Text(text = "#${data.data.ruinsId}", color = Label_Alternative, style = AppTextStyles.Caption1.Medium)
+                Text(text = data.data.name ?: "이름이 없습니다.", style = AppTextStyles.Headline.bold, color = Label)
                 Spacer(Modifier.height(2.dp))
                 //TODO 별점 만들기
             }
@@ -103,14 +118,14 @@ fun CourseRuins(
                 .clip(RoundedCornerShape(12.dp))
                 .padding(5.dp)
         ) {
-            if (data?.ruinsImage.isNullOrBlank()) {
+            if (data.data.ruinsImage.isNullOrBlank()) {
                 SkeletonBox(
                     modifier = Modifier
                         .matchParentSize()
                 )
             } else {
                 AsyncImage(
-                    model = data?.ruinsImage,
+                    model = data.data.ruinsImage,
                     contentDescription = "유적지 이미지",
                     modifier = Modifier
                         .matchParentSize()
@@ -130,7 +145,7 @@ fun CourseRuins(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = data?.name ?: "",
+                    text = data.data.name,
                     fontFamily = bitbit,
                     fontSize = 16.sp,
                     color = Label

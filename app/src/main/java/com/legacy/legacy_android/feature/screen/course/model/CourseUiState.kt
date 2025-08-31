@@ -22,6 +22,7 @@ data class CourseUiState(
     val currentCourse: AllCourseResponse? = null,
     val searchCourse: List<SearchCourseResponse> = emptyList(),
     val searchCourseName: String ="",
+    val isRefreshing: Boolean = false,
     // create value
     val createCourseName: String = "",
     val createRuinsName: String = "",

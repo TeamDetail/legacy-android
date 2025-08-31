@@ -47,8 +47,4 @@ class UserRepository @Inject constructor(
         clearProfile()
         fetchProfile(force = true)
     }
-
-    fun getCurrentProfile(): UserData? {
-        return _profile.value
-    }
 }

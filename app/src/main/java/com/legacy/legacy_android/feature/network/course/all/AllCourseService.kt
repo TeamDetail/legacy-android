@@ -7,15 +7,14 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface AllCourseService{
     @GET("/course")
     suspend fun getAllCourse(): BaseResponse<List<SearchCourseResponse>>
 }
 interface CourseByIdService{
-    @GET("/course/{courseId}")
-    suspend fun getCourseById(@Path("courseId") courseId : Int): BaseResponse<AllCourseResponse>
+    @GET("/course/{courseId}/{userId}")
+    suspend fun getCourseById(@Path("courseId") courseId : Int, @Path("userId") userId: Long): BaseResponse<AllCourseResponse>
 
     @PATCH("/course")
     suspend fun patchHeart(

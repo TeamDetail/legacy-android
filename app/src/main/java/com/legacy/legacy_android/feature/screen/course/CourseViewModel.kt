@@ -32,6 +32,18 @@ class CourseViewModel @Inject constructor(
     val newList = listOf("최신", "인기", "클리어 인원")
     val eventList = listOf("전체", "일반", "이벤트")
 
+    // 새로고침
+    fun refreshCourses() {
+        uiState = uiState.copy(isRefreshing = true)
+        viewModelScope.launch {
+            loadAllCourses()
+            loadPopularCourses()
+            loadRecentCourses()
+            loadEventCourses()
+            uiState = uiState.copy(isRefreshing = false)
+        }
+    }
+
     fun updateCourseStatus(status: CourseStatus){
         uiState = uiState.copy(courseStatus = status)
     }

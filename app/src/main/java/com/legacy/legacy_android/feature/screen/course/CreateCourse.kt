@@ -93,6 +93,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                             isLoading.value = true
                             delay(100)
                             viewModel.updateCourseStatus(CourseStatus.ALL)
+                            viewModel.loadAllCourses()
                         }
                     }
             ) {

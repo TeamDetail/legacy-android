@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
@@ -219,12 +220,8 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                     }
                 }
             }
-            (course?.clearRuins ?: emptyList()).forEach {
-                CourseRuins(data = it, isClear = true, viewModel)
-            }
-
-            (course?.ruins ?: emptyList()).forEach {
-                CourseRuins(data = it, isClear = false, viewModel)
+            (course?.ruins ?: emptyList()).forEachIndexed { index, item ->
+                CourseRuins(data = item, index = index)
             }
         }
     }

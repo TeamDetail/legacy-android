@@ -55,7 +55,7 @@ fun Pack(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(144.dp)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
             Box(

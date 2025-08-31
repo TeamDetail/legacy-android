@@ -1,6 +1,6 @@
  package com.legacy.legacy_android.feature.network.course.all
 
- import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
+ import com.legacy.legacy_android.feature.network.ruins.id.CourseRuinsResponse
 
  data class AllCourseResponse(
     val courseId: Int,
@@ -14,8 +14,7 @@
     val thumbnail: String,
     val clearRuinsCount: Int,
     val maxRuinsCount: Int,
-    val ruins: List<RuinsIdResponse>,
-    val clearRuins: List<RuinsIdResponse>,
+    val ruins: List<CourseRuinsResponse>,
     val clear: Boolean,
     val heart: Boolean
  )

@@ -20,6 +20,12 @@ data class RuinsIdResponse (
     val card: Cards?
 )
 
+
+data class CourseRuinsResponse(
+    val clear: Boolean,
+    val data: RuinsIdResponse
+)
+
 data class Cards(
     val cardId: Int,
     val cardName: String,

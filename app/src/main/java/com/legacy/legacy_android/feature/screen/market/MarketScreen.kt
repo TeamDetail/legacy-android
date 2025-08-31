@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.feature.screen.market
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -34,7 +35,7 @@ fun MarketScreen(modifier: Modifier = Modifier,
         viewModel = viewModel
     ) {
         TitleBox(title = "상점", image = R.drawable.shop)
-        Row {
+        Row (horizontalArrangement = Arrangement.spacedBy(8.dp)){
             packList.forEachIndexed { index, item ->
                 StatusButton(
                     selectedValue = viewModel.uiState.packStatus,

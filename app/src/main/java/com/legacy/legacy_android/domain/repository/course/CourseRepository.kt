@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.domain.repository.course
 
 import android.util.Log
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.CourseByIdService
@@ -26,7 +27,8 @@ class CourseRepository @Inject constructor(
     private val eventCourseService: EventCourseService,
     private val searchCourseService: SearchCourseService,
     private val createCourseService: CreateCourseService,
-    private val courseByIdService: CourseByIdService
+    private val courseByIdService: CourseByIdService,
+    private val userRepository: UserRepository
 ) {
     suspend fun getAllCourse(): Result<List<SearchCourseResponse>> {
         return try {
@@ -126,19 +128,23 @@ class CourseRepository @Inject constructor(
 
     suspend fun getCourseById(id: Int): Result<AllCourseResponse> {
         return try {
-            val response = courseByIdService.getCourseById(id)
+            val userId = userRepository.profile.value?.userId
+                ?: return Result.failure(IllegalStateException("유저 정보가 없습니다."))
+
+            val response = courseByIdService.getCourseById(id, userId)
             val data = response.data
             if (data != null) {
-                println("getCourseById성공")
+                println("getCourseById 성공")
                 Result.success(data)
             } else {
                 Result.failure(NullPointerException("CourseById data null"))
             }
         } catch (e: Exception) {
-            Log.e("CourseRepository", "CourseById ${id} 에러", e)
+            Log.e("CourseRepository", "CourseById ${userRepository.profile.value?.userId} 에러", e)
             Result.failure(e)
         }
     }
+
 
     suspend fun patchHeart(id: PatchHeartRequest): Result<Unit> {
         return try {
