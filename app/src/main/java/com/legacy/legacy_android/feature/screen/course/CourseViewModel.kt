@@ -9,10 +9,13 @@ import com.legacy.legacy_android.domain.repository.course.CourseRepository
 import com.legacy.legacy_android.domain.repository.home.RuinsRepository
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.all.CreateCourseRequest
+import com.legacy.legacy_android.feature.network.course.all.PatchHeartRequest
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.feature.screen.course.model.CourseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +27,10 @@ class CourseViewModel @Inject constructor(
 
     var uiState by mutableStateOf(CourseUiState())
         private set
+
+    val statusList = listOf( "전체", "미완료", "완료")
+    val newList = listOf("최신", "인기", "클리어 인원")
+    val eventList = listOf("전체", "일반", "이벤트")
 
     fun updateCourseStatus(status: CourseStatus){
         uiState = uiState.copy(courseStatus = status)
@@ -69,9 +76,38 @@ class CourseViewModel @Inject constructor(
                 .onSuccess { course -> uiState = uiState.copy(eventCourse = course) }
         }
     }
-    fun setCurrentCourse(course: AllCourseResponse){
-        uiState = uiState.copy(currentCourse = course)
+    fun setCurrentCourse(course: SearchCourseResponse){
+        viewModelScope.launch {
+            courseRepository.getCourseById(course.courseId)
+                .onSuccess { course -> uiState = uiState.copy(currentCourse = course) }
+        }
     }
+
+
+    fun patchHeart(courseId: Int) {
+        viewModelScope.launch {
+            val request = PatchHeartRequest(courseId)
+            courseRepository.patchHeart(request)
+                .onSuccess {
+                    delay(200L)
+
+                    uiState.currentCourse?.let { course ->
+                        val isHearted = !course.heart
+                        val newHeartCount = if (isHearted) course.heartCount + 1 else course.heartCount - 1
+                        uiState = uiState.copy(
+                            currentCourse = course.copy(
+                                heart = isHearted,
+                                heartCount = newHeartCount.coerceAtLeast(0)
+                            )
+                        )
+                    }
+                }
+                .onFailure { e ->
+                    println("좋아요 업데이트 실패: ${e.message}")
+                }
+        }
+    }
+
 
     // 여기가 createCourse
     fun initCreateCourse(){
@@ -135,11 +171,5 @@ class CourseViewModel @Inject constructor(
                     println("Course 만들기 실패: ${e.message}")
                 }
         }
-    }
-
-
-    fun setCreateSearchCourseName(name: String){
-        uiState = uiState.copy(searchCourseName = name)
-        searchCourses(name)
     }
 }

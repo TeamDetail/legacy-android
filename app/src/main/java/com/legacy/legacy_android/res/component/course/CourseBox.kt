@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
@@ -40,9 +41,7 @@ import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Netural
 
 @Composable
-fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
-    val clearSize = course.clearRuins?.size ?: 0
-    val ruinSize = course.ruins?.size ?: 0
+fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +83,7 @@ fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Column(modifier = Modifier.fillMaxWidth(0.7f)) {
-                    if (course.eventCourse) {
+                    if (course.eventId > 0) {
                         Text(
                             text = "이벤트 중!",
                             style = AppTextStyles.Caption2.Medium,
@@ -122,14 +121,14 @@ fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Image(
-                                painter = painterResource(if(course.heart){R.drawable.heart}else{R.drawable.p_heart}),
+                                painter = painterResource(if(!course.heart){R.drawable.heart}else{R.drawable.p_heart}),
                                 contentDescription = "하트 아이콘",
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
                                 text = if (course.heartCount > 999) "999+" else course.heartCount.toString(),
                                 style = AppTextStyles.Label.Medium,
-                                color = if(!course.heart){Red_Netural}else{Label_Assitive}
+                                color = if(course.heart){Red_Netural}else{Label_Assitive}
                             )
                         }
 
@@ -138,14 +137,14 @@ fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Image(
-                                painter = painterResource(if(course.isClear){R.drawable.p_green_flag}else{R.drawable.green_flag}),
+                                painter = painterResource(if(course.clear){R.drawable.p_green_flag}else{R.drawable.green_flag}),
                                 contentDescription = "깃발 아이콘",
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
                                 text = course.clearCount.toString(),
                                 style = AppTextStyles.Label.Medium,
-                                color = if(course.isClear){Green_Netural}else{Label_Assitive}
+                                color = if(course.clear){Green_Netural}else{Label_Assitive}
                             )
                         }
                     }
@@ -155,7 +154,7 @@ fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
                             .padding(vertical = 4.dp, horizontal = 8.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(999.dp))
-                            .background(Green_Netural),
+                            .background(Fill_Normal),
                         contentAlignment = Alignment.Center
                     ) {
                         Box(
@@ -165,13 +164,13 @@ fun CourseBox (course: AllCourseResponse, viewModel: CourseViewModel) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .fillMaxWidth(0.4f)
-                                    .background(Fill_Normal)
+                                    .fillMaxWidth(((course.clearRuinsCount + 1).toFloat() / (course.maxRuinsCount + 1)))
+                                    .background(Green_Netural)
                             )
                         }
                         Text(
-                            text = if (clearSize != 0 && clearSize != ruinSize) {
-                                "${clearSize + 1}/${ruinSize + 1}"
+                            text = if (!course.clear) {
+                                "${course.clearRuinsCount + 1}/${course.maxRuinsCount + 1}"
                             } else {
                                 "탐험 완료"
                             },

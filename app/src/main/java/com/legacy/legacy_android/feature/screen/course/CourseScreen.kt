@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
+import com.legacy.legacy_android.res.component.bars.CustomDropDown
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.course.CourseInfo
@@ -108,6 +109,7 @@ fun CourseScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // 탑바
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -124,6 +126,7 @@ fun CourseScreen(
                                 color = Label,
                                 style = AppTextStyles.Body1.bold
                             )
+                        }
                             CustomSearchBar(
                                 query = query,
                                 placeholder = "코스 이름으로 검색",
@@ -131,9 +134,18 @@ fun CourseScreen(
                                            viewModel.searchCourses(query.value)},
                                 modifier = modifier
                             )
-                        }
-                        viewModel.uiState.allCourse.forEach { course ->
-                            CourseBox(course = course, viewModel = viewModel)
+//                            CustomDropDown(
+//
+//                            ) { }
+
+                        if (viewModel.uiState.searchCourse.isEmpty()) {
+                            viewModel.uiState.allCourse.forEach { course ->
+                                CourseBox(course = course, viewModel = viewModel)
+                            }
+                        }else{
+                            viewModel.uiState.searchCourse.forEach{course ->
+                                CourseBox(course = course, viewModel = viewModel)
+                            }
                         }
                     }
                 }

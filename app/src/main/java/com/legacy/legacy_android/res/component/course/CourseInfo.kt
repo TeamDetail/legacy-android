@@ -46,8 +46,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: CourseViewModel) {
-    val clearSize = course?.clearRuins?.size ?: 0
-    val ruinSize = course?.ruins?.size ?: 0
     val coroutineScope = rememberCoroutineScope ()
     val isLoading = remember { mutableStateOf(false) }
     Box(
@@ -108,7 +106,7 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                     Column(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        if (it.eventCourse) {
+                        if (it.eventId > 0) {
                             Text(
                                 text = "이벤트 중!",
                                 style = AppTextStyles.Label.Bold,
@@ -136,7 +134,7 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                             )
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            it.tag?.forEach { tag ->
+                            it.tag.forEach { tag ->
                                 Text(
                                     text = "#$tag",
                                     style = AppTextStyles.Label.Medium,
@@ -160,15 +158,15 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                 ) {
                                     Image(
                                         painter = painterResource(
-                                            if (it.heart) R.drawable.heart else R.drawable.p_heart
+                                            if (!it.heart) R.drawable.heart else R.drawable.p_heart
                                         ),
                                         contentDescription = "하트 아이콘",
-                                        modifier = Modifier.size(16.dp)
+                                        modifier = Modifier.size(16.dp).clickable { viewModel.patchHeart(course.courseId) }
                                     )
                                     Text(
                                         text = if (it.heartCount > 999) "999+" else it.heartCount.toString(),
                                         style = AppTextStyles.Body2.medium,
-                                        color = if (!it.heart) Red_Netural else Label_Assitive
+                                        color = if (it.heart) Red_Netural else Label_Assitive
                                     )
                                 }
 
@@ -178,7 +176,7 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                 ) {
                                     Image(
                                         painter = painterResource(
-                                            if (it.isClear) R.drawable.p_green_flag else R.drawable.green_flag
+                                            if (it.clear) R.drawable.p_green_flag else R.drawable.green_flag
                                         ),
                                         contentDescription = "깃발 아이콘",
                                         modifier = Modifier.size(16.dp)
@@ -186,7 +184,7 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                     Text(
                                         text = it.clearCount.toString(),
                                         style = AppTextStyles.Body2.medium,
-                                        color = if (it.isClear) Green_Netural else Label_Assitive
+                                        color = if (it.clear) Green_Netural else Label_Assitive
                                     )
                                 }
                             }
@@ -197,20 +195,20 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                     .padding(vertical = 4.dp, horizontal = 8.dp)
                                     .height(28.dp)
                                     .clip(RoundedCornerShape(999.dp))
-                                    .background(Green_Netural),
+                                    .background(Fill_Normal),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Box(modifier = Modifier.matchParentSize()) {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .fillMaxWidth(0.4f)
-                                            .background(Fill_Normal)
+                                            .fillMaxWidth(((course.clearRuinsCount + 1).toFloat() / (course.maxRuinsCount + 1)))
+                                            .background(Green_Netural)
                                     )
                                 }
                                 Text(
-                                    text = if (clearSize != 0 && clearSize != ruinSize) {
-                                        "${clearSize + 1}/${ruinSize + 1}"
+                                    text = if (!course.clear) {
+                                        "${course.clearRuinsCount + 1}/${course.maxRuinsCount + 1}"
                                     } else {
                                         "탐험 완료!"
                                     },
@@ -220,6 +218,13 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                         }
                     }
                 }
+            }
+            (course?.clearRuins ?: emptyList()).forEach {
+                CourseRuins(data = it, isClear = true, viewModel)
+            }
+
+            (course?.ruins ?: emptyList()).forEach {
+                CourseRuins(data = it, isClear = false, viewModel)
             }
         }
     }

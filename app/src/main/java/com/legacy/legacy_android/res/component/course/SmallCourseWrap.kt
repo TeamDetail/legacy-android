@@ -29,12 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
+import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
@@ -49,7 +51,7 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 
 @Composable
-fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllCourseResponse>?, viewModel: CourseViewModel) {
+fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<SearchCourseResponse>?, viewModel: CourseViewModel) {
     Column(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
@@ -133,15 +135,15 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllC
 
                             Column(
                                 modifier = Modifier.padding(
-                                    if (course.eventCourse) {
-                                        PaddingValues(top = 150.dp, start = 4.dp)
+                                    if (course.eventId > 0) {
+                                        PaddingValues(top = 124.dp, start = 4.dp)
                                     } else {
                                         PaddingValues(top = 150.dp, start = 4.dp)
                                     }
                                 )
 
                             ) {
-                                if (course.eventCourse) {
+                                if (course.eventId > 0) {
                                     Text(
                                         text = "이벤트 중!",
                                         style = AppTextStyles.Caption2.Medium,
@@ -155,7 +157,9 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllC
                                 Text(
                                     text = course.courseName,
                                     style = AppTextStyles.Body2.bold,
-                                    color = Label
+                                    color = Label,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
                                 Text(
                                     text = course.creator,
@@ -172,14 +176,14 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllC
                                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                                     ) {
                                         Image(
-                                            painter = painterResource(if(course.heart){R.drawable.heart}else{R.drawable.p_heart}),
+                                            painter = painterResource(if(!course.heart){R.drawable.heart}else{R.drawable.p_heart}),
                                             contentDescription = "하트 아이콘",
                                             modifier = Modifier.size(16.dp)
                                         )
                                         Text(
                                             text = if (course.heartCount > 999) "999+" else course.heartCount.toString(),
                                             style = AppTextStyles.Caption2.Medium,
-                                            color = if(!course.heart){Red_Netural}else{Label_Assitive}
+                                            color = if(course.heart){Red_Netural}else{Label_Assitive}
                                         )
                                     }
 
@@ -188,14 +192,14 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<AllC
                                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                                     ) {
                                         Image(
-                                            painter = painterResource(if(course.isClear){R.drawable.p_green_flag}else{R.drawable.green_flag}),
+                                            painter = painterResource(if(course.clear){R.drawable.p_green_flag}else{R.drawable.green_flag}),
                                             contentDescription = "깃발 아이콘",
                                             modifier = Modifier.size(16.dp)
                                         )
                                         Text(
                                             text = course.clearCount.toString(),
                                             style = AppTextStyles.Caption2.Medium,
-                                            color = if(course.isClear){Green_Netural}else{Label_Assitive}
+                                            color = if(course.clear){Green_Netural}else{Label_Assitive}
                                         )
                                     }
                                 }
