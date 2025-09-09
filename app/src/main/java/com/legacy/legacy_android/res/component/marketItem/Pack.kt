@@ -56,7 +56,7 @@ fun Pack(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(144.dp)
-                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .padding(vertical = 20.dp)
         ) {
             Box(
                 modifier = Modifier.size(84.dp)
@@ -84,9 +84,10 @@ fun Pack(
                         .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                         .fillMaxWidth()
                         .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                        .clickable {viewModel.setModal()
-                        viewModel.setCardPack(cardPack)}
-//                            viewModel.buyCardPack(cardPack.cardpackId)
+                        .clickable {
+                            viewModel.setModal()
+                            viewModel.setCardPack(cardPack)
+                        }
                 ) {
                     Text(
                         modifier = Modifier

@@ -128,10 +128,7 @@ class CourseRepository @Inject constructor(
 
     suspend fun getCourseById(id: Int): Result<AllCourseResponse> {
         return try {
-            val userId = userRepository.profile.value?.userId
-                ?: return Result.failure(IllegalStateException("유저 정보가 없습니다."))
-
-            val response = courseByIdService.getCourseById(id, userId)
+            val response = courseByIdService.getCourseById(id)
             val data = response.data
             if (data != null) {
                 println("getCourseById 성공")

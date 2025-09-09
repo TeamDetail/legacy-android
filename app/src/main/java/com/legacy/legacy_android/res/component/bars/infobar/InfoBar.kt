@@ -66,7 +66,7 @@ fun InfoBar(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
-                            .fillMaxWidth(0.3f)
+                            .fillMaxWidth(0.4f)
                             .fillMaxHeight()
                     ) {
                         Box(
@@ -94,14 +94,15 @@ fun InfoBar(
                             )
                         }
                     }
+
                     Box(
                         modifier = Modifier
                             .padding(12.dp)
                             .height(40.dp)
-                            .fillMaxWidth(0.3f)
-                            .background(Label_Alternative.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .fillMaxWidth(0.7f)
+                            .background(Fill_Normal, RoundedCornerShape(12.dp))
                     )
-                } else {
+            } else {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),

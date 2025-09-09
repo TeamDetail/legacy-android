@@ -13,8 +13,8 @@ interface AllCourseService{
     suspend fun getAllCourse(): BaseResponse<List<SearchCourseResponse>>
 }
 interface CourseByIdService{
-    @GET("/course/{courseId}/{userId}")
-    suspend fun getCourseById(@Path("courseId") courseId : Int, @Path("userId") userId: Long): BaseResponse<AllCourseResponse>
+    @GET("/course/{courseId}")
+    suspend fun getCourseById(@Path("courseId") courseId : Int): BaseResponse<AllCourseResponse>
 
     @PATCH("/course")
     suspend fun patchHeart(

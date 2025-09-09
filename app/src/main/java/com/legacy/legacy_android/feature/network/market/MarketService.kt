@@ -7,7 +7,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.Path
 
 interface MarketService {
-    @GET("/store")
+    @GET("/store/cardpack")
     suspend fun getMarket() : BaseResponse<MarketResponse>
     @PATCH("/store/cardBuy/{cardpackId}")
     suspend fun buyCardPack(

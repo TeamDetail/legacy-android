@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.course.CourseRepository
 import com.legacy.legacy_android.domain.repository.home.RuinsRepository
-import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.all.CreateCourseRequest
 import com.legacy.legacy_android.feature.network.course.all.PatchHeartRequest
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
@@ -32,16 +31,9 @@ class CourseViewModel @Inject constructor(
     val newList = listOf("최신", "인기", "클리어 인원")
     val eventList = listOf("전체", "일반", "이벤트")
 
-    // 새로고침
-    fun refreshCourses() {
-        uiState = uiState.copy(isRefreshing = true)
-        viewModelScope.launch {
-            loadAllCourses()
-            loadPopularCourses()
-            loadRecentCourses()
-            loadEventCourses()
-            uiState = uiState.copy(isRefreshing = false)
-        }
+    fun setCreateDescription(description: String){
+        uiState = uiState.copy(createCourseDescription = description)
+
     }
 
     fun updateCourseStatus(status: CourseStatus){
@@ -95,7 +87,6 @@ class CourseViewModel @Inject constructor(
         }
     }
 
-
     fun patchHeart(courseId: Int) {
         viewModelScope.launch {
             val request = PatchHeartRequest(courseId)
@@ -120,7 +111,6 @@ class CourseViewModel @Inject constructor(
         }
     }
 
-
     // 여기가 createCourse
     fun initCreateCourse(){
         uiState = uiState.copy(
@@ -130,7 +120,8 @@ class CourseViewModel @Inject constructor(
             isHashTag = mutableStateOf(false),
             createCourseName = "",
             createSearchRuins = emptyList(),
-            createSelectedRuins = emptyList()
+            createSelectedRuins = emptyList(),
+            createCourseDescription = ""
         )
     }
     fun setCreateRuinsName(name: String){
@@ -158,6 +149,7 @@ class CourseViewModel @Inject constructor(
         val name = uiState.createCourseName
         val tags = uiState.createCourseHashTags
         val ruins = uiState.createSelectedRuins
+        val description = uiState.createCourseDescription
 
         if (name.isBlank() || tags.isEmpty() || ruins.isNullOrEmpty()) {
             println("덜채움")
@@ -168,7 +160,7 @@ class CourseViewModel @Inject constructor(
             val data = CreateCourseRequest(
                 name = name,
                 tag = tags,
-                description = "",
+                description = description,
                 ruinsId = ruins.map { it.ruinsId }
             )
 

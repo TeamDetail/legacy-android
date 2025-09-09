@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.MarketLayout
+import com.legacy.legacy_android.res.component.marketItem.MarketInfo
 import com.legacy.legacy_android.res.component.marketItem.PackWrap
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Line_Netural
@@ -23,7 +24,6 @@ fun MarketScreen(modifier: Modifier = Modifier,
                  viewModel: MarketViewModel = hiltViewModel(),
                  navHostController: NavHostController,
 ) {
-
     LaunchedEffect(Unit) {
         viewModel.fetchMarketData()
     }
@@ -35,6 +35,7 @@ fun MarketScreen(modifier: Modifier = Modifier,
         viewModel = viewModel
     ) {
         TitleBox(title = "상점", image = R.drawable.shop)
+        MarketInfo(quantity = 4, magnification = 1.75, time = viewModel.timeUntilMidnight)
         Row (horizontalArrangement = Arrangement.spacedBy(8.dp)){
             packList.forEachIndexed { index, item ->
                 StatusButton(

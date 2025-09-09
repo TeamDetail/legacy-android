@@ -7,22 +7,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.legacy.legacy_android.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class InfoBarViewModel @Inject constructor(
     application: Application,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : AndroidViewModel(application) {
 
     var isTabClicked by mutableStateOf(false)
 
-    init {
-        fetchProfile()
-    }
 
     var isMailOpen = userRepository.isMailOpen.value
 
@@ -42,22 +42,19 @@ class InfoBarViewModel @Inject constructor(
         }
     }
 
+    private val _navigateToLogin = MutableSharedFlow<Unit>()
+
     fun fetchProfile() {
+        if (userRepository.profile.value?.userId == null) {
+            viewModelScope.launch {
+                _navigateToLogin.emit(Unit)
+            }
+        }
         viewModelScope.launch {
             try {
                 userRepository.fetchProfile()
             } catch (e: Exception) {
                 Log.e("InfoBarViewModel", "프로필 로드 실패", e)
-            }
-        }
-    }
-
-    fun refreshProfile() {
-        viewModelScope.launch {
-            try {
-                userRepository.refreshProfile()
-            } catch (e: Exception) {
-                Log.e("InfoBarViewModel", "프로필 새로고침 실패", e)
             }
         }
     }

@@ -22,7 +22,6 @@ data class CourseUiState(
     val currentCourse: AllCourseResponse? = null,
     val searchCourse: List<SearchCourseResponse> = emptyList(),
     val searchCourseName: String ="",
-    val isRefreshing: Boolean = false,
     // create value
     val createCourseName: String = "",
     val createRuinsName: String = "",
@@ -30,5 +29,6 @@ data class CourseUiState(
     val createCourseHashTags: List<String> = emptyList(),
     val isHashTag: MutableState<Boolean> = mutableStateOf(false),
     val createSearchRuins: List<RuinsIdResponse>? = emptyList(),
-    val createSelectedRuins: List<RuinsIdResponse>? = emptyList()
+    val createSelectedRuins: List<RuinsIdResponse>? = emptyList(),
+    val createCourseDescription: String = ""
 )

@@ -13,9 +13,7 @@ class MarketRepository(
     suspend fun getMarketData(): Result<List<CardPack>?> {
         return try {
             val response: BaseResponse<MarketResponse> = marketService.getMarket()
-
-            val packs: List<CardPack>? = response.data?.cardPack
-
+            val packs: List<CardPack>? = response.data?.cardpack
             Result.success(packs)
         } catch (e: Exception) {
             Result.failure(e)

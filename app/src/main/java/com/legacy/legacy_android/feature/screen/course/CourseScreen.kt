@@ -19,8 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.CustomDropDown
@@ -43,7 +41,6 @@ fun CourseScreen(
     navHostController: NavHostController,
 ) {
     val query = remember { mutableStateOf("") }
-    val isRefreshing = viewModel.uiState.isRefreshing
     LaunchedEffect(Unit) {
         viewModel.loadAllCourses()
         viewModel.loadPopularCourses()

@@ -6,4 +6,8 @@ import retrofit2.http.GET
 interface GetMeService {
     @GET("/user/me")
     suspend fun getMe(): BaseResponse<UserData>
+
+    @GET("/inventory")
+    suspend fun getInventory(): BaseResponse<List<InventoryItem>>
+
 }

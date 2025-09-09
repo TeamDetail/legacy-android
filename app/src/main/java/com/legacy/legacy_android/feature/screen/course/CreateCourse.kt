@@ -155,63 +155,92 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                     }
                 }
             }
-            // 유적지 선택 파트
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.horizontalScroll(rememberScrollState())
+            // 유적지 설명 파트
+            Column (
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                viewModel.uiState.createSelectedRuins?.forEachIndexed { index, item ->
-                    Column(
-                        modifier = Modifier.width(120.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                Text(text = "코스 설명", color = Label_Alternative, style = AppTextStyles.Body1.bold)
+                TextField(
+                    value = viewModel.uiState.createCourseDescription,
+                    onValueChange = { viewModel.setCreateDescription(it) },
+                    modifier = modifier.fillMaxWidth()
+                        .background(color = Background_Normal, shape = RoundedCornerShape(12.dp))
+                        .height(120.dp)
+                    ,
+                    placeholder = {Text(text = "코스 설명을 입력해주세요.")},
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = White, unfocusedTextColor = White,
+                        focusedContainerColor = Background_Normal,
+                        unfocusedContainerColor = Background_Normal,
+                        disabledContainerColor = Background_Normal,
+                        focusedIndicatorColor = Background_Normal,
+                        unfocusedIndicatorColor = Background_Normal,
+                        disabledIndicatorColor = Background_Normal
+                    )
+                )
+            }
+            // 유적지 선택 파트
+            Column (
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+                Text(text = "선택된 유적지", color = Label_Alternative, style = AppTextStyles.Body1.bold)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.horizontalScroll(rememberScrollState())
+                ) {
+                    viewModel.uiState.createSelectedRuins?.forEachIndexed { index, item ->
+                        Column(
+                            modifier = Modifier.width(120.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(
-                                text = (index + 1).toString(),
-                                modifier = Modifier
-                                    .padding(vertical = 2.dp),
-                                color = White
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.9f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .padding(5.dp)
-                        ) {
-                            AsyncImage(
-                                model = item.ruinsImage,
-                                contentDescription = item.name,
-                                modifier = Modifier
-                                    .height(144.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .border(1.dp, Line_Netural, RoundedCornerShape(12.dp)),
-                                contentScale = ContentScale.Crop,
-                                error = painterResource(R.drawable.school_img),
-                                placeholder = painterResource(R.drawable.school_img)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .width(144.dp)
-                                    .background(Background_Normal.copy(alpha = 0.5f))
-                                    .padding(8.dp)
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
+                                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                             ) {
                                 Text(
-                                    modifier = Modifier.align(Alignment.BottomEnd),
-                                    text = item.name,
-                                    fontFamily = bitbit,
-                                    fontSize = 16.sp,
-                                    color = Label
+                                    text = (index + 1).toString(),
+                                    modifier = Modifier
+                                        .padding(vertical = 2.dp),
+                                    color = White
                                 )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.9f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .padding(5.dp)
+                            ) {
+                                AsyncImage(
+                                    model = item.ruinsImage,
+                                    contentDescription = item.name,
+                                    modifier = Modifier
+                                        .height(144.dp)
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .border(1.dp, Line_Netural, RoundedCornerShape(12.dp)),
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.school_img),
+                                    placeholder = painterResource(R.drawable.school_img)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .width(144.dp)
+                                        .background(Background_Normal.copy(alpha = 0.5f))
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        modifier = Modifier.align(Alignment.BottomEnd),
+                                        text = item.name,
+                                        fontFamily = bitbit,
+                                        fontSize = 16.sp,
+                                        color = Label
+                                    )
+                                }
                             }
                         }
                     }

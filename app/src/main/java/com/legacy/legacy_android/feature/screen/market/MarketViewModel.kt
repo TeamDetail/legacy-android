@@ -43,9 +43,9 @@ class MarketViewModel @Inject constructor(
 
     fun buyCardPack(id: Int) {
         viewModelScope.launch {
+            userRepository.fetchProfile()
             marketRepository.buyCardPack(id)
             fetchMarketData()
-            userRepository.fetchProfile()
         }
     }
 

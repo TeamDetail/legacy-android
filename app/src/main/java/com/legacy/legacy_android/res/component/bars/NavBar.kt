@@ -60,13 +60,16 @@ fun NavBar(navHostController: NavHostController) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .clickable(enabled = !isLoading.value) {
+                        .clickable(
+                            enabled = !isLoading.value,
+                            indication = null,
+                            interactionSource = null
+                        ) {
                             if (selectedIdState.value != item.id) {
                                 isLoading.value = true
                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                 selectedIdState.value = item.id
                                 Nav.setNavStatus(item.id)
-
                                 coroutineScope.launch {
                                     delay(100)
                                     navHostController.navigate(item.onClick.name) {

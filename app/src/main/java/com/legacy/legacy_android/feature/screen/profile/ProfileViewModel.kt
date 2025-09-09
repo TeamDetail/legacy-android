@@ -45,6 +45,18 @@ class ProfileViewModel @Inject constructor(
         userRepository.clearProfile()
     }
 
+    fun fetchMyInventory(){
+        viewModelScope.launch {
+            val result = userRepository.getInventory()
+            result.onSuccess {
+                Log.d("UserRepository", "인벤토리 불러오기 성공: $it")
+                uiState = uiState.copy(
+                    myInventory = it
+                )
+            }
+        }
+    }
+
     fun fetchMyCollection(region: String){
         viewModelScope.launch {
             val result = cardRepository.fetchMyCard(region)

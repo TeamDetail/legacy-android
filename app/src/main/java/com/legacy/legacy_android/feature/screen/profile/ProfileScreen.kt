@@ -2,6 +2,7 @@ package com.legacy.legacy_android.feature.screen.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -46,7 +49,9 @@ import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Blue_Netural
+import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
@@ -58,11 +63,12 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navHostController: NavHostController,
 ){
-    val statusList = listOf("기록", "칭호", "도감")
+    val statusList = listOf("기록", "칭호", "도감", "인벤토리")
     val profile by viewModel.profileFlow.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.clearProfile()
         viewModel.fetchProfile()
+        viewModel.fetchMyInventory()
     }
     val selectedId = Nav.getNavStatus()
     Box(
@@ -74,8 +80,8 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier
                 .padding(vertical = 40.dp, horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
                 .align(Alignment.TopStart)
+                .verticalScroll(rememberScrollState())
         ) {
             BackButton(selectedId = selectedId, title = "프로필", navHostController = navHostController)
             // 여기서 프로필 윗부분
@@ -189,7 +195,12 @@ fun ProfileScreen(
                 2 -> { DictionaryScreen(
                     modifier = modifier,
                     viewModel = viewModel
-                )}
+                )
+                }
+                3 -> InventoryScreen(
+                    modifier = modifier,
+                    viewModel = viewModel
+                )
             }
         }
     }
@@ -318,6 +329,40 @@ fun DictionaryScreen(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InventoryScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val inventory = viewModel.uiState.myInventory ?: emptyList()
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(7),
+        modifier = modifier.fillMaxSize().height(1000.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        items(105) { index ->
+            Box(
+                modifier = Modifier
+                    .width(48.dp)
+                    .height(48.dp)
+                    .background(Fill_Normal, RoundedCornerShape(8.dp))
+                    .border(
+                        width = 1.dp,
+                        shape = RoundedCornerShape(8.dp),
+                        color = Line_Alternative
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                if (index < inventory.size){
+                    Text(text="${inventory[index].itemName}")
                 }
             }
         }
