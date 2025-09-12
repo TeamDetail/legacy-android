@@ -56,7 +56,6 @@ fun Pack(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
-                .padding(vertical = 20.dp)
         ) {
             Box(
                 modifier = Modifier.size(100.dp)

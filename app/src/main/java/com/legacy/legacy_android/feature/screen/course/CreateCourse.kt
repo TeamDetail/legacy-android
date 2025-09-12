@@ -266,7 +266,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                                         modifier = Modifier.align(Alignment.BottomEnd),
                                         text = item.name,
                                         fontFamily = bitbit,
-                                        fontSize = 16.sp,
+                                        fontSize = 12.sp,
                                         color = Label
                                     )
                                 }

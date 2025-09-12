@@ -4,6 +4,7 @@ import android.util.Log
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapRequest
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdService
 import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
@@ -41,6 +42,17 @@ class RuinsRepository @Inject constructor(
             Result.success(response.data)
         } catch (e: Exception) {
             Log.e("RuinsRepository", "getById 오류 ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getCommentById(id: Int): Result<List<RuinsCommentResponse>?> {
+        return try {
+            val response = ruinsIdService.getCommentById(id)
+            println(response.data)
+            Result.success(response.data)
+        } catch (e: Exception) {
+            Log.e("RuinsRepository", "getCommentById 오류 ${e.message}")
             Result.failure(e)
         }
     }

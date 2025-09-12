@@ -11,15 +11,24 @@ data class RuinsIdResponse (
     val location: String,
     val detailAddress: String,
     val periodName: String,
-    val specifiedDate: Date,
+    val specifiedDate: String,
     val owner: String,
     val manager: String,
     val latitude: Double,
     val longitude: Double,
     val description: String,
+    val averageRating: Double,
+    val countComments: Int,
     val card: Cards?
 )
 
+data class RuinsCommentResponse(
+    val userName: String,
+    val userImgUrl: String,
+    val rating: Int,
+    val comment: String,
+    val createAt: String
+)
 
 data class CourseRuinsResponse(
     val clear: Boolean,

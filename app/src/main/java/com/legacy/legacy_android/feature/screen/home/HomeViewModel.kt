@@ -139,6 +139,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun loadCommentById(id: Int) {
+      viewModelScope.launch {
+          ruinsRepository.getCommentById(id)
+              .onSuccess { comments -> uiState = uiState.copy(comments = comments) }
+              .onFailure { println("댓글 불러오기 실패했어용ㅎㅎ") }
+      }
+    }
+
     fun loadQuiz(ruinsId: Int?) {
         viewModelScope.launch {
             quizRepository.getQuizById(ruinsId)

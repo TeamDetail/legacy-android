@@ -72,7 +72,6 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.clearProfile()
         viewModel.fetchProfile()
-        viewModel.fetchMyInventory()
     }
     val selectedId = Nav.getNavStatus()
     Box(
@@ -355,6 +354,10 @@ fun InventoryScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val inventory = viewModel.uiState.myInventory ?: emptyList()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMyInventory()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(

@@ -9,4 +9,9 @@ interface RuinsIdService {
     suspend fun getRuinsById(
         @Path("id") id: Int
     ): BaseResponse<RuinsIdResponse>
+
+    @GET("/ruins/comment/{id}")
+    suspend fun getCommentById(
+        @Path("id") id: Int
+    ): BaseResponse<List<RuinsCommentResponse>>
 }

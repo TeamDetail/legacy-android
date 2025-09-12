@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 
 enum class HintStatus { NO, CREDIT, HINT }
@@ -30,5 +31,6 @@ data class HomeUiState(
     val isSearchRuinOpen: Boolean = false,
     val searchRuinValue: MutableState<String> = mutableStateOf(""),
     val createSearchRuins: List<RuinsIdResponse>? = null,
-    val isSearchLoading: Boolean = false
+    val isSearchLoading: Boolean = false,
+    val comments: List<RuinsCommentResponse>? = null
 )

@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,10 @@ fun AdventureInfo(
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
+    LaunchedEffect(id) {
+        id?.let { viewModel.loadCommentById(it) }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +63,7 @@ fun AdventureInfo(
     ) {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
-            sheetPeekHeight = 172.dp,
+            sheetPeekHeight = 302.dp,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             sheetDragHandle = { },
             sheetContent = {
@@ -85,11 +90,14 @@ fun AdventureInfo(
                                 verticalArrangement = Arrangement.spacedBy(6.dp),
                                 modifier = Modifier.fillMaxWidth(0.5f)
                             ) {
+                                // 유적지 탐험 제목
                                 Text(
                                     text = "유적지 탐험",
                                     color = White,
                                     style = AppTextStyles.Headline.bold
                                 )
+
+                                // ID
                                 if (id == null) {
                                     SkeletonBox(
                                         modifier = Modifier
@@ -106,6 +114,7 @@ fun AdventureInfo(
                                     )
                                 }
 
+                                // info
                                 if (info.isNullOrBlank()) {
                                     SkeletonBox(
                                         modifier = Modifier
@@ -115,10 +124,11 @@ fun AdventureInfo(
                                     )
                                 } else {
                                     Text(
-                                        text = info,
+                                        text = info ?: "",
                                         style = AppTextStyles.Headline.bold
                                     )
                                 }
+
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Box(
                                     Modifier
@@ -127,40 +137,44 @@ fun AdventureInfo(
                                         .background(Line_Alternative)
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
+
+                                // 탐험자 수 / 획득 비율
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text(
-                                        text = buildAnnotatedString {
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    color = Label_Alternative,
-                                                    fontSize = AppTextStyles.Caption2.regular.fontSize,
-                                                    fontWeight = AppTextStyles.Caption2.regular.fontWeight
-                                                )
-                                            ) {
-                                                append("탐험자 수\n")
-                                            }
-                                            append("20000명")
-                                        },
-                                        style = AppTextStyles.Body2.bold, color = Label
+                                    SkeletonBox(
+                                        modifier = Modifier
+                                            .height(40.dp)
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(4.dp))
                                     )
+                                    SkeletonBox(
+                                        modifier = Modifier
+                                            .height(40.dp)
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(4.dp))
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // 한줄평 남기기 버튼
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                                        .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
+                                        .clickable {}
+                                ) {
                                     Text(
-                                        text = buildAnnotatedString {
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    color = Label_Alternative,
-                                                    fontSize = AppTextStyles.Caption2.regular.fontSize,
-                                                    fontWeight = AppTextStyles.Caption2.regular.fontWeight
-                                                )
-                                            ) {
-                                                append("획득 비율 \n")
-                                            }
-                                            append("전체 중")
-                                        },
-                                        style = AppTextStyles.Body2.bold, color = Label
+                                        modifier = Modifier.padding(vertical = 8.dp),
+                                        text = "한줄평 남기기",
+                                        color = Label_Netural,
+                                        style = AppTextStyles.Caption2.Bold
                                     )
                                 }
                             }
 
+                            // 이미지
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -175,7 +189,7 @@ fun AdventureInfo(
                                         model = img,
                                         contentDescription = "유적지 이미지",
                                         modifier = Modifier
-                                            .height(172.dp)
+                                            .height(184.dp)
                                             .border(
                                                 1.dp,
                                                 color = Line_Netural,
@@ -205,32 +219,86 @@ fun AdventureInfo(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = description ?: "설명글이 없습니다.",
-                            style = AppTextStyles.Body2.medium
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        // description
+                        if (description.isNullOrBlank()) {
+                            SkeletonBox(
+                                modifier = Modifier
+                                    .height(60.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(4.dp))
+                            )
+                        } else {
+                            Text(
+                                text = description ?: "설명글이 없습니다.",
+                                style = AppTextStyles.Body2.medium
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Box(
+                            Modifier
+                                .height(1.dp)
+                                .fillMaxWidth()
+                                .background(Line_Alternative)
                         )
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        // comments
+                        if (viewModel.uiState.comments.isNullOrEmpty()) {
+                            repeat(2) {
+                                SkeletonBox(
+                                    modifier = Modifier
+                                        .height(184.dp)
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        } else {
+                            viewModel.uiState.comments?.forEach { it ->
+                                AsyncImage(
+                                    model = it.userImgUrl,
+                                    contentDescription = "프로필 이미지",
+                                    modifier = Modifier
+                                        .height(184.dp)
+                                        .border(
+                                            1.dp,
+                                            color = Line_Netural,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clip(RoundedCornerShape(12.dp)),
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.school_img),
+                                    placeholder = painterResource(R.drawable.school_img)
+                                )
+                                Text(text = it.userName)
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                            .fillMaxWidth()
-                            .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(12.dp))
-                            .clickable { viewModel.loadQuiz(ruinsId) }
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            text = "퀴즈 풀고 탐험하기!",
-                            color = Blue_Netural,
-                            style = AppTextStyles.Body1.bold
-                        )
-                    }
                 }
             }
         ) {}
+
+        // 퀴즈 버튼
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                .fillMaxWidth()
+                .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(12.dp))
+                .clickable { viewModel.loadQuiz(ruinsId) }
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = "퀴즈 풀고 탐험하기!",
+                color = Blue_Netural,
+                style = AppTextStyles.Body1.bold
+            )
+        }
     }
 }
