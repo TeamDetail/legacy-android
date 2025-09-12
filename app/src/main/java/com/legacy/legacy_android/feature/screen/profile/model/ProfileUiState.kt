@@ -8,5 +8,6 @@ data class ProfileUiState(
     val profileStatus: Int = 0,
     val titleStatus: Int = 0,
     val myCards: MyCardResponse? = null,
-    val myInventory: List<InventoryItem>? = null
+    val myInventory: List<InventoryItem>? = null,
+    val selectedItem: InventoryItem? = null
     )

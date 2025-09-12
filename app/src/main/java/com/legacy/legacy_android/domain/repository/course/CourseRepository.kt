@@ -137,7 +137,7 @@ class CourseRepository @Inject constructor(
                 Result.failure(NullPointerException("CourseById data null"))
             }
         } catch (e: Exception) {
-            Log.e("CourseRepository", "CourseById ${userRepository.profile.value?.userId} 에러", e)
+            Log.e("CourseRepository", "CourseById ${id} 에러", e)
             Result.failure(e)
         }
     }

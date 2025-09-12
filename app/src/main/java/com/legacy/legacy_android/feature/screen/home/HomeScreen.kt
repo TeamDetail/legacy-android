@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -51,8 +52,10 @@ import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.modal.CreditModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
+import com.legacy.legacy_android.res.component.modal.RuinSearchModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Black
+import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Green_Alternative
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
@@ -134,7 +137,7 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect( currentLocation, allRequiredPermission) {
+    LaunchedEffect(currentLocation, allRequiredPermission) {
         if (allRequiredPermission && !hasMovedToCurrentLocation && currentLocation != null) {
             cameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(
@@ -167,16 +170,18 @@ fun HomeScreen(
                         viewModel.uiState.mapBounds.minLng,
                         viewModel.uiState.mapBounds.maxLng
                     )
-                }else{
+                } else {
                     showWarning = true
                 }
             }
         }
     }
 
-    Box(modifier = modifier
-        .fillMaxSize()
-        .zIndex(99f)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .zIndex(99f)
+    ) {
         // InfoBar
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -272,7 +277,49 @@ fun HomeScreen(
                 }
             }
         }
-
+        IconButton(
+            onClick = {
+                currentLocation?.let {
+                    cameraPositionState.move(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(it.latitude, it.longitude),
+                            15.5f
+                        )
+                    )
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .zIndex(50f)
+                .padding(start = 12.dp, top = 120.dp)
+                .size(48.dp)
+                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+        ) {
+            Icon(
+                imageVector = Icons.Default.Place,
+                contentDescription = "내 위치로 이동",
+                tint = White
+            )
+        }
+        // 검색
+        IconButton(
+            onClick = {
+                viewModel.updateSearchStatus(true)
+//                viewModel.uiState = viewModel.uiState.copy(searchRuinValue = null)
+            },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .zIndex(50f)
+                .padding(start = 72.dp, top = 120.dp)
+                .size(48.dp)
+                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+        ) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "내 위치로 이동",
+                tint = White
+            )
+        }
         // 경고 띄우기
         AnimatedVisibility(
             visible = showWarning,
@@ -280,12 +327,12 @@ fun HomeScreen(
             exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(start = 12.dp, top = 120.dp)
+                .padding(start = 12.dp, top = 180.dp)
                 .zIndex(50f)
         ) {
             Box(
                 modifier = Modifier
-                    .background(Red_Netural.copy(alpha = 0.75f), shape = RoundedCornerShape(16.dp))
+                    .background(Red_Netural.copy(alpha = 0.75f), shape = RoundedCornerShape(12.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Row(
@@ -361,7 +408,6 @@ fun HomeScreen(
             }
         }
 
-
         // NavBar + Adventure Info
         Box(
             modifier = Modifier
@@ -369,7 +415,6 @@ fun HomeScreen(
                 .padding(vertical = 40.dp, horizontal = 12.dp)
                 .zIndex(7f)
         ) {
-            NavBar(navHostController = navHostController)
             if (viewModel.uiState.selectedId > -1) {
                 AdventureInfo(
                     id = viewModel.uiState.ruinsDetail?.ruinsId,
@@ -378,36 +423,27 @@ fun HomeScreen(
                     img = viewModel.uiState.ruinsDetail?.ruinsImage,
                     info = viewModel.uiState.ruinsDetail?.detailAddress,
                     tags = listOf("IT", "마이스터", "대구", "고등학교"),
-                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId
+                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
+                    description = viewModel.uiState.ruinsDetail?.description,
                 )
+            }else{
+                NavBar(navHostController = navHostController)
             }
         }
-
-        // 내 위치 이동아이코ㅓㄴ
-        if (viewModel.uiState.selectedId == -1) {
-            IconButton(
-                onClick = {
-                    currentLocation?.let {
-                        cameraPositionState.move(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(it.latitude, it.longitude),
-                                13.5f
-                            )
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 20.dp, bottom = 120.dp)
-                    .zIndex(8f)
-                    .size(48.dp)
-                    .background(Black, shape = CircleShape)
+        // 유적지 검색
+        if (viewModel.uiState.isSearchRuinOpen) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
+                    .zIndex(500f)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {}
             ) {
-                Icon(
-                    imageVector = Icons.Default.Place,
-                    contentDescription = "내 위치로 이동",
-                    tint = White
-                )
+                RuinSearchModal(viewModel)
             }
         }
     }

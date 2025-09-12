@@ -1,5 +1,7 @@
 package com.legacy.legacy_android.feature.screen.home.model
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
@@ -24,5 +26,9 @@ data class HomeUiState(
     val quizData: List<GetQuizResponse>? = null,
     val blocks: List<GetBlockResponse> = emptyList(),
     val wrongAnswers: List<Int> = emptyList(),
-    val mapBounds: MapBounds = MapBounds()
+    val mapBounds: MapBounds = MapBounds(),
+    val isSearchRuinOpen: Boolean = false,
+    val searchRuinValue: MutableState<String> = mutableStateOf(""),
+    val createSearchRuins: List<RuinsIdResponse>? = null,
+    val isSearchLoading: Boolean = false
 )

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
@@ -52,6 +54,7 @@ import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Label_Assitive
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
@@ -60,22 +63,32 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
+fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val isLoading = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         viewModel.initCreateCourse()
     }
 
+    if (viewModel.navigateBack) {
+        LaunchedEffect(Unit) {
+            navController.popBackStack()
+            viewModel.onNavigated()
+        }
+    }
+
     val isEnabled = viewModel.uiState.createCourseName.isNotBlank() &&
             viewModel.uiState.createCourseHashTags.isNotEmpty() &&
-            !viewModel.uiState.createSelectedRuins.isNullOrEmpty()
-
+            !viewModel.uiState.createSelectedRuins.isNullOrEmpty() &&
+            viewModel.uiState.createCourseDescription.isNotBlank() &&
+            viewModel.uiState.createSelectedRuins!!.size >= 5
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Background_Alternative)
+            .imePadding()
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -92,7 +105,9 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                         coroutineScope.launch {
                             isLoading.value = true
                             delay(100)
-                            viewModel.updateCourseStatus(CourseStatus.ALL)
+                            navController.popBackStack()
+                            isLoading.value = false
+                            viewModel.onNavigated()
                             viewModel.loadAllCourses()
                         }
                     }
@@ -143,6 +158,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                         ) {
                             Text(
                                 text = "# $tag",
+
                                 style = AppTextStyles.Body2.medium.copy(color = White),
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             )
@@ -156,7 +172,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                 }
             }
             // 유적지 설명 파트
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(text = "코스 설명", color = Label_Alternative, style = AppTextStyles.Body1.bold)
@@ -165,9 +181,8 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                     onValueChange = { viewModel.setCreateDescription(it) },
                     modifier = modifier.fillMaxWidth()
                         .background(color = Background_Normal, shape = RoundedCornerShape(12.dp))
-                        .height(120.dp)
-                    ,
-                    placeholder = {Text(text = "코스 설명을 입력해주세요.")},
+                        .height(120.dp),
+                    placeholder = { Text(text = "코스 설명을 입력해주세요.") },
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = White, unfocusedTextColor = White,
                         focusedContainerColor = Background_Normal,
@@ -180,10 +195,21 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                 )
             }
             // 유적지 선택 파트
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                Text(text = "선택된 유적지", color = Label_Alternative, style = AppTextStyles.Body1.bold)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "선택된 유적지",
+                        color = Label_Alternative,
+                        style = AppTextStyles.Body1.bold
+                    )
+                    Text("(클릭 시 삭제)", color = Label_Assitive, style = AppTextStyles.Label.Medium)
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -191,7 +217,10 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                 ) {
                     viewModel.uiState.createSelectedRuins?.forEachIndexed { index, item ->
                         Column(
-                            modifier = Modifier.width(120.dp),
+                            modifier = Modifier.width(120.dp).clickable {
+                                viewModel.filterRuinElem(item)
+                                println(viewModel.uiState.createSearchRuins)
+                            },
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -246,12 +275,28 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel) {
                     }
                 }
             }
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
+            ) {
                 SearchCourseBox(modifier, viewModel)
-                viewModel.uiState.createSearchRuins?.forEach {it ->
-                    RuinsBox(data = it, viewModel)
+                if (viewModel.uiState.isCreateLoading) {
+                    Row(
+                        modifier = modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text("검색 중입니다...", style = AppTextStyles.Label.Bold)
+                    }
+                } else if (viewModel.uiState.createSearchRuins != null) {
+                    viewModel.uiState.createSearchRuins?.forEach { it ->
+                        RuinsBox(data = it, viewModel)
+                    }
+                }else{
+                    Row(
+                        modifier = modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text("검색 결과가 없습니다.", style = AppTextStyles.Label.Bold)
+                    }
                 }
             }
         }

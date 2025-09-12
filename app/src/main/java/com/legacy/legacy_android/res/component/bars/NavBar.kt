@@ -47,7 +47,7 @@ fun NavBar(navHostController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
-            .background(Background_Normal, shape = RoundedCornerShape(size = 20.dp))
+            .background(Background_Normal, shape = RoundedCornerShape(20.dp))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -70,12 +70,9 @@ fun NavBar(navHostController: NavHostController) {
                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                 selectedIdState.value = item.id
                                 Nav.setNavStatus(item.id)
+
                                 coroutineScope.launch {
-                                    delay(100)
                                     navHostController.navigate(item.onClick.name) {
-                                        popUpTo(navHostController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
                                         launchSingleTop = true
                                         restoreState = true
                                     }

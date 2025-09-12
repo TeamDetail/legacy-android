@@ -46,7 +46,7 @@ fun RuinsBox(
 ){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.height(200.dp).clickable {viewModel.setCreateSelectedRuins(data)}
+        modifier = Modifier.height(200.dp).clickable {if(viewModel.uiState.createSelectedRuins!!.size < 30){viewModel.setCreateSelectedRuins(data)}}
     ){
         // 상세 정보 
         Column (

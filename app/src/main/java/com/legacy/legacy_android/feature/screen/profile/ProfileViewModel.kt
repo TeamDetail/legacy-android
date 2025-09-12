@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.card.CardRepository
+import com.legacy.legacy_android.feature.network.user.InventoryItem
 import com.legacy.legacy_android.feature.network.user.UserData
 import com.legacy.legacy_android.feature.screen.profile.model.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,6 +56,11 @@ class ProfileViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun setSelectedItem(item: InventoryItem?){
+        uiState = uiState.copy(selectedItem = item)
+        println(uiState.selectedItem)
     }
 
     fun fetchMyCollection(region: String){

@@ -1,6 +1,5 @@
 package com.legacy.legacy_android
 
-import com.legacy.legacy_android.BuildConfig
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -13,25 +12,24 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
+import androidx.navigation.compose.navigation
 import androidx.compose.animation.ExitTransition
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.getRefToken
@@ -41,6 +39,8 @@ import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.screen.LocationViewModel
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
+import com.legacy.legacy_android.feature.screen.course.CourseCategory
+import com.legacy.legacy_android.feature.screen.course.CourseInfo
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
 import com.legacy.legacy_android.feature.screen.friend.FriendViewModel
 import com.legacy.legacy_android.feature.screen.home.HomeScreen
@@ -57,18 +57,9 @@ import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseScreen
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
-import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
+import com.legacy.legacy_android.feature.screen.course.CreateCourse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
 import javax.inject.Inject
 
 enum class ScreenNavigate {
@@ -80,7 +71,10 @@ enum class ScreenNavigate {
     COURSE,
     PROFILE,
     FRIEND,
-    SETTING
+    SETTING,
+    CREATE_COURSE,
+    COURSE_CATEGORY,
+    COURSE_INFO
 }
 
 enum class BgmType(val resourceId: Int, val volume: Float) {
@@ -170,16 +164,48 @@ class MainActivity : AppCompatActivity() {
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 handleDestinationChange(destination.route)
             }
-            val infoBarViewModel: InfoBarViewModel = hiltViewModel()
-
             NavHost(
                 navController = navController,
                 startDestination = startDestination,
                 enterTransition = { EnterTransition.None },
                 exitTransition = { ExitTransition.None },
                 popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None }
+                popExitTransition = { ExitTransition.None },
             ) {
+                navigation(
+                    startDestination = ScreenNavigate.COURSE_CATEGORY.name,
+                    route = "course_graph"
+                ) {
+                    composable(ScreenNavigate.COURSE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry("course_graph")
+                        }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseScreen(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.COURSE_CATEGORY.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry("course_graph")
+                        }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseCategory(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.CREATE_COURSE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry("course_graph")
+                        }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CreateCourse(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.COURSE_INFO.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) {
+                            navController.getBackStackEntry("course_graph")
+                        }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseInfo(Modifier, courseViewModel, navController)
+                    }
+                }
+
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
                     LoginScreen(Modifier, loginViewModel, navController)
@@ -188,7 +214,13 @@ class MainActivity : AppCompatActivity() {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     val profileViewModel: ProfileViewModel = hiltViewModel()
                     val locationViewModel: LocationViewModel = hiltViewModel()
-                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel,  navController)
+                    HomeScreen(
+                        Modifier,
+                        homeViewModel,
+                        profileViewModel,
+                        locationViewModel,
+                        navController
+                    )
                 }
                 composable(route = ScreenNavigate.MARKET.name) {
                     val marketViewModel: MarketViewModel = hiltViewModel()
@@ -196,11 +228,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable(route = ScreenNavigate.ACHIEVE.name) {
                     val achieveViewModel: AchieveViewModel = hiltViewModel()
-                    AchieveScreen(Modifier, achieveViewModel,   navHostController = navController)
-                }
-                composable(route = ScreenNavigate.COURSE.name) {
-                    val courseViewModel: CourseViewModel = hiltViewModel()
-                    CourseScreen(Modifier, courseViewModel, navController)
+                    AchieveScreen(Modifier, achieveViewModel, navController)
                 }
                 composable(route = ScreenNavigate.RANKING.name) {
                     val rankingViewModel: RankingViewModel = hiltViewModel()

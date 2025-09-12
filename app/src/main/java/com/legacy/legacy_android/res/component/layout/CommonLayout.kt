@@ -36,8 +36,7 @@ fun CommonScreenLayout(
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .absoluteOffset(0.dp, 10.dp)
                 .zIndex(5f)
         ) {

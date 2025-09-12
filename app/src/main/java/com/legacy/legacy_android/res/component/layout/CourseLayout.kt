@@ -46,7 +46,9 @@ fun CourseScreenLayout(
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
         IconButton(
             onClick = {
-                viewModel.updateCourseStatus(CourseStatus.CREATE)
+                navHostController.navigate("CREATE_COURSE") {
+                    launchSingleTop = true
+                }
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)

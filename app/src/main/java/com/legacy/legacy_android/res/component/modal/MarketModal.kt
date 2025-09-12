@@ -53,7 +53,10 @@ fun MarketModal(
         modifier = Modifier
             .fillMaxSize()
             .background(Black.copy(alpha = 0.75f))
-            .zIndex(1500f),
+            .zIndex(1500f)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }){},
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -65,31 +68,30 @@ fun MarketModal(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 40.dp, horizontal = 52.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(vertical = 20.dp, horizontal = 52.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "정말 구매하시겠습니까?",
-                    style = AppTextStyles.Headline.bold,
+                    style = AppTextStyles.Heading1.bold,
                     color = Label
                 )
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Yellow_Netural)) {
-                            append("${NumberFormat.getNumberInstance(Locale.US).format(credit)} ")
+                        withStyle(style = SpanStyle(color = Yellow_Netural, fontWeight = AppTextStyles.Body2.bold.fontWeight)) {
+                            append("${NumberFormat.getNumberInstance(Locale.US).format(credit)} 크레딧")
                         }
-                        append("크레딧")
                         withStyle(style = SpanStyle(color = Label_Netural)) {
                             append("을 소모합니다.")
                         }
                     },
-                    style = AppTextStyles.Body2.bold
+                    style = AppTextStyles.Body2.medium
                 )
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 40.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

@@ -116,7 +116,7 @@ fun InfoBar(
                             contentDescription = "프로필 이미지",
                             modifier = Modifier
                                 .size(40.dp)
-                                .clip(CircleShape),
+                                .clip(RoundedCornerShape(8.dp)),
                             contentScale = ContentScale.Crop,
                             placeholder = painterResource(R.drawable.temp_profile),
                             error = painterResource(R.drawable.temp_profile)
@@ -143,7 +143,8 @@ fun InfoBar(
                     Row(
                         modifier = Modifier
                             .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                            .fillMaxWidth(0.7f),
+                            .fillMaxWidth(0.7f)
+                            .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

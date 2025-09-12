@@ -33,7 +33,7 @@ fun Scorebar(
     ) {
         Text(
             text = title,
-            style = AppTextStyles.Body2.bold,
+            style = AppTextStyles.Label.Bold,
             color = Label_Alternative,
         )
         Row (

@@ -55,11 +55,11 @@ fun Pack(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(144.dp)
+                .height(120.dp)
                 .padding(vertical = 20.dp)
         ) {
             Box(
-                modifier = Modifier.size(84.dp)
+                modifier = Modifier.size(100.dp)
                     .background(color = Fill_Normal, shape = RoundedCornerShape(12.dp))
             )
             Column(

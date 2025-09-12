@@ -20,7 +20,7 @@ object Nav {
         NavModel(id = 0, name = "상점", image = R.drawable.shop, selImage = R.drawable.p_shop, onClick = ScreenNavigate.MARKET),
         NavModel(id = 1, name = "도전과제", image = R.drawable.medal, selImage = R.drawable.p_medal, onClick = ScreenNavigate.ACHIEVE),
         NavModel(id = 2, name = "탐험", image = R.drawable.flag, selImage = R.drawable.p_flag, onClick = ScreenNavigate.HOME),
-        NavModel(id = 3, name = "코스", image = R.drawable.course, selImage = R.drawable.p_course, onClick = ScreenNavigate.COURSE),
+        NavModel(id = 3, name = "코스", image = R.drawable.course, selImage = R.drawable.p_course, onClick = ScreenNavigate.COURSE_CATEGORY),
         NavModel(id = 4, name = "랭킹", image = R.drawable.trophy, selImage = R.drawable.p_trophy, onClick = ScreenNavigate.RANKING)
     )
 }

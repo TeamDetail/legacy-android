@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
@@ -51,7 +52,11 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 
 @Composable
-fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<SearchCourseResponse>?, viewModel: CourseViewModel) {
+fun SmallCourseWrap(
+    modifier: Modifier = Modifier,
+    type: String, data: List<SearchCourseResponse>?,
+    viewModel: CourseViewModel,
+    navHostController: NavHostController) {
     Column(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
@@ -101,7 +106,7 @@ fun SmallCourseWrap(modifier: Modifier = Modifier, type: String, data: List<Sear
                             .clip(RoundedCornerShape(12.dp))
                             .padding(5.dp)
                             .clickable{viewModel.setCurrentCourse(course)
-                                viewModel.updateCourseStatus(CourseStatus.INFO)}
+                                navHostController.navigate("course_info")}
                     ) {
                         if (course.thumbnail.isBlank()) {
                             SkeletonBox(modifier = Modifier.matchParentSize())

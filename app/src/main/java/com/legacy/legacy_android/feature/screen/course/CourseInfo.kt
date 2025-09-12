@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.res.component.course
+package com.legacy.legacy_android.feature.screen.course
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,12 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
-import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
+import com.legacy.legacy_android.res.component.course.CourseRuins
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
@@ -46,9 +47,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: CourseViewModel) {
+fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostController: NavHostController) {
+    val course = viewModel.uiState.currentCourse
     val coroutineScope = rememberCoroutineScope ()
     val isLoading = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        println("LaunchEffect")
+        println(viewModel.uiState.currentCourse)
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -65,12 +72,13 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-
                     .clickable(enabled = !isLoading.value) {
                         coroutineScope.launch {
+
                             isLoading.value = true
                             delay(100)
-                            viewModel.updateCourseStatus(CourseStatus.ALL)
+                            navHostController.popBackStack()
+                            isLoading.value = false
                         }
                     }
             ) {
@@ -203,13 +211,13 @@ fun CourseInfo(modifier: Modifier, course: AllCourseResponse?, viewModel: Course
                                     Box(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .fillMaxWidth(((course.clearRuinsCount + 1).toFloat() / (course.maxRuinsCount + 1)))
+                                            .fillMaxWidth(((course.clearRuinsCount).toFloat() / (course.maxRuinsCount)))
                                             .background(Green_Netural)
                                     )
                                 }
                                 Text(
                                     text = if (!course.clear) {
-                                        "${course.clearRuinsCount + 1}/${course.maxRuinsCount + 1}"
+                                        "${course.clearRuinsCount}/${course.maxRuinsCount}"
                                     } else {
                                         "탐험 완료!"
                                     },

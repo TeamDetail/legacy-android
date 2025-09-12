@@ -46,6 +46,9 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(quizStatus = status)
     }
 
+    fun updateSearchStatus(status: Boolean){
+        uiState = uiState.copy(isSearchRuinOpen = status)
+    }
 
     fun updateHintStatus(status: HintStatus) {
         uiState = uiState.copy(hintStatus = status)
@@ -96,7 +99,6 @@ class HomeViewModel @Inject constructor(
 
     fun createBlock(latitude: Double?, longitude: Double?) {
         if (latitude == null || longitude == null) return
-
         viewModelScope.launch {
             blockRepository.createBlock(latitude, longitude)
         }
@@ -106,6 +108,15 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             blockRepository.getBlocks()
                 .onSuccess { blocks -> uiState = uiState.copy(blocks = blocks) }
+        }
+    }
+
+    fun searchRuins(name: String){
+        viewModelScope.launch {
+            uiState = uiState.copy(isSearchLoading = true)
+            ruinsRepository.getSearchRuins(name)
+                .onSuccess { ruins -> uiState = uiState.copy(createSearchRuins = ruins)}
+            uiState = uiState.copy(isSearchLoading = false)
         }
     }
 

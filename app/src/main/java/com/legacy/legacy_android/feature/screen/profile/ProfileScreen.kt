@@ -3,11 +3,13 @@ package com.legacy.legacy_android.feature.screen.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -41,6 +44,7 @@ import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.profile.DictionaryInfo
+import com.legacy.legacy_android.res.component.profile.InventoryInfo
 import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.Statbar
 import com.legacy.legacy_android.res.component.profile.TitleSelector
@@ -75,11 +79,18 @@ fun ProfileScreen(
         modifier = modifier
             .fillMaxSize()
             .background(Background_Alternative)
+            .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
+        Box(
+            modifier = modifier.align(Alignment.BottomCenter).zIndex(999f)
+        ) {
+            if (viewModel.uiState.selectedItem != null) {
+                InventoryInfo(viewModel)
+            }
+        }
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier
-                .padding(vertical = 40.dp, horizontal = 20.dp)
                 .align(Alignment.TopStart)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -87,7 +98,7 @@ fun ProfileScreen(
             // 여기서 프로필 윗부분
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier =
                     modifier.padding(top = 24.dp)
             ) {
@@ -127,7 +138,7 @@ fun ProfileScreen(
                         contentDescription = "프로필 이미지",
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(CircleShape),
+                            .clip(RoundedCornerShape(8.dp)),
                         contentScale = ContentScale.Crop,
                         placeholder = painterResource(R.drawable.temp_profile),
                         error = painterResource(R.drawable.temp_profile)
@@ -183,6 +194,7 @@ fun ProfileScreen(
                     }
                 }
             }
+
             when (viewModel.uiState.profileStatus) {
                 0 -> RecordScreen(
                     modifier = modifier,
@@ -220,7 +232,9 @@ fun RecordScreen(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Scorebar(title = "자기소개", text = "자기소개", modifier = modifier)
         // 숙련
+        Spacer(modifier = modifier.height(8.dp))
         Statbar(
             modifier = modifier,
             title = "숙련",
@@ -248,7 +262,7 @@ fun RecordScreen(
             barColor = Blue_Netural
         )
     }
-    Spacer(modifier = modifier.height(16.dp))
+    Spacer(modifier = modifier.height(8.dp))
     // 스코어
     Column (
         modifier = modifier.fillMaxWidth(),
@@ -342,27 +356,36 @@ fun InventoryScreen(
 ) {
     val inventory = viewModel.uiState.myInventory ?: emptyList()
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(7),
-        modifier = modifier.fillMaxSize().height(1000.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        items(105) { index ->
-            Box(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(48.dp)
-                    .background(Fill_Normal, RoundedCornerShape(8.dp))
-                    .border(
-                        width = 1.dp,
-                        shape = RoundedCornerShape(8.dp),
-                        color = Line_Alternative
-                    ),
-                contentAlignment = Alignment.Center
-            ){
-                if (index < inventory.size){
-                    Text(text="${inventory[index].itemName}")
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(7),
+            modifier = modifier.fillMaxSize().height(1000.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            items(105) { index ->
+                Box(
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(48.dp)
+                        .background(Fill_Normal, RoundedCornerShape(8.dp))
+                        .border(
+                            width = 1.dp,
+                            shape = RoundedCornerShape(8.dp),
+                            color = Line_Alternative
+                        ).clickable {
+                            if (index < inventory.size) {
+                                viewModel.setSelectedItem(viewModel.uiState.myInventory!![index])
+                                println(viewModel.uiState.myInventory)
+                            } else {
+                                viewModel.setSelectedItem(null)
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (index < inventory.size) {
+                        Text(text = inventory[index].itemName)
+                    }
                 }
             }
         }

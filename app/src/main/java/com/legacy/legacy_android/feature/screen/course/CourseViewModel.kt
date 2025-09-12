@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.course.CourseRepository
 import com.legacy.legacy_android.domain.repository.home.RuinsRepository
+import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.all.CreateCourseRequest
 import com.legacy.legacy_android.feature.network.course.all.PatchHeartRequest
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
@@ -21,10 +22,14 @@ import javax.inject.Inject
 @HiltViewModel
 class CourseViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
-    private val ruinsRepository: RuinsRepository
+    private val ruinsRepository: RuinsRepository,
+
 ): ViewModel(){
 
     var uiState by mutableStateOf(CourseUiState())
+        private set
+
+    var navigateBack by mutableStateOf(false)
         private set
 
     val statusList = listOf( "전체", "미완료", "완료")
@@ -36,8 +41,11 @@ class CourseViewModel @Inject constructor(
 
     }
 
-    fun updateCourseStatus(status: CourseStatus){
-        uiState = uiState.copy(courseStatus = status)
+    fun filterRuinElem(item: RuinsIdResponse) {
+        uiState = uiState.copy(
+            createSelectedRuins = uiState.createSelectedRuins
+                ?.filter { it.ruinsId != item.ruinsId }
+        )
     }
 
     fun loadAllCourses() {
@@ -54,6 +62,7 @@ class CourseViewModel @Inject constructor(
         }
     }
 
+
     fun searchCourses(name: String){
         viewModelScope.launch {
             courseRepository.getSearchCourse(name)
@@ -61,10 +70,19 @@ class CourseViewModel @Inject constructor(
         }
     }
 
+    fun onNavigated() {
+        navigateBack = false
+    }
+
     fun searchRuins(name: String){
         viewModelScope.launch {
+            uiState = uiState.copy(isCreateLoading = true)
+            uiState = uiState.copy(createSearchRuins = null)
             ruinsRepository.getSearchRuins(name)
-                .onSuccess { ruins -> uiState = uiState.copy(createSearchRuins = ruins) }
+                .onSuccess {
+                    ruins -> uiState = uiState.copy(createSearchRuins = ruins)
+                }
+            uiState = uiState.copy(isCreateLoading = false)
         }
     }
 
@@ -80,6 +98,7 @@ class CourseViewModel @Inject constructor(
                 .onSuccess { course -> uiState = uiState.copy(eventCourse = course) }
         }
     }
+
     fun setCurrentCourse(course: SearchCourseResponse){
         viewModelScope.launch {
             courseRepository.getCourseById(course.courseId)
@@ -166,7 +185,7 @@ class CourseViewModel @Inject constructor(
 
             courseRepository.createCourse(data)
                 .onSuccess {
-                    updateCourseStatus(CourseStatus.ALL)
+                    navigateBack = true
                     println("Course 만들기 성공")
                     initCreateCourse()
                     loadAllCourses()

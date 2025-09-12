@@ -1,5 +1,4 @@
 package com.legacy.legacy_android.feature.network.ruins.id
-
 import java.util.Date
 
 data class RuinsIdResponse (
@@ -17,6 +16,7 @@ data class RuinsIdResponse (
     val manager: String,
     val latitude: Double,
     val longitude: Double,
+    val description: String,
     val card: Cards?
 )
 

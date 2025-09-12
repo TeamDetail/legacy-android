@@ -19,7 +19,7 @@ fun LocationDialog(
                     "주변 유적지와 블록을 확인하고 퀘스트를 진행하기 위해 위치 정보를 사용합니다."
         }
         permissionState.revokedPermissions.isNotEmpty() -> {
-            "위치 권한이 거부되었습니다. 앱 설정에서 위치 권한을 직접 허용해주세요."
+            "Legacy를 즐기려면 위치 권한이 필요합니다!"
         }
         else -> {
             "Legacy를 즐기려면 위치 권한이 필요합니다!"
@@ -28,7 +28,7 @@ fun LocationDialog(
 
     val confirmButtonText = when {
         permissionState.shouldShowRationale -> "권한 허용"
-        permissionState.revokedPermissions.isNotEmpty() -> "설정으로 이동"
+        permissionState.revokedPermissions.isNotEmpty() -> "권한 허용"
         else -> "확인"
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
@@ -41,15 +42,17 @@ import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Netural
 
 @Composable
-fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel) {
+fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHostController: NavHostController,) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
             .clip(RoundedCornerShape(12.dp))
             .padding(5.dp)
-            .clickable{viewModel.setCurrentCourse(course)
-            viewModel.updateCourseStatus(CourseStatus.INFO)}
+            .clickable{
+                viewModel.setCurrentCourse(course)
+                navHostController.navigate("course_info")
+            }
     ) {
         if (course.thumbnail.isBlank()) {
             SkeletonBox(modifier = Modifier.matchParentSize())
@@ -164,13 +167,13 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .fillMaxWidth(((course.clearRuinsCount + 1).toFloat() / (course.maxRuinsCount + 1)))
+                                    .fillMaxWidth(((course.clearRuinsCount).toFloat() / (course.maxRuinsCount)))
                                     .background(Green_Netural)
                             )
                         }
                         Text(
                             text = if (!course.clear) {
-                                "${course.clearRuinsCount + 1}/${course.maxRuinsCount + 1}"
+                                "${course.clearRuinsCount}/${course.maxRuinsCount}"
                             } else {
                                 "탐험 완료"
                             },

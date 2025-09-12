@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun CustomSearchBar(
@@ -54,7 +55,11 @@ fun CustomSearchBar(
             disabledContainerColor = Background_Normal,
             focusedIndicatorColor = Background_Normal,
             unfocusedIndicatorColor = Background_Normal,
-            disabledIndicatorColor = Background_Normal
+            disabledIndicatorColor = Background_Normal,
+            focusedPlaceholderColor = White,
+            unfocusedPlaceholderColor = White,
+            focusedLeadingIconColor = White,
+            unfocusedLeadingIconColor = White,
         )
     )
 }

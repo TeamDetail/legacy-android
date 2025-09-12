@@ -17,7 +17,7 @@ fun PackWrap(
     Column (
         modifier = Modifier
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8 .dp),
 
     ) {
         list.forEach{ pack ->
