@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -163,9 +164,15 @@ fun AdventureInfo(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                                        .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                                        .clickable {viewModel.updateIsCommenting(true)
-                                        viewModel.setCommentValue("")}
+                                        .border(
+                                            1.dp,
+                                            color = Line_Netural,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clickable {
+                                            viewModel.updateIsCommenting(true)
+                                            viewModel.setCommentValue("")
+                                        }
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(vertical = 8.dp),
@@ -238,14 +245,14 @@ fun AdventureInfo(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Box(
                             Modifier
                                 .height(1.dp)
                                 .fillMaxWidth()
                                 .background(Line_Alternative)
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         // comments
                         if (viewModel.uiState.comments.isNullOrEmpty()) {
@@ -260,27 +267,12 @@ fun AdventureInfo(
                             }
                         } else {
                             viewModel.uiState.comments?.forEach { it ->
-                                AsyncImage(
-                                    model = it.userImgUrl,
-                                    contentDescription = "프로필 이미지",
-                                    modifier = Modifier
-                                        .height(184.dp)
-                                        .border(
-                                            1.dp,
-                                            color = Line_Netural,
-                                            shape = RoundedCornerShape(12.dp)
-                                        )
-                                        .clip(RoundedCornerShape(12.dp)),
-                                    contentScale = ContentScale.Crop,
-                                    error = painterResource(R.drawable.school_img),
-                                    placeholder = painterResource(R.drawable.school_img)
-                                )
-                                Text(text = it.userName)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                CommentBox(comment = it)
+                                Spacer(modifier = Modifier.height(20.dp))
                             }
                         }
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         ) {}
