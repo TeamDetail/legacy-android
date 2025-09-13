@@ -58,6 +58,7 @@ import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseScreen
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.feature.screen.course.CreateCourse
+import com.legacy.legacy_android.feature.screen.profile.ProfileEditScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -70,6 +71,7 @@ enum class ScreenNavigate {
     ACHIEVE,
     COURSE,
     PROFILE,
+    PROFILE_EDIT,
     FRIEND,
     SETTING,
     CREATE_COURSE,
@@ -205,6 +207,19 @@ class MainActivity : AppCompatActivity() {
                         CourseInfo(Modifier, courseViewModel, navController)
                     }
                 }
+                navigation(
+                    startDestination = ScreenNavigate.PROFILE.name,
+                    route = "profile_graph"
+                ) {
+                    composable(route = ScreenNavigate.PROFILE.name) {
+                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                        ProfileScreen(Modifier, profileViewModel, navController)
+                    }
+                    composable(route = ScreenNavigate.PROFILE_EDIT.name) {
+                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                        ProfileEditScreen(Modifier, profileViewModel, navController)
+                    }
+                }
 
                 composable(route = ScreenNavigate.LOGIN.name) {
                     val loginViewModel: LoginViewModel = hiltViewModel()
@@ -233,10 +248,6 @@ class MainActivity : AppCompatActivity() {
                 composable(route = ScreenNavigate.RANKING.name) {
                     val rankingViewModel: RankingViewModel = hiltViewModel()
                     RankingScreen(Modifier, rankingViewModel, navController)
-                }
-                composable(route = ScreenNavigate.PROFILE.name) {
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    ProfileScreen(Modifier, profileViewModel, navController)
                 }
                 composable(route = ScreenNavigate.FRIEND.name) {
                     val friendViewModel: FriendViewModel = hiltViewModel()

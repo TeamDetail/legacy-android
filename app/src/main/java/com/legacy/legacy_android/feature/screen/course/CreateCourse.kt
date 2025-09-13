@@ -181,17 +181,19 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                     onValueChange = { viewModel.setCreateDescription(it) },
                     modifier = modifier.fillMaxWidth()
                         .background(color = Background_Normal, shape = RoundedCornerShape(12.dp))
-                        .height(120.dp),
+                        .height(120.dp).clip(RoundedCornerShape(12.dp)),
                     placeholder = { Text(text = "코스 설명을 입력해주세요.") },
                     colors = TextFieldDefaults.colors(
-                        focusedTextColor = White, unfocusedTextColor = White,
-                        focusedContainerColor = Background_Normal,
-                        unfocusedContainerColor = Background_Normal,
-                        disabledContainerColor = Background_Normal,
-                        focusedIndicatorColor = Background_Normal,
-                        unfocusedIndicatorColor = Background_Normal,
-                        disabledIndicatorColor = Background_Normal
-                    )
+                    focusedTextColor = Label, unfocusedTextColor = Label,
+                    focusedContainerColor = Fill_Normal,
+                    unfocusedContainerColor = Fill_Normal,
+                    disabledContainerColor = Fill_Normal,
+                    focusedIndicatorColor = Fill_Normal,
+                    unfocusedIndicatorColor = Fill_Normal,
+                    disabledIndicatorColor = Fill_Normal,
+                    unfocusedPlaceholderColor = Label,
+                    focusedPlaceholderColor = Label,
+                )
                 )
             }
             // 유적지 선택 파트

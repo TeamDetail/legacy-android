@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.White
@@ -104,16 +106,19 @@ fun CommentModal(
             onValueChange = { viewModel.setCommentValue(it) },
             modifier = Modifier.fillMaxWidth()
                 .background(color = Background_Normal, shape = RoundedCornerShape(12.dp))
-                .height(120.dp),
+                .height(120.dp)
+                .clip(RoundedCornerShape(12.dp)),
             placeholder = { Text(text = "유적지에 대한 감상을 입력해주세요!") },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = White, unfocusedTextColor = White,
-                focusedContainerColor = Background_Normal,
-                unfocusedContainerColor = Background_Normal,
-                disabledContainerColor = Background_Normal,
-                focusedIndicatorColor = Background_Normal,
-                unfocusedIndicatorColor = Background_Normal,
-                disabledIndicatorColor = Background_Normal
+                focusedTextColor = Label, unfocusedTextColor = Label,
+                focusedContainerColor = Fill_Normal,
+                unfocusedContainerColor = Fill_Normal,
+                disabledContainerColor = Fill_Normal,
+                focusedIndicatorColor = Fill_Normal,
+                unfocusedIndicatorColor = Fill_Normal,
+                disabledIndicatorColor = Fill_Normal,
+                unfocusedPlaceholderColor = Label,
+                focusedPlaceholderColor = Label,
             )
         )
         Box(

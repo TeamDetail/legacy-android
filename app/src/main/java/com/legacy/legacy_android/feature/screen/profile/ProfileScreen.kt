@@ -158,7 +158,7 @@ fun ProfileScreen(
                             Image(
                                 painter = painterResource(R.drawable.edit),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(32.dp).clickable { navHostController.navigate("profile_edit") }
                             )
                         }
                         Text(

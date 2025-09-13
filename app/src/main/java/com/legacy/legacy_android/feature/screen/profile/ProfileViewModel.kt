@@ -39,8 +39,12 @@ class ProfileViewModel @Inject constructor(
     fun fetchProfile(force: Boolean = false) {
         viewModelScope.launch {
             userRepository.fetchProfile(force)
+            userRepository.profile.collect { data ->
+                profile = data
+            }
         }
     }
+
 
     fun clearProfile() {
         userRepository.clearProfile()

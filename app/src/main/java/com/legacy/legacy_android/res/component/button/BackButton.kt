@@ -46,6 +46,7 @@ fun BackButton(
                         2 -> navHostController.navigate("HOME")
                         3 -> navHostController.navigate("COURSE")
                         4 -> navHostController.navigate("RANKING")
+                        5 -> navHostController.navigate("PROFILE")
                     }
                 }
             }
