@@ -68,7 +68,7 @@ fun MarketModal(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp, horizontal = 52.dp),
+                    .padding(vertical = 20.dp, horizontal = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -91,7 +91,7 @@ fun MarketModal(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 20.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.res.component.adventure
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -124,7 +125,7 @@ fun AdventureInfo(
                                     )
                                 } else {
                                     Text(
-                                        text = info ?: "",
+                                        text = name ?: "이름 없음",
                                         style = AppTextStyles.Headline.bold
                                     )
                                 }
@@ -163,7 +164,8 @@ fun AdventureInfo(
                                         .fillMaxWidth()
                                         .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                                         .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                                        .clickable {}
+                                        .clickable {viewModel.updateIsCommenting(true)
+                                        viewModel.setCommentValue("")}
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(vertical = 8.dp),
@@ -231,7 +233,7 @@ fun AdventureInfo(
                             )
                         } else {
                             Text(
-                                text = description ?: "설명글이 없습니다.",
+                                text = description,
                                 style = AppTextStyles.Body2.medium
                             )
                         }
@@ -278,7 +280,6 @@ fun AdventureInfo(
                             }
                         }
                     }
-
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }

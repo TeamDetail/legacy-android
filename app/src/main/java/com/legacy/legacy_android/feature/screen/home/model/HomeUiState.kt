@@ -32,5 +32,10 @@ data class HomeUiState(
     val searchRuinValue: MutableState<String> = mutableStateOf(""),
     val createSearchRuins: List<RuinsIdResponse>? = null,
     val isSearchLoading: Boolean = false,
-    val comments: List<RuinsCommentResponse>? = null
+    val comments: List<RuinsCommentResponse>? = null,
+    val commentValue: String = "",
+    val isCommenting: Boolean = false,
+    val commentLoading: Boolean = false,
+    val isCommentModalOpen: Boolean = false,
+    val commentRate: Int = 0
 )

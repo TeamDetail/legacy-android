@@ -4,6 +4,7 @@ import android.util.Log
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapRequest
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentRequest
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdService
@@ -32,6 +33,21 @@ class RuinsRepository @Inject constructor(
             Result.success(response.data ?: emptyList())
         } catch (e: Exception) {
             Log.e("RuinsRepository", "ruins repository 오류 ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun postComment(
+        ruinsId: Int,
+        rating: Int,
+        comment: String
+    ): Result<RuinsCommentResponse?> {
+        return try {
+            val request = RuinsCommentRequest(ruinsId, rating, comment)
+            val response = ruinsIdService.postComment(request)
+            Result.success(response.data)
+        } catch (e: Exception){
+            Log.e("RuinsRepository", "comment 오류 ${e.message}")
             Result.failure(e)
         }
     }

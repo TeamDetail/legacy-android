@@ -36,6 +36,18 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(selectedId = id)
     }
 
+    fun updateCommentModal(isOpen: Boolean) {
+        uiState = uiState.copy(isCommentModalOpen = isOpen)
+    }
+
+    fun updateCommentRate(rate: Int) {
+      uiState = uiState.copy(commentRate = rate)
+    }
+
+    fun updateIsCommenting(isCommenting: Boolean) {
+        uiState = uiState.copy(isCommenting = isCommenting)
+    }
+
     fun updateMapBounds(minLat: Double, maxLat: Double, minLng: Double, maxLng: Double) {
         uiState = uiState.copy(
             mapBounds = MapBounds(minLat, maxLat, minLng, maxLng)
@@ -62,6 +74,10 @@ class HomeViewModel @Inject constructor(
         quizAnswers.clear()
     }
 
+    fun setCommentValue(value: String) {
+        uiState = uiState.copy(commentValue = value)
+    }
+
     fun fetchRuinsDetail(id: Int) {
         if (id == -1) {
             uiState = uiState.copy(ruinsDetail = null)
@@ -74,6 +90,29 @@ class HomeViewModel @Inject constructor(
                 .onFailure { println("유적지 불러오기 실패했어용ㅎㅎ") }
         }
     }
+
+    fun submitComment() {
+        viewModelScope.launch {
+            val currentRuinsDetail = uiState.ruinsDetail
+            if (currentRuinsDetail == null) {
+                return@launch
+            }
+
+            uiState = uiState.copy(commentLoading = true)
+
+            ruinsRepository.postComment(currentRuinsDetail.ruinsId, uiState.commentRate, uiState.commentValue)
+                .onSuccess {
+                    println("코멘트 성공")
+                    updateIsCommenting(false)
+                    uiState = uiState.copy(commentValue = "", commentLoading = false)
+                }
+                .onFailure {
+                    println("코멘트 실패: ${it.message}")
+                    uiState = uiState.copy(commentLoading = false)
+                }
+        }
+    }
+
 
     fun submitQuizAnswers() {
         viewModelScope.launch {

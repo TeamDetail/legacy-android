@@ -38,20 +38,20 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.screen.LocationViewModel
 import com.legacy.legacy_android.feature.screen.home.model.HintStatus
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.adventure.AdventureInfo
+import com.legacy.legacy_android.res.component.adventure.CommentModal
 import com.legacy.legacy_android.res.component.adventure.LocationDialog
 import com.legacy.legacy_android.res.component.adventure.MapStyle
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
-import com.legacy.legacy_android.res.component.bars.infobar.InfoBarViewModel
 import com.legacy.legacy_android.res.component.modal.CreditModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
+import com.legacy.legacy_android.res.component.modal.RateModal
 import com.legacy.legacy_android.res.component.modal.RuinSearchModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Black
@@ -182,6 +182,9 @@ fun HomeScreen(
             .fillMaxSize()
             .zIndex(99f)
     ) {
+        if (viewModel.uiState.isCommentModalOpen){
+            RateModal(viewModel)
+        }
         // InfoBar
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -363,6 +366,7 @@ fun HomeScreen(
             onMapClick = {
                 viewModel.updateSelectedId(-1)
                 viewModel.fetchRuinsDetail(-1)
+                viewModel.updateIsCommenting(false)
             },
             properties = MapProperties(
                 isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
@@ -415,7 +419,7 @@ fun HomeScreen(
                 .padding(vertical = 40.dp, horizontal = 12.dp)
                 .zIndex(7f)
         ) {
-            if (viewModel.uiState.selectedId > -1) {
+            if (viewModel.uiState.selectedId > -1 && !viewModel.uiState.isCommenting) {
                 AdventureInfo(
                     id = viewModel.uiState.ruinsDetail?.ruinsId,
                     viewModel = viewModel,
@@ -426,10 +430,14 @@ fun HomeScreen(
                     ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
                     description = viewModel.uiState.ruinsDetail?.description,
                 )
+            }else if (viewModel.uiState.selectedId > -1 &&viewModel.uiState.isCommenting) {
+                CommentModal(viewModel)
             }else{
                 NavBar(navHostController = navHostController)
             }
         }
+
+
         // 유적지 검색
         if (viewModel.uiState.isSearchRuinOpen) {
             Box(
