@@ -36,6 +36,18 @@ class CourseViewModel @Inject constructor(
     val newList = listOf("최신", "인기", "클리어 인원")
     val eventList = listOf("전체", "일반", "이벤트")
 
+    fun setSelectedEventList(status: String){
+        uiState = uiState.copy(selectedEvent = status)
+    }
+
+    fun setSelectedNewList(status: String){
+        uiState = uiState.copy(selectedNew = status)
+    }
+
+    fun setSelectedStatusList(status: String){
+        uiState = uiState.copy(selectedStatus = status)
+    }
+
     fun setCreateDescription(description: String){
         uiState = uiState.copy(createCourseDescription = description)
 

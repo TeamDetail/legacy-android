@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
+import com.legacy.legacy_android.res.component.button.CustomDropdown
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.layout.CourseScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
@@ -82,9 +84,30 @@ fun CourseScreen(
                         },
                         modifier = modifier
                     )
-//                            CustomDropDown(
-//
-//                            ) { }
+                    Row (
+                        modifier = modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        CustomDropdown(
+                            options = viewModel.eventList,
+                            selected = viewModel.uiState.selectedEvent,
+                            setSelect = { viewModel.setSelectedEventList(it) }
+                        )
+                        Row (
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ){
+                            CustomDropdown(
+                                options = viewModel.newList,
+                                selected = viewModel.uiState.selectedNew,
+                                setSelect = { viewModel.setSelectedNewList(it) }
+                            )
+                            CustomDropdown(
+                                options = viewModel.statusList,
+                                selected = viewModel.uiState.selectedStatus,
+                                setSelect = { viewModel.setSelectedStatusList(it) }
+                            )
+                        }
+                    }
 
                     if (viewModel.uiState.searchCourse.isEmpty()) {
                         viewModel.uiState.allCourse.forEach { course ->

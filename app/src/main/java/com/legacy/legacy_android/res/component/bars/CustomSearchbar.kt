@@ -37,6 +37,7 @@ fun CustomSearchBar(
                 contentDescription = null
             )
         },
+        shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .background(Background_Normal, RoundedCornerShape(12.dp)).fillMaxWidth(),
         textStyle = AppTextStyles.Label.Medium,

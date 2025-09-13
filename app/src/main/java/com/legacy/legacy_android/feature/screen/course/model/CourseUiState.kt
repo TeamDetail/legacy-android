@@ -10,9 +10,9 @@ enum class CourseStatus { ALL, INFO}
 
 data class CourseUiState(
     // dropdown value
-    val statusSelected: String = "",
-    val newList: String = "",
-    val eventList: String = "",
+    val selectedEvent: String = "전체",
+    val selectedNew: String = "최신",
+    val selectedStatus: String = "전체",
     // normal value
     val allCourse: List<SearchCourseResponse> = emptyList(),
     val popularCourse: List<SearchCourseResponse> = emptyList(),
