@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -45,7 +46,7 @@ import com.legacy.legacy_android.ui.theme.bitbit
 fun MailModal(
     onMailClick: (Boolean) -> Unit
 ) {
-    val viewModel: MailViewModel = viewModel()
+    val viewModel: MailViewModel = hiltViewModel()
     val mails = viewModel.mails
     val isLoading = viewModel.isLoading
 
@@ -98,43 +99,47 @@ fun MailModal(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 if (isLoading) {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
-                    ){
+                    ) {
                         Text(text = "로딩 중입니다.", style = AppTextStyles.Label.regular)
                     }
-                } else if (mails.isEmpty()){
-                    Row (
+                } else if (mails.isEmpty()) {
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
-                    ){
+                    ) {
                         Text(text = "우편함이 비었습니다.", style = AppTextStyles.Label.regular)
                     }
-                }
-                else {
-                    mails.forEach { it ->
+                } else {
+                    mails.forEach { mail ->
                         Text(
-                            text = it.mailTitle,
+                            text = mail.mailTitle,
                             style = AppTextStyles.Body1.bold
                         )
                         Text(
-                            text = it.sendAt,
+                            text = mail.sendAt,
                             style = AppTextStyles.Caption2.regular,
                             color = Label_Alternative
                         )
                         Spacer(Modifier.height(4.dp))
-                        Row {
-                            Box(
-                                Modifier.size(40.dp)
-                                    .background(Fill_Normal, RoundedCornerShape(8.dp))
-                                    .border(
-                                        width = 1.dp,
-                                        color = Line_Alternative,
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                            ) {
-                                Text(it.mailContent, style = AppTextStyles.Caption2.regular)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ){
+                            mail.itemData.forEach { item ->
+                                Box(
+                                    Modifier.size(40.dp)
+                                        .background(Fill_Normal, RoundedCornerShape(8.dp))
+                                        .border(
+                                            width = 1.dp,
+                                            color = Line_Alternative,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                ) {
+                                    Text(item.itemName, style = AppTextStyles.Caption2.regular)
+                                }
                             }
                         }
                     }

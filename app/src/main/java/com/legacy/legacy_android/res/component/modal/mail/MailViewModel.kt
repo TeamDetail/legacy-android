@@ -1,6 +1,6 @@
 package com.legacy.legacy_android.res.component.modal.mail
 
-
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,21 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.MailRepository
 import com.legacy.legacy_android.feature.network.mail.MailResponse
-import com.legacy.legacy_android.feature.network.mail.MailService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import com.legacy.legacy_android.BuildConfig
+import javax.inject.Inject
 
-class MailViewModel : ViewModel() {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.SERVER_API_KEY)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val mailService = retrofit.create(MailService::class.java)
-    private val mailRepository = MailRepository(mailService)
+@HiltViewModel
+class MailViewModel @Inject constructor(
+    private val mailRepository: MailRepository
+) : ViewModel() {
 
     var mails by mutableStateOf<List<MailResponse>>(emptyList())
         private set
@@ -33,16 +26,25 @@ class MailViewModel : ViewModel() {
     fun loadMails() {
         viewModelScope.launch {
             isLoading = true
-            val result = mailRepository.getMails()
-            mails = result.getOrNull() ?: emptyList()
+            try {
+                val result = mailRepository.getMails()
+                mails = result.getOrNull() ?: emptyList()
+                Log.d("MailViewModel", "메일 수신: ${mails.size}개")
+            } catch (e: Exception) {
+                Log.e("MailViewModel", "메일 수신 실패", e)
+            }
             isLoading = false
         }
     }
 
-    fun getItems(){
+    fun getItems() {
         viewModelScope.launch {
-            val result = mailRepository.getItems()
-            loadMails()
+            try {
+                mailRepository.getItems()
+                loadMails()
+            } catch (e: Exception) {
+                Log.e("MailViewModel", "아이템 수령 실패", e)
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ data class MailResponse(
     val mailTitle: String,
     val mailContent: String,
     val sendAt: String,
-    val itemData: ItemData
+    val itemData: List<ItemData>
 )
 
 data class ItemData(
