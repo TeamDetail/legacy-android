@@ -32,6 +32,10 @@ class HomeViewModel @Inject constructor(
 
     private val quizAnswers = mutableListOf<QuizAnswer>()
 
+    fun updateIsMailOpen(isOpen: Boolean) {
+        uiState = uiState.copy(isMailOpen = isOpen)
+    }
+
     fun updateSelectedId(id: Int) {
         uiState = uiState.copy(selectedId = id)
     }

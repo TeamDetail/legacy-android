@@ -21,6 +21,10 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.res.component.modal.mail.MailModal
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.White
@@ -43,7 +47,11 @@ fun CourseScreenLayout(
     viewModel: CourseViewModel,
     content: @Composable () -> Unit
 ) {
+    var isMailModalVisible by remember { mutableStateOf(false) }
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
+        if (isMailModalVisible) {
+            MailModal(onMailClick = {show -> isMailModalVisible = show })
+        }
         IconButton(
             onClick = {
                 navHostController.navigate("CREATE_COURSE") {
@@ -72,7 +80,7 @@ fun CourseScreenLayout(
                 .absoluteOffset(0.dp, 10.dp)
                 .zIndex(5f)
         ) {
-            InfoBar(navHostController)
+            InfoBar(navHostController, onMailClick = { show -> isMailModalVisible = show })
         }
 
         // 콘텐츠

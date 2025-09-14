@@ -37,5 +37,6 @@ data class HomeUiState(
     val isCommenting: Boolean = false,
     val commentLoading: Boolean = false,
     val isCommentModalOpen: Boolean = false,
-    val commentRate: Int = 0
+    val commentRate: Int = 0,
+    val isMailOpen: Boolean = false,
 )

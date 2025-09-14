@@ -31,6 +31,7 @@ import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseService
 import com.legacy.legacy_android.feature.network.fcm.FcmService
+import com.legacy.legacy_android.feature.network.mail.MailService
 import com.legacy.legacy_android.feature.network.market.MarketService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
@@ -196,5 +197,10 @@ object NetworkModule {
     @Singleton
     fun provideSearchCourseService(retrofit: Retrofit): SearchCourseService{
         return retrofit.create(SearchCourseService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideMailService(retrofit: Retrofit): MailService{
+        return retrofit.create(MailService::class.java)
     }
 }

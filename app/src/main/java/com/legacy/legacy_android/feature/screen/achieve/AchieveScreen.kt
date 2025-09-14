@@ -68,7 +68,6 @@ fun AchieveScreen(
                     }
                 }
             }
-            Statbar(modifier, 15/500f, "", "15 / 500", "", Primary)
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier

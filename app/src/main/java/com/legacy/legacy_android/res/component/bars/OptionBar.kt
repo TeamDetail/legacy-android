@@ -46,7 +46,9 @@ import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
-fun OptionBar(navHostController: NavHostController, setIsTabClicked: () -> Unit) {
+fun OptionBar(navHostController: NavHostController,
+              setIsTabClicked: () -> Unit,
+              onMailClick: (Boolean) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val viewModel: InfoBarViewModel = hiltViewModel()
@@ -69,7 +71,8 @@ fun OptionBar(navHostController: NavHostController, setIsTabClicked: () -> Unit)
                 painter = painterResource(R.drawable.mail),
                 contentDescription = null,
                 modifier = iconModifier.clickable {
-                    viewModel.fetchMail()
+                    setIsTabClicked()
+                    onMailClick(true)
                 }
             )
             Image(painter = painterResource(R.drawable.setting), contentDescription = null,
@@ -98,89 +101,4 @@ fun OptionBar(navHostController: NavHostController, setIsTabClicked: () -> Unit)
             )
         }
     }
-
-    if (viewModel.isMailOpen) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF2A2B2C).copy(alpha = 0.75f))
-                .zIndex(5000f)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {}
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .background(Background_Normal, shape = RoundedCornerShape(20.dp))
-                    .fillMaxWidth(0.9f)
-                    .padding(vertical = 16.dp, horizontal = 20.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.mail),
-                            contentDescription = "mail",
-                            modifier = Modifier.size(36.dp)
-                        )
-                        Text(text = "우편함", fontFamily = bitbit, color = White, fontSize = 24.sp)
-                    }
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "close",
-                        tint = White,
-                        modifier = Modifier.clickable { viewModel.fetchMail() }
-                    )
-                }
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "타이틀입니다.",
-                        style = AppTextStyles.Body1.bold
-                    )
-                    Text(
-                        text = "날짜입니다.",
-                        style = AppTextStyles.Caption2.regular,
-                        color = Label_Alternative
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Row {
-                        Box(
-                            Modifier.size(40.dp)
-                                .background(Fill_Normal, RoundedCornerShape(8.dp))
-                                .border(
-                                    width = 1.dp,
-                                    color = Line_Alternative,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                        )
-                    }
-                }
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Fill_Normal, RoundedCornerShape(12.dp))
-                        .border(1.dp, Yellow_Netural, RoundedCornerShape(12.dp))
-                        .padding(vertical = 12.dp, horizontal = 10.dp)
-                        .clickable {
-                        }
-                ) {
-                    Text("일괄 수령", color = Yellow_Netural, style = AppTextStyles.Caption1.Bold)
-                }
-            }
-        }
-    }
-
 }

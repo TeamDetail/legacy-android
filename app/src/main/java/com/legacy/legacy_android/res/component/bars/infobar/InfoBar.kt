@@ -31,7 +31,8 @@ import java.util.*
 
 @Composable
 fun InfoBar(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onMailClick: (Boolean) -> Unit
 ) {
     val viewModel: InfoBarViewModel = hiltViewModel()
     val profile by viewModel.profileFlow.collectAsState()
@@ -189,9 +190,10 @@ fun InfoBar(
                 ) {
                     OptionBar(navHostController, setIsTabClicked = {
                         viewModel.setIsTabClicked()
-                    })
+                    },
+                        onMailClick = { show -> onMailClick(show) })
+                }
                 }
             }
-        }
     }
 }

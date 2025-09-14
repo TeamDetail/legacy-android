@@ -16,11 +16,9 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-
     private val getMeService: GetMeService,
 ) {
 
-    val isMailOpen = mutableStateOf(false)
     private val _profile = MutableStateFlow<UserData?>(null)
     val profile: StateFlow<UserData?> = _profile.asStateFlow()
 

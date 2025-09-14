@@ -50,6 +50,7 @@ import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.modal.CreditModal
+import com.legacy.legacy_android.res.component.modal.mail.MailModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.res.component.modal.RateModal
 import com.legacy.legacy_android.res.component.modal.RuinSearchModal
@@ -182,6 +183,9 @@ fun HomeScreen(
             .fillMaxSize()
             .zIndex(99f)
     ) {
+        if (viewModel.uiState.isMailOpen){
+            MailModal (onMailClick = { show -> viewModel.updateIsMailOpen(false) })
+        }
         if (viewModel.uiState.isCommentModalOpen){
             RateModal(viewModel)
         }
@@ -194,7 +198,8 @@ fun HomeScreen(
                 .absoluteOffset(0.dp, 10.dp)
                 .zIndex(5f)
         ) {
-            InfoBar(navHostController)
+            InfoBar(navHostController,
+                onMailClick = { show -> viewModel.updateIsMailOpen(true) })
         }
         if (!mapLoaded) {
             Box(
