@@ -63,7 +63,7 @@ fun Pack(
             )
             Column(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(0.9f),
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     text = cardPack.cardpackName,

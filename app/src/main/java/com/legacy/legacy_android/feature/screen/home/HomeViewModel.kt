@@ -26,6 +26,13 @@ class HomeViewModel @Inject constructor(
     var uiState by mutableStateOf(HomeUiState())
         private set
 
+    var isMapLoaded by mutableStateOf(false)
+        private set
+
+    fun setMapLoaded() {
+        isMapLoaded = true
+    }
+
     var cameraPosition by mutableStateOf(
         CameraPosition.fromLatLngZoom(LatLng(35.0, 128.0), 14f)
     )

@@ -18,22 +18,23 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
-import androidx.navigation.compose.navigation
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.messaging.FirebaseMessaging
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.getRefToken
 import com.legacy.legacy_android.feature.data.user.isTokenValid
+import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.fcm.FcmRequest
 import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.screen.LocationViewModel
@@ -41,6 +42,9 @@ import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseCategory
 import com.legacy.legacy_android.feature.screen.course.CourseInfo
+import com.legacy.legacy_android.feature.screen.course.CourseScreen
+import com.legacy.legacy_android.feature.screen.course.CourseViewModel
+import com.legacy.legacy_android.feature.screen.course.CreateCourse
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
 import com.legacy.legacy_android.feature.screen.friend.FriendViewModel
 import com.legacy.legacy_android.feature.screen.home.HomeScreen
@@ -49,16 +53,13 @@ import com.legacy.legacy_android.feature.screen.login.LoginScreen
 import com.legacy.legacy_android.feature.screen.login.LoginViewModel
 import com.legacy.legacy_android.feature.screen.market.MarketScreen
 import com.legacy.legacy_android.feature.screen.market.MarketViewModel
+import com.legacy.legacy_android.feature.screen.profile.ProfileEditScreen
 import com.legacy.legacy_android.feature.screen.profile.ProfileScreen
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.feature.screen.ranking.RankingScreen
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
-import com.legacy.legacy_android.feature.screen.course.CourseScreen
-import com.legacy.legacy_android.feature.screen.course.CourseViewModel
-import com.legacy.legacy_android.feature.screen.course.CreateCourse
-import com.legacy.legacy_android.feature.screen.profile.ProfileEditScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -87,24 +88,13 @@ enum class BgmType(val resourceId: Int, val volume: Float) {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     @Inject
     lateinit var fcmService: FcmService
     private val locationViewModel: LocationViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    // Notification 수신을 위한 체널 추가
-    private fun createNotificationChannel(id: String, name: String) {
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(id, name, importance)
-
-        val notificationManager: NotificationManager
-                = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.createNotificationChannel(channel)
-    }
     private lateinit var soundPool: SoundPool
     private var soundId: Int = 0
-
     private var mediaPlayer: MediaPlayer? = null
     private var currentBgm: BgmType? = null
 
@@ -123,14 +113,126 @@ class MainActivity : AppCompatActivity() {
         super.attachBaseContext(context)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(id: String, name: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Retrofit 초기화
+        RetrofitClient.init(this)
+
+        // FCM & 위치, 초기 설정
+        refreshAccessTokenIfNeeded()
+
+        enableEdgeToEdge()
+
+        // startDestination 결정
+        val startDestination = determineStartDestination()
+
+        // Compose Navigation 설정
+        setContent {
+            val navController = rememberNavController()
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                handleDestinationChange(destination.route)
+            }
+
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None },
+            ) {
+                // Course Graph
+                navigation(
+                    startDestination = ScreenNavigate.COURSE_CATEGORY.name,
+                    route = "course_graph"
+                ) {
+                    composable(ScreenNavigate.COURSE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseScreen(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.COURSE_CATEGORY.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseCategory(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.CREATE_COURSE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CreateCourse(Modifier, courseViewModel, navController)
+                    }
+                    composable(ScreenNavigate.COURSE_INFO.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
+                        CourseInfo(Modifier, courseViewModel, navController)
+                    }
+                }
+
+                // Profile Graph
+                navigation(
+                    startDestination = ScreenNavigate.PROFILE.name,
+                    route = "profile_graph"
+                ) {
+                    composable(ScreenNavigate.PROFILE.name) {
+                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                        ProfileScreen(Modifier, profileViewModel, navController)
+                    }
+                    composable(ScreenNavigate.PROFILE_EDIT.name) {
+                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                        ProfileEditScreen(Modifier, profileViewModel, navController)
+                    }
+                }
+
+                // Other Screens
+                composable(ScreenNavigate.LOGIN.name) {
+                    val loginViewModel: LoginViewModel = hiltViewModel()
+                    LoginScreen(Modifier, loginViewModel, navController)
+                }
+                composable(ScreenNavigate.HOME.name) { backStackEntry ->
+                    val homeViewModel: HomeViewModel = hiltViewModel(backStackEntry)
+                    val profileViewModel: ProfileViewModel = hiltViewModel(backStackEntry)
+                    val locationViewModel: LocationViewModel = hiltViewModel(backStackEntry)
+                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel, navController)
+                }
+                composable(ScreenNavigate.MARKET.name) {
+                    val marketViewModel: MarketViewModel = hiltViewModel()
+                    MarketScreen(Modifier, marketViewModel, navController)
+                }
+                composable(ScreenNavigate.ACHIEVE.name) {
+                    val achieveViewModel: AchieveViewModel = hiltViewModel()
+                    AchieveScreen(Modifier, achieveViewModel, navController)
+                }
+                composable(ScreenNavigate.RANKING.name) {
+                    val rankingViewModel: RankingViewModel = hiltViewModel()
+                    RankingScreen(Modifier, rankingViewModel, navController)
+                }
+                composable(ScreenNavigate.FRIEND.name) {
+                    val friendViewModel: FriendViewModel = hiltViewModel()
+                    FriendScreen(Modifier, friendViewModel, navController)
+                }
+                composable(ScreenNavigate.SETTING.name) {
+                    val settingViewModel: SettingViewModel = hiltViewModel()
+                    SettingScreen(Modifier, settingViewModel, navController)
+                }
+            }
+        }
+    }
+
+    private fun refreshAccessTokenIfNeeded() {
         createNotificationChannel("channel_id", "Default Channel")
         setupFullScreenMode()
         initializeSoundPool()
         registerLifecycleObserver()
-        val startDestination = determineStartDestination()
 
         locationViewModel.getCurrentLocation { location ->
             if (location == null) {
@@ -145,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("FCM", "토큰: $token")
                 lifecycleScope.launch {
                     try {
-                         fcmService.location(
+                        fcmService.location(
                             FcmRequest(
                                 lat = location.latitude,
                                 lng = location.longitude,
@@ -159,107 +261,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                handleDestinationChange(destination.route)
-            }
-            NavHost(
-                navController = navController,
-                startDestination = startDestination,
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None },
-            ) {
-                navigation(
-                    startDestination = ScreenNavigate.COURSE_CATEGORY.name,
-                    route = "course_graph"
-                ) {
-                    composable(ScreenNavigate.COURSE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry("course_graph")
-                        }
-                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
-                        CourseScreen(Modifier, courseViewModel, navController)
-                    }
-                    composable(ScreenNavigate.COURSE_CATEGORY.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry("course_graph")
-                        }
-                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
-                        CourseCategory(Modifier, courseViewModel, navController)
-                    }
-                    composable(ScreenNavigate.CREATE_COURSE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry("course_graph")
-                        }
-                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
-                        CreateCourse(Modifier, courseViewModel, navController)
-                    }
-                    composable(ScreenNavigate.COURSE_INFO.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) {
-                            navController.getBackStackEntry("course_graph")
-                        }
-                        val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
-                        CourseInfo(Modifier, courseViewModel, navController)
-                    }
-                }
-                navigation(
-                    startDestination = ScreenNavigate.PROFILE.name,
-                    route = "profile_graph"
-                ) {
-                    composable(route = ScreenNavigate.PROFILE.name) {
-                        val profileViewModel: ProfileViewModel = hiltViewModel()
-                        ProfileScreen(Modifier, profileViewModel, navController)
-                    }
-                    composable(route = ScreenNavigate.PROFILE_EDIT.name) {
-                        val profileViewModel: ProfileViewModel = hiltViewModel()
-                        ProfileEditScreen(Modifier, profileViewModel, navController)
-                    }
-                }
-
-                composable(route = ScreenNavigate.LOGIN.name) {
-                    val loginViewModel: LoginViewModel = hiltViewModel()
-                    LoginScreen(Modifier, loginViewModel, navController)
-                }
-                composable(route = ScreenNavigate.HOME.name) {
-                    val homeViewModel: HomeViewModel = hiltViewModel()
-                    val profileViewModel: ProfileViewModel = hiltViewModel()
-                    val locationViewModel: LocationViewModel = hiltViewModel()
-                    HomeScreen(
-                        Modifier,
-                        homeViewModel,
-                        profileViewModel,
-                        locationViewModel,
-                        navController
-                    )
-                }
-                composable(route = ScreenNavigate.MARKET.name) {
-                    val marketViewModel: MarketViewModel = hiltViewModel()
-                    MarketScreen(Modifier, marketViewModel, navController)
-                }
-                composable(route = ScreenNavigate.ACHIEVE.name) {
-                    val achieveViewModel: AchieveViewModel = hiltViewModel()
-                    AchieveScreen(Modifier, achieveViewModel, navController)
-                }
-                composable(route = ScreenNavigate.RANKING.name) {
-                    val rankingViewModel: RankingViewModel = hiltViewModel()
-                    RankingScreen(Modifier, rankingViewModel, navController)
-                }
-                composable(route = ScreenNavigate.FRIEND.name) {
-                    val friendViewModel: FriendViewModel = hiltViewModel()
-                    FriendScreen(Modifier, friendViewModel, navController)
-                }
-                composable(route = ScreenNavigate.SETTING.name) {
-                    val settingViewModel: SettingViewModel = hiltViewModel()
-                    SettingScreen(Modifier, settingViewModel, navController)
-                }
-            }
-        }
     }
+
     private fun setupFullScreenMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
@@ -272,18 +275,13 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             @Suppress("DEPRECATION")
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    )
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
     }
 
     private fun initializeSoundPool() {
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(5)
-            .build()
+        soundPool = SoundPool.Builder().setMaxStreams(5).build()
         soundId = soundPool.load(this, R.raw.click, 1)
     }
 
@@ -294,7 +292,6 @@ class MainActivity : AppCompatActivity() {
     private fun determineStartDestination(): String {
         val refreshToken = getRefToken(this)
         val accessToken = getAccToken(this)
-
         return when {
             isTokenValid(accessToken) -> ScreenNavigate.HOME.name
             isTokenValid(refreshToken) -> ScreenNavigate.HOME.name
@@ -308,16 +305,12 @@ class MainActivity : AppCompatActivity() {
             ScreenNavigate.LOGIN.name -> BgmType.LOGIN
             else -> BgmType.MAIN
         }
-
-        if (currentBgm != targetBgm) {
-            switchBgm(targetBgm)
-        }
+        if (currentBgm != targetBgm) switchBgm(targetBgm)
     }
 
     private fun switchBgm(bgmType: BgmType) {
         try {
             stopAndReleaseMediaPlayer()
-
             mediaPlayer = MediaPlayer.create(this, bgmType.resourceId)?.apply {
                 isLooping = true
                 setVolume(bgmType.volume, bgmType.volume)
@@ -325,7 +318,7 @@ class MainActivity : AppCompatActivity() {
             }
             currentBgm = bgmType
         } catch (e: Exception) {
-                Log.e("MainActivity", "BGM 전환 중 오류 발생: ${e.message}")
+            Log.e("MainActivity", "BGM 전환 중 오류 발생: ${e.message}")
         }
     }
 
@@ -339,9 +332,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun stopAndReleaseMediaPlayer() {
         mediaPlayer?.apply {
-            if (isPlaying) {
-                stop()
-            }
+            if (isPlaying) stop()
             release()
         }
         mediaPlayer = null

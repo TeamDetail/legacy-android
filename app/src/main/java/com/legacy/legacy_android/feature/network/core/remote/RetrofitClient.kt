@@ -1,3 +1,4 @@
+// RetrofitClient.kt
 package com.legacy.legacy_android.feature.network.core.remote
 
 import android.content.Context
@@ -54,7 +55,6 @@ object RetrofitClient {
     val ruinsMapService: RuinsMapService by lazy {
         getRetrofit().create(RuinsMapService::class.java)
     }
-
 }
 
 

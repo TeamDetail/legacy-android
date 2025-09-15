@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.MailRepository
+import com.legacy.legacy_android.feature.network.mail.ItemData
 import com.legacy.legacy_android.feature.network.mail.MailResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,8 +21,12 @@ class MailViewModel @Inject constructor(
     var mails by mutableStateOf<List<MailResponse>>(emptyList())
         private set
 
+    var items by mutableStateOf<List<ItemData>>(emptyList())
+
     var isLoading by mutableStateOf(false)
         private set
+
+    var currentItem by mutableStateOf<MailResponse?>(null)
 
     fun loadMails() {
         viewModelScope.launch {
@@ -40,6 +45,7 @@ class MailViewModel @Inject constructor(
     fun getItems() {
         viewModelScope.launch {
             try {
+                items = mails.flatMap { it.itemData }
                 mailRepository.getItems()
                 loadMails()
             } catch (e: Exception) {

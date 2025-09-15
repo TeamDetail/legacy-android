@@ -74,7 +74,7 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    var mapLoaded by remember { mutableStateOf(false) }
+    val mapLoaded = viewModel.isMapLoaded
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
@@ -366,7 +366,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             onMapLoaded = {
-                mapLoaded = true
+                viewModel.setMapLoaded()
             },
             onMapClick = {
                 viewModel.updateSelectedId(-1)
