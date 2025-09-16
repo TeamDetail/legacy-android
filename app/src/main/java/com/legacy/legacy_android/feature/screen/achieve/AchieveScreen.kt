@@ -39,6 +39,7 @@ fun AchieveScreen(
     val statusList = listOf("전체", "탐험", "숙련", "히든")
     LaunchedEffect(Unit) {
         viewModel.fetchAllAchieveList()
+        viewModel.updateCurrentAchieve(null)
     }
     CommonScreenLayout(
         modifier = modifier,
@@ -61,7 +62,7 @@ fun AchieveScreen(
                             selectedValue = viewModel.uiState.achieveStatus,
                             onClick = {
                                 viewModel.changeAchieveStatus(index)
-                                if(index == 0){
+                                if (index == 0){
                                     viewModel.fetchAllAchieveList()
                                 }else if (index == 1){
                                     viewModel.fetchAchieveListByType("EXPLORE")
@@ -99,9 +100,11 @@ fun AchieveScreen(
                     repeat(3) {
                         AchieveBoxSkeleton(modifier)
                     }
+                } else if (viewModel.uiState.achieveList?.isEmpty() == true){
+                    Text("도전과제가 없습니다.", style = AppTextStyles.Caption1.Bold)
                 } else {
                     viewModel.uiState.achieveList?.forEach { it ->
-                        AchieveBox(modifier, it)
+                        AchieveBox(modifier, it, viewModel, navHostController)
                     }
                 }
             }

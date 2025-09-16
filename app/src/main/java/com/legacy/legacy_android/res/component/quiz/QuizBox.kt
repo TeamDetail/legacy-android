@@ -398,7 +398,8 @@ fun WrongView(
             Text(
                 text = "${wrongText} 문제의 답이 잘못되었어요.\n다시 도전하면 맞출 수 있을 거예요!",
                 style = AppTextStyles.Headline.medium,
-                color = Label_Alternative
+                color = Label_Alternative,
+                textAlign = TextAlign.Center
             )
             Box(
                 contentAlignment = Alignment.Center,

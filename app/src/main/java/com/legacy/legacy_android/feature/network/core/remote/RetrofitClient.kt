@@ -4,6 +4,7 @@ package com.legacy.legacy_android.feature.network.core.remote
 import android.content.Context
 import com.google.gson.GsonBuilder
 import com.legacy.legacy_android.BuildConfig
+import com.legacy.legacy_android.feature.data.core.remote.ResponseInterceptor
 import com.legacy.legacy_android.feature.network.login.LoginService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.token.TokenService

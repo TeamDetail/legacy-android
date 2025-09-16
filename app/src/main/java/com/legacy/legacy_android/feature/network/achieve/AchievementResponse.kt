@@ -4,7 +4,7 @@ data class AchievementResponse(
     val achievementName: String,
     val achievementContent: String,
     val achievementType: String,
-    val achieveUserPercent: Int,
+    val achieveUserPercent: Double,
     val currentRate: Int,
     val goalRate: Int,
     val achievementGrade: String,

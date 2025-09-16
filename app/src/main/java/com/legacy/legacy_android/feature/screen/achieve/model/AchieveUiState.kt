@@ -5,5 +5,6 @@ import com.legacy.legacy_android.feature.network.achieve.AchievementResponse
 data class AchieveUiState(
     val achieveStatus: Int = 0,
     val achieveList: List<AchievementResponse>? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val currentAchieve: AchievementResponse? = null,
 )

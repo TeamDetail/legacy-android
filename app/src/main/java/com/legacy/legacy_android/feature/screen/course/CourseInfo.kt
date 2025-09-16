@@ -74,7 +74,6 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                 modifier = Modifier
                     .clickable(enabled = !isLoading.value) {
                         coroutineScope.launch {
-
                             isLoading.value = true
                             delay(100)
                             navHostController.popBackStack()

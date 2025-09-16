@@ -134,7 +134,6 @@ class HomeViewModel @Inject constructor(
                         .mapIndexedNotNull { index, result ->
                             if (!result.isCorrect) index else null
                         }
-
                     uiState = uiState.copy(
                         wrongAnswers = wrongIndices,
                         quizStatus = if (wrongIndices.isEmpty()) QuizStatus.SUCCESS else QuizStatus.RETRY
@@ -143,6 +142,7 @@ class HomeViewModel @Inject constructor(
                 }
                 .onFailure {
                     println("실패했음")
+                    println(quizAnswers.toList())
                 }
         }
     }
@@ -163,9 +163,12 @@ class HomeViewModel @Inject constructor(
 
     fun searchRuins(name: String){
         viewModelScope.launch {
+            uiState = uiState.copy(createSearchRuins = null)
             uiState = uiState.copy(isSearchLoading = true)
             ruinsRepository.getSearchRuins(name)
-                .onSuccess { ruins -> uiState = uiState.copy(createSearchRuins = ruins)}
+                .onSuccess { ruins ->
+                    uiState = uiState.copy(createSearchRuins = ruins)
+                }
             uiState = uiState.copy(isSearchLoading = false)
         }
     }

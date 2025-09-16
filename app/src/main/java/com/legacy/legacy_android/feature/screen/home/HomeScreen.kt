@@ -96,10 +96,8 @@ fun HomeScreen(
 
     val allRequiredPermission = permissionState.allPermissionsGranted
 
-    val cameraPositionState = rememberSaveable(saver = CameraPositionState.Saver) {
-        CameraPositionState(
-            position = viewModel.cameraPosition
-        )
+    val cameraPositionState = rememberCameraPositionState {
+        position = viewModel.cameraPosition
     }
 
     DisposableEffect(Unit) {
@@ -183,10 +181,10 @@ fun HomeScreen(
             .fillMaxSize()
             .zIndex(99f)
     ) {
-        if (viewModel.uiState.isMailOpen){
-            MailModal (onMailClick = { show -> viewModel.updateIsMailOpen(false) })
+        if (viewModel.uiState.isMailOpen) {
+            MailModal(onMailClick = { show -> viewModel.updateIsMailOpen(false) })
         }
-        if (viewModel.uiState.isCommentModalOpen){
+        if (viewModel.uiState.isCommentModalOpen) {
             RateModal(viewModel)
         }
         // InfoBar
@@ -198,7 +196,8 @@ fun HomeScreen(
                 .absoluteOffset(0.dp, 10.dp)
                 .zIndex(5f)
         ) {
-            InfoBar(navHostController,
+            InfoBar(
+                navHostController,
                 onMailClick = { show -> viewModel.updateIsMailOpen(true) })
         }
         if (!mapLoaded) {
@@ -435,9 +434,9 @@ fun HomeScreen(
                     ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
                     description = viewModel.uiState.ruinsDetail?.description,
                 )
-            }else if (viewModel.uiState.selectedId > -1 &&viewModel.uiState.isCommenting) {
+            } else if (viewModel.uiState.selectedId > -1 && viewModel.uiState.isCommenting) {
                 CommentModal(viewModel)
-            }else{
+            } else {
                 NavBar(navHostController = navHostController)
             }
         }
@@ -456,7 +455,7 @@ fun HomeScreen(
                         interactionSource = remember { MutableInteractionSource() }
                     ) {}
             ) {
-                RuinSearchModal(viewModel)
+                RuinSearchModal(viewModel, cameraPositionState)
             }
         }
     }

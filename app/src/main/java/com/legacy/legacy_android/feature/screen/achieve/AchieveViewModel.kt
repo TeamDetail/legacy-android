@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.achieve.AchieveRepository
+import com.legacy.legacy_android.feature.network.achieve.AchievementResponse
 import com.legacy.legacy_android.feature.screen.achieve.model.AchieveUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -48,5 +49,9 @@ class AchieveViewModel @Inject constructor(
                 }
             uiState = uiState.copy(isLoading = false)
         }
+    }
+
+    fun updateCurrentAchieve(achieve: AchievementResponse?){
+        uiState = uiState.copy(currentAchieve = achieve)
     }
 }

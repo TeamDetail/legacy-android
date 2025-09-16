@@ -9,7 +9,7 @@ import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAns
 import javax.inject.Inject
 import javax.inject.Singleton
 
-data class QuizAnswer(val quizId: Int, val answer: String)
+data class QuizAnswer(val quizId: Int, val answerOption: String)
 
 @Singleton
 class QuizRepository @Inject constructor(
@@ -28,7 +28,7 @@ class QuizRepository @Inject constructor(
     suspend fun submitAnswer(answers: List<QuizAnswer>): Result<PostQuizAnswerWrapper>{
         return try{
             val request = answers.map {
-                PostQuizAnswerRequest(quizId = it.quizId, answerOption = it.answer)
+                PostQuizAnswerRequest(quizId = it.quizId, answerOption = it.answerOption)
             }
             val response = postQuizAnswerService.answer(request)
             Result.success(response)

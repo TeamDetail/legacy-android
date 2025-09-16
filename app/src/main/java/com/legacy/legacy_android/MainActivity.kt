@@ -38,6 +38,7 @@ import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.fcm.FcmRequest
 import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.screen.LocationViewModel
+import com.legacy.legacy_android.feature.screen.achieve.AchieveInfoScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveScreen
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.feature.screen.course.CourseCategory
@@ -77,7 +78,9 @@ enum class ScreenNavigate {
     SETTING,
     CREATE_COURSE,
     COURSE_CATEGORY,
-    COURSE_INFO
+    COURSE_INFO,
+    ACHIEVE_INFO
+
 }
 
 enum class BgmType(val resourceId: Int, val volume: Float) {
@@ -127,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
         // Retrofit 초기화
         RetrofitClient.init(this)
-
+        
         // FCM & 위치, 초기 설정
         refreshAccessTokenIfNeeded()
 
@@ -183,13 +186,32 @@ class MainActivity : AppCompatActivity() {
                     startDestination = ScreenNavigate.PROFILE.name,
                     route = "profile_graph"
                 ) {
-                    composable(ScreenNavigate.PROFILE.name) {
-                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                    composable(ScreenNavigate.PROFILE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
+                        val profileViewModel: ProfileViewModel = hiltViewModel(parentEntry)
                         ProfileScreen(Modifier, profileViewModel, navController)
                     }
-                    composable(ScreenNavigate.PROFILE_EDIT.name) {
-                        val profileViewModel: ProfileViewModel = hiltViewModel()
+                    composable(ScreenNavigate.PROFILE_EDIT.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
+                        val profileViewModel: ProfileViewModel = hiltViewModel(parentEntry)
                         ProfileEditScreen(Modifier, profileViewModel, navController)
+                    }
+                }
+
+                // Achieve Graph
+                navigation(
+                    startDestination = ScreenNavigate.ACHIEVE.name,
+                    route = "achieve_graph"
+                ){
+                    composable(ScreenNavigate.ACHIEVE.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
+                        val achieveViewModel: AchieveViewModel = hiltViewModel(parentEntry)
+                        AchieveScreen(Modifier, achieveViewModel, navController)
+                    }
+                    composable(ScreenNavigate.ACHIEVE_INFO.name) { backStackEntry ->
+                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
+                        val achieveViewModel: AchieveViewModel = hiltViewModel(parentEntry)
+                        AchieveInfoScreen(Modifier, achieveViewModel, navController)
                     }
                 }
 
@@ -207,10 +229,6 @@ class MainActivity : AppCompatActivity() {
                 composable(ScreenNavigate.MARKET.name) {
                     val marketViewModel: MarketViewModel = hiltViewModel()
                     MarketScreen(Modifier, marketViewModel, navController)
-                }
-                composable(ScreenNavigate.ACHIEVE.name) {
-                    val achieveViewModel: AchieveViewModel = hiltViewModel()
-                    AchieveScreen(Modifier, achieveViewModel, navController)
                 }
                 composable(ScreenNavigate.RANKING.name) {
                     val rankingViewModel: RankingViewModel = hiltViewModel()

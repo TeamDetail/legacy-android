@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.course.SmallCourseWrap
 import com.legacy.legacy_android.res.component.layout.CourseScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
@@ -32,7 +31,6 @@ fun CourseCategory(modifier: Modifier,
                    viewModel: CourseViewModel = hiltViewModel(),
                    navHostController: NavHostController
 ) {
-
 
     LaunchedEffect(Unit) {
         viewModel.loadEventCourses()

@@ -3,6 +3,7 @@ package com.legacy.legacy_android.res.component.bars
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,10 @@ fun NavBar(navHostController: NavHostController) {
             .fillMaxWidth()
             .height(70.dp)
             .background(Background_Normal, shape = RoundedCornerShape(20.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null ){println("ㅇㅇ")
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
