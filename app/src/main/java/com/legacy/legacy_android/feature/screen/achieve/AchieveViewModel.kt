@@ -1,22 +1,52 @@
 package com.legacy.legacy_android.feature.screen.achieve
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.legacy.legacy_android.domain.repository.achieve.AchieveRepository
 import com.legacy.legacy_android.feature.screen.achieve.model.AchieveUiState
-import com.legacy.legacy_android.feature.screen.profile.model.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+@HiltViewModel
 
 class AchieveViewModel @Inject constructor(
-    application: Application
-): AndroidViewModel(application){
+    private val achieveRepository: AchieveRepository,
+): ViewModel() {
     var uiState by mutableStateOf(AchieveUiState())
         private set
 
-    fun changeAchieveStatus(status: Int){
+    fun changeAchieveStatus(status: Int) {
         uiState = uiState.copy(achieveStatus = status)
+    }
+
+    fun fetchAllAchieveList() {
+        viewModelScope.launch {
+            uiState = uiState.copy(isLoading = true)
+            achieveRepository.fetchAllAchievement()
+                .onSuccess { achieve ->
+                    uiState = uiState.copy(achieveList = achieve)
+                }
+                .onFailure { achieve ->
+                    println("전체 달성 목록 불러오기 실패")
+                }
+            uiState = uiState.copy(isLoading = false)
+        }
+    }
+
+    fun fetchAchieveListByType(type: String) {
+        viewModelScope.launch {
+            uiState = uiState.copy(isLoading = true)
+            achieveRepository.fetchAchievementById(type)
+                .onSuccess { achieve ->
+                    uiState = uiState.copy(achieveList = achieve)
+                }
+                .onFailure { achieve ->
+                    println("전체 달성 목록 불러오기 실패")
+                }
+            uiState = uiState.copy(isLoading = false)
+        }
     }
 }

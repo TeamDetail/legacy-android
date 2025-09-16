@@ -20,6 +20,7 @@ import android.content.Context
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
+import com.legacy.legacy_android.feature.network.achieve.AchievementService
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
 import com.legacy.legacy_android.feature.network.card.CardService
@@ -202,5 +203,10 @@ object NetworkModule {
     @Singleton
     fun provideMailService(retrofit: Retrofit): MailService{
         return retrofit.create(MailService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideAchievementService(retrofit: Retrofit): AchievementService{
+        return retrofit.create(AchievementService::class.java)
     }
 }

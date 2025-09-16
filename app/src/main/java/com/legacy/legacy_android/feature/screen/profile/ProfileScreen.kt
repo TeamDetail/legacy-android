@@ -73,7 +73,6 @@ fun ProfileScreen(
         viewModel.clearProfile()
         viewModel.fetchProfile()
     }
-    val selectedId = Nav.getNavStatus()
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -93,7 +92,7 @@ fun ProfileScreen(
                 .align(Alignment.TopStart)
                 .verticalScroll(rememberScrollState())
         ) {
-            BackButton(selectedId = selectedId, title = "프로필", navHostController = navHostController)
+            BackButton(selectedId = 2, title = "프로필", navHostController = navHostController,)
             // 여기서 프로필 윗부분
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -158,7 +157,9 @@ fun ProfileScreen(
                             Image(
                                 painter = painterResource(R.drawable.edit),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp).clickable { navHostController.navigate("profile_edit") }
+                                modifier = Modifier.size(32.dp).clickable {
+                                    viewModel.setSelectedItem(null)
+                                    navHostController.navigate("profile_edit") }
                             )
                         }
                         Text(
@@ -184,6 +185,7 @@ fun ProfileScreen(
                         StatusButton(
                             selectedValue = viewModel.uiState.profileStatus,
                             onClick = { viewModel.changeProfileStatus(index)
+                                viewModel.setSelectedItem(null)
                                 if(item == "도감"){viewModel.fetchMyCollection("경기")} },
                             text = item,
                             id = index,
@@ -356,6 +358,7 @@ fun InventoryScreen(
     val inventory = viewModel.uiState.myInventory ?: emptyList()
 
     LaunchedEffect(Unit) {
+        viewModel.setSelectedItem(null)
         viewModel.fetchMyInventory()
     }
 

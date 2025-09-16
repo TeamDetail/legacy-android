@@ -23,14 +23,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.feature.network.achieve.AchievementResponse
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 
 @Composable
 fun AchieveBox(
     modifier: Modifier,
+    item: AchievementResponse
 ){
     Row (
         modifier = modifier.fillMaxWidth()
@@ -51,7 +54,7 @@ fun AchieveBox(
             Text(
                 text = buildAnnotatedString {
                     append(
-                        text = "탐험의 시작 : 10레벨" + " "
+                        text = item.achievementName + " "
                     )
                     withStyle(style = SpanStyle(
                         color = Yellow_Netural,
@@ -59,13 +62,13 @@ fun AchieveBox(
                         fontWeight = AppTextStyles.Caption1.Medium.fontWeight,
                         fontFamily = AppTextStyles.Caption1.Medium.fontFamily
                         )) {
-                        append("#숙련")
+                        append("#${item.achievementType}")
                     }
                 },
                 style = AppTextStyles.Label.Bold,
             )
             Text(
-                text = "매일매일 하는 게 제일 중요합니다.",
+                text = item.achievementContent,
                 style = AppTextStyles.Caption2.Medium,
                 color = Label_Alternative
             )
@@ -86,6 +89,7 @@ fun AchieveBox(
                         }
                     },
                     style = AppTextStyles.Caption1.regular,
+                    color = Label_Netural
                 )
                 Spacer(modifier.width(12.dp))
                 Text(
@@ -99,10 +103,11 @@ fun AchieveBox(
                             fontWeight = AppTextStyles.Caption1.ExtraBold.fontWeight,
                             fontFamily = AppTextStyles.Caption1.ExtraBold.fontFamily
                         )) {
-                            append("0 / 5")
+                            append("${item.currentRate} / ${item.goalRate}")
                         }
                     },
                     style = AppTextStyles.Caption1.regular,
+                    color = Label_Netural
                 )
             }
         }

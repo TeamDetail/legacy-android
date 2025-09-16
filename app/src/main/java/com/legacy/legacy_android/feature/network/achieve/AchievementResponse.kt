@@ -1,21 +1,23 @@
 package com.legacy.legacy_android.feature.network.achieve
-
-data class AchieveResponse(
+data class AchievementResponse(
     val achievementId: Int,
     val achievementName: String,
     val achievementContent: String,
-    val goalText: String,
-    val isReceive: Boolean,
+    val achievementType: String,
+    val achieveUserPercent: Int,
     val currentRate: Int,
     val goalRate: Int,
-    val achievementAward: AchievementAward
+    val achievementGrade: String,
+    val achievementAward: List<AchievementAward>,
+    val receive: Boolean
 )
 
 data class AchievementAward(
-    val cardpack: List<CardPack>,
-    val creadit: Int?,
-    val title: String?,
-    val card: String?
+    val itemId: Int,
+    val itemType: String,
+    val itemName: String,
+    val itemDescription: String,
+    val itemCount: Int
 )
 
 data class CardPack(
