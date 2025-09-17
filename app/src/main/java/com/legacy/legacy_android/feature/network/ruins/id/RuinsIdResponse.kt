@@ -17,7 +17,7 @@ data class RuinsIdResponse (
     val latitude: Double,
     val longitude: Double,
     val description: String,
-    val averageRating: Double,
+    val averageRating: Int,
     val countComments: Int,
     val card: Cards?
 )

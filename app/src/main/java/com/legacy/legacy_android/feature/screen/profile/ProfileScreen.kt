@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
@@ -34,13 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.modal.ItemModal
@@ -48,6 +49,8 @@ import com.legacy.legacy_android.res.component.modal.OpenCardModal
 import com.legacy.legacy_android.res.component.profile.DictionaryInfo
 import com.legacy.legacy_android.res.component.profile.InventoryInfo
 import com.legacy.legacy_android.res.component.profile.Scorebar
+import com.legacy.legacy_android.res.component.profile.StatTable
+import com.legacy.legacy_android.res.component.profile.StatTableResponse
 import com.legacy.legacy_android.res.component.profile.Statbar
 import com.legacy.legacy_android.res.component.profile.TitleSelector
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
@@ -56,12 +59,12 @@ import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
-import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun ProfileScreen(
@@ -237,67 +240,96 @@ fun RecordScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
     }
+    val expStat = listOf(
+        StatTableResponse("완수한 총 도전과제", profile?.record?.experience?.adventureAchieve.toString()),
+        StatTableResponse("완수한 히든 도전과제", profile?.record?.experience?.hiddenAchieve.toString()),
+        StatTableResponse("완수한 탐험 도전과제", profile?.record?.experience?.experienceAchieve.toString()),
+        StatTableResponse("완수한 숙련 도전과제", profile?.record?.experience?.exp.toString()),
+        StatTableResponse("수집한 카드", profile?.record?.experience?.cardCount.toString()),
+        StatTableResponse("수집한 찬란한 카드", profile?.record?.experience?.shiningCardCount.toString()),
+        StatTableResponse("소지한 칭호", profile?.record?.experience?.titleCount.toString()),
+        StatTableResponse("가입일자", profile?.record?.experience?.createdAt?.substring(0, 10))
+    )
+    val advStat = listOf(
+        StatTableResponse("탐험 완료한 유적지", profile?.record?.adventure?.allBlocks?.toString()),
+        StatTableResponse("맞춘 퀴즈", profile?.record?.adventure?.solvedQuizzes?.toString()),
+        StatTableResponse("남긴 한줄평", profile?.record?.adventure?.commentCount?.toString()),
+        StatTableResponse("완료한 코스", profile?.record?.adventure?.clearCourse?.toString()),
+        StatTableResponse("제작한 코스", profile?.record?.adventure?.makeCourse?.toString()),
+        StatTableResponse("틀린 퀴즈", profile?.record?.adventure?.wrongQuizzes?.toString())
+    )
     // 스탯 바
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Scorebar(title = "자기소개", text = "자기소개", modifier = modifier)
+        Scorebar(title = "자기소개", text = profile?.description ?: "설명글이 없습니다.", modifier = modifier)
         // 숙련
         Spacer(modifier = modifier.height(8.dp))
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "숙련", style = AppTextStyles.Title3.bold)
+            Text(
+                text = buildAnnotatedString {
+                    append(
+                        text = "#${profile?.record?.experience?.rank.toString()}"
+                    )
+                    withStyle(
+                        style = SpanStyle(
+                            color = Label,
+                        )
+                    ) {
+                        append("위")
+                    }
+                },
+                style = AppTextStyles.Title3.bold,
+                color = Red_Normal
+            )
+        }
         Statbar(
             modifier = modifier,
-            title = "숙련",
-            text = "Lv. ${profile?.level ?: "-"}",
-            percent = 0.6f,
-            subtext = "(7000/13000)",
+            percent = profile?.record?.experience?.exp?.toFloat()?.div(13000) ?: 0f,
+            text = "Lv. ${profile?.level}  ",
+            subtext = "${profile?.record?.experience?.exp} / 13000",
             barColor = Red_Normal
         )
-        // 시련
+        StatTable(data = expStat)
+        Spacer(modifier = modifier.height(8.dp))
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "탐험", style = AppTextStyles.Title3.bold)
+            Text(
+                text = buildAnnotatedString {
+                    append(
+                        text = "#${profile?.record?.adventure?.rank.toString()}"
+                    )
+                    withStyle(
+                        style = SpanStyle(
+                            color = Label,
+                        )
+                    ) {
+                        append("위")
+                    }
+                },
+                style = AppTextStyles.Title3.bold,
+                color = Blue_Netural
+            )
+        }
         Statbar(
             modifier = modifier,
-            title = "시련",
-            text = "최고 160층",
-            barColor = Primary,
-            percent = 0.6f,
-            subtext = ""
-        )
-        // 탐험
-        Statbar(
-            modifier = modifier,
-            title = "탐험",
-            text = "카드 300개 수집",
-            percent = 0.6f,
-            subtext = "",
+            percent = profile?.record?.adventure?.allBlocks?.toFloat()?.div(13000) ?: 0f,
+            text = "총 ${profile?.record?.adventure?.allBlocks}블록 탐험",
             barColor = Blue_Netural
         )
+        StatTable(data = advStat)
     }
     Spacer(modifier = modifier.height(8.dp))
-    // 스코어
-    Column (
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),){
-        Scorebar(
-            modifier =  modifier,
-            title = "시련 최고 점수",
-            text = "${profile?.maxScore ?: "-"} 문명 점수"
-        )
-        Scorebar(
-            modifier = modifier,
-            title = "탐험한 일반 블록 수",
-            text = "${profile?.allBlocks ?: "-"} 블록"
-        )
-        Scorebar(
-            modifier = modifier,
-            title = "탐험한 유적지 블록 수",
-            text = "${profile?.ruinsBlocks ?: "-"} 블록"
-        )
-        Scorebar(
-            modifier = modifier,
-            title = "사용한 크레딧",
-            text = "${profile?.stats?.creditCollect ?: "-"} 크레딧"
-        )
-    }
 }
 
 @Composable
@@ -339,13 +371,11 @@ fun DictionaryScreen(
                     )
                 }
             }
-            LazyRow (
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = modifier.fillMaxWidth(0.95f)
+            LazyColumn (
+                modifier = modifier.fillMaxWidth(0.95f).height(1000.dp)
             ) {
                 items(viewModel.uiState.myCards?.cards?.chunked(2) ?: emptyList()) { cardPair ->
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
                     ) {
                         cardPair.forEach { card ->
                             DictionaryInfo(

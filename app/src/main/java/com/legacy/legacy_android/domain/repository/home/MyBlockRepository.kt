@@ -18,10 +18,8 @@ class BlockRepository @Inject constructor(
         return try {
             val request = PostBlockRequest(latitude = latitude, longitude = longitude)
             postBlockService.block(request)
-            Log.d("BlockRepository", "블록 추가 성공")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("BlockRepository", "이미 추가 된 곳입니다.")
             Result.failure(e)
         }
     }
@@ -35,7 +33,6 @@ class BlockRepository @Inject constructor(
             }
             Result.success(distinctBlocks)
         } catch (e: Exception) {
-            Log.e("BlockRepository", "Error fetching blocks: ${e.message}")
             Result.failure(e)
         }
     }

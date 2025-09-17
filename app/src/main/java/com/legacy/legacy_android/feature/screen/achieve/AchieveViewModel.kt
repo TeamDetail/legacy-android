@@ -51,7 +51,27 @@ class AchieveViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentAchieve(achieve: AchievementResponse?){
+    fun claimAward() {
+        viewModelScope.launch {
+            uiState = uiState.copy(awardLoading = true)
+            uiState = uiState.copy(awardAchieve = null)
+            uiState = uiState.copy(isClaimModalOpen = true)
+            achieveRepository.claimAward().onSuccess { achieve ->
+                uiState = uiState.copy(awardAchieve = achieve)
+            }.onFailure { uiState = uiState.copy(awardAchieve = null) }
+            uiState = uiState.copy(awardLoading = false)
+        }
+    }
+
+    fun initAward(){
+        uiState = uiState.copy(awardAchieve = null)
+    }
+
+    fun updateClaimModalOpen(isOpen: Boolean) {
+        uiState = uiState.copy(isClaimModalOpen = isOpen)
+    }
+
+    fun updateCurrentAchieve(achieve: AchievementResponse?) {
         uiState = uiState.copy(currentAchieve = achieve)
     }
 }

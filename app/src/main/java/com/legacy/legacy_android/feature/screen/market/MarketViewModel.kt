@@ -2,9 +2,8 @@ package com.legacy.legacy_android.feature.screen.market
 
 import android.annotation.SuppressLint
 import android.icu.util.Calendar
-import androidx.compose.runtime.mutableStateOf
-import javax.inject.Inject
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +12,9 @@ import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.achieve.CardPack
 import com.legacy.legacy_android.feature.screen.market.model.MarketUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
@@ -27,10 +28,22 @@ class MarketViewModel @Inject constructor(
     var uiState by mutableStateOf(MarketUiState())
         private set
 
-    fun changePackStatus(status: Int){
-        uiState = uiState.copy(packStatus = status)
+    init {
+        startMidnightCountdown()
     }
 
+    private fun startMidnightCountdown() {
+        viewModelScope.launch {
+            while (true) {
+                timeUntilMidnight = getTimeUntilMidnightFormatted()
+                delay(1000)
+            }
+        }
+    }
+
+    fun changePackStatus(status: Int) {
+        uiState = uiState.copy(packStatus = status)
+    }
 
     fun fetchMarketData() {
         viewModelScope.launch {
@@ -45,8 +58,8 @@ class MarketViewModel @Inject constructor(
 
     fun buyCardPack(id: Int) {
         viewModelScope.launch {
-            userRepository.fetchProfile()
             marketRepository.buyCardPack(id)
+            userRepository.fetchProfile(force = true)
             fetchMarketData()
         }
     }
@@ -58,7 +71,7 @@ class MarketViewModel @Inject constructor(
     fun setCardPack(cardPack: CardPack) {
         uiState = uiState.copy(currentCardPack = cardPack)
     }
-    
+
     @SuppressLint("DefaultLocale")
     private fun getTimeUntilMidnightFormatted(): String {
         val now = Calendar.getInstance()

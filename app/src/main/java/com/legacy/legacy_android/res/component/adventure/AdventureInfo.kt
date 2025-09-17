@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -19,15 +18,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.*
@@ -37,19 +35,13 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdventureInfo(
-    id: Int?,
+    data: RuinsIdResponse?,
     viewModel: HomeViewModel,
-    name: String?,
-    info: String?,
-    tags: List<String>?,
-    img: String?,
-    ruinsId: Int?,
-    description: String?
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    LaunchedEffect(id) {
-        id?.let { viewModel.loadCommentById(it) }
+    LaunchedEffect(data?.ruinsId) {
+        data?.ruinsId?.let { viewModel.loadCommentById(it) }
     }
 
     Box(
@@ -100,7 +92,7 @@ fun AdventureInfo(
                                 )
 
                                 // ID
-                                if (id == null) {
+                                if (data?.ruinsId == null) {
                                     SkeletonBox(
                                         modifier = Modifier
                                             .height(24.dp)
@@ -110,14 +102,14 @@ fun AdventureInfo(
                                 } else {
                                     Text(
                                         text = "#" + NumberFormat.getNumberInstance(Locale.US)
-                                            .format(id),
+                                            .format(data.ruinsId),
                                         style = AppTextStyles.Caption1.Medium,
                                         color = Label_Alternative
                                     )
                                 }
 
                                 // info
-                                if (info.isNullOrBlank()) {
+                                if (data?.name.isNullOrBlank()) {
                                     SkeletonBox(
                                         modifier = Modifier
                                             .height(24.dp)
@@ -126,8 +118,41 @@ fun AdventureInfo(
                                     )
                                 } else {
                                     Text(
-                                        text = name ?: "이름 없음",
+                                        text = data.name,
                                         style = AppTextStyles.Headline.bold
+                                    )
+                                }
+
+                                // 별점 표시
+                                val rating = data?.averageRating ?: 0
+                                val commentCount = data?.countComments?.toString() ?: "0"
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    for (i in 1..10) {
+                                        if (i % 2 != 0) {
+                                            Image(
+                                                painter = painterResource(R.drawable.starhalfleft),
+                                                contentDescription = null,
+                                                colorFilter = ColorFilter.tint(
+                                                    if (i <= rating) Primary else White
+                                                )
+                                            )
+                                        } else {
+                                            Image(
+                                                painter = painterResource(R.drawable.starhalfright),
+                                                contentDescription = null,
+                                                colorFilter = ColorFilter.tint(
+                                                    if (i <= rating) Primary else White
+                                                )
+                                            )
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                        }
+                                    }
+                                    Text(
+                                        text = "(${commentCount})",
+                                        style = AppTextStyles.Body2.medium,
+                                        color = Fill_Alternative
                                     )
                                 }
 
@@ -191,11 +216,11 @@ fun AdventureInfo(
                                     .clip(RoundedCornerShape(12.dp))
                                     .padding(5.dp)
                             ) {
-                                if (img.isNullOrBlank()) {
+                                if (data?.ruinsImage.isNullOrBlank()) {
                                     SkeletonBox(modifier = Modifier.matchParentSize())
                                 } else {
                                     AsyncImage(
-                                        model = img,
+                                        model = data.ruinsImage,
                                         contentDescription = "유적지 이미지",
                                         modifier = Modifier
                                             .height(184.dp)
@@ -219,7 +244,7 @@ fun AdventureInfo(
                                         modifier = Modifier
                                             .align(Alignment.BottomStart)
                                             .padding(12.dp),
-                                        text = name ?: "",
+                                        text = data.name,
                                         fontFamily = bitbit,
                                         fontSize = 16.sp,
                                         color = Label
@@ -231,7 +256,7 @@ fun AdventureInfo(
                         Spacer(modifier = Modifier.height(40.dp))
 
                         // description
-                        if (description.isNullOrBlank()) {
+                        if (data?.description.isNullOrBlank()) {
                             SkeletonBox(
                                 modifier = Modifier
                                     .height(60.dp)
@@ -240,7 +265,7 @@ fun AdventureInfo(
                             )
                         } else {
                             Text(
-                                text = description,
+                                text = data.description,
                                 style = AppTextStyles.Body2.medium
                             )
                         }
@@ -284,7 +309,7 @@ fun AdventureInfo(
                 .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                 .fillMaxWidth()
                 .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(12.dp))
-                .clickable { viewModel.loadQuiz(ruinsId) }
+                .clickable { data?.ruinsId?.let { viewModel.loadQuiz(it) } }
         ) {
             Text(
                 modifier = Modifier.padding(vertical = 8.dp),

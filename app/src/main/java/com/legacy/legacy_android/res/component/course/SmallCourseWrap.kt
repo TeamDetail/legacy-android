@@ -215,6 +215,7 @@ fun SmallCourseWrap(
             Column (
                 modifier = modifier.fillMaxHeight().width(80.dp)
                     .background(
+                        shape = RoundedCornerShape(16.dp),
                         brush = Brush.horizontalGradient(
                         colors = listOf(
                             Background_Normal.copy(alpha = 1f),
@@ -222,7 +223,6 @@ fun SmallCourseWrap(
                         ))),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-
             ){
                 Text(
                     text = "클릭해서\n더 보기",

@@ -85,7 +85,6 @@ enum class ScreenNavigate {
 
 enum class BgmType(val resourceId: Int, val volume: Float) {
     MAIN(R.raw.mainbgm, 0.6f),
-    MARKET(R.raw.loginbgm, 0.4f),
     LOGIN(R.raw.loginbgm, 0.6f)
 }
 
@@ -319,7 +318,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleDestinationChange(route: String?) {
         val targetBgm = when (route) {
-            ScreenNavigate.MARKET.name -> BgmType.MARKET
             ScreenNavigate.LOGIN.name -> BgmType.LOGIN
             else -> BgmType.MAIN
         }

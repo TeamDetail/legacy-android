@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.feature.screen.achieve.model
 
+import com.legacy.legacy_android.feature.network.achieve.AchievementAwardResponse
 import com.legacy.legacy_android.feature.network.achieve.AchievementResponse
 
 data class AchieveUiState(
@@ -7,4 +8,7 @@ data class AchieveUiState(
     val achieveList: List<AchievementResponse>? = null,
     val isLoading: Boolean = false,
     val currentAchieve: AchievementResponse? = null,
+    val awardAchieve: AchievementAwardResponse? = null,
+    val awardLoading: Boolean = false,
+    val isClaimModalOpen: Boolean = false,
 )

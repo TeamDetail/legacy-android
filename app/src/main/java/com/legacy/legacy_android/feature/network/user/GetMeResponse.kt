@@ -3,24 +3,42 @@ package com.legacy.legacy_android.feature.network.user
 data class UserData(
     val userId: Long,
     val nickname: String,
-    val level: Int,
-    val exp: Int,
-    val credit: Int,
     val imageUrl: String,
-    val stats: Stats,
-    val allBlocks: Int,
-    val ruinsBlocks: Int,
-    val maxFloor: Int,
-    val maxScore: Int,
-    val title: Title
+    val description: String,
+    val credit: Int,
+    val level: Int,
+    val title: Title,
+    val record: Record
 )
 
-data class Stats(
-    val snowflakeCapacity: Int,
-    val storeRestock: Int,
-    val dropCount: Int,
-    val creditCollect: Int
+data class Record(
+    val adventure: Adventure,
+    val experience: Experience,
 )
+
+data class Experience(
+    val rank: Int,
+    val adventureAchieve: Int,
+    val experienceAchieve: Int,
+    val hiddenAchieve: Int,
+    val exp: Int,
+    val createdAt: String,
+    val titleCount: Int,
+    val cardCount: Int,
+    val shiningCardCount: Int
+)
+
+data class Adventure(
+    val rank: Int,
+    val allBlocks: Int,
+    val ruinsBlocks: Int,
+    val solvedQuizzes: Int,
+    val wrongQuizzes: Int,
+    val clearCourse: Int,
+    val makeCourse: Int,
+    val commentCount: Int
+)
+
 
 data class Title(
     val name: String,

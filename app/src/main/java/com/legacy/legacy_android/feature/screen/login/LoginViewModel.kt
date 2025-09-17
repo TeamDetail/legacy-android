@@ -45,7 +45,6 @@ class LoginViewModel @Inject constructor(
                 } else {
                     result.error?.let { onFailure(it) }
                 }
-
             } catch (e: Exception) {
                 Log.e(TAG, "로그인 처리 중 오류", e)
                 onFailure(e)
@@ -72,7 +71,6 @@ class LoginViewModel @Inject constructor(
                     println("로그인 안됨")
                 }
             } catch (navError: Exception) {
-                Log.e(TAG, "네비게이션 실패: ${navError.message}", navError)
             }
         }
     }

@@ -11,6 +11,8 @@ import com.legacy.legacy_android.feature.screen.home.helper.RuinsAnimationHelper
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.feature.screen.home.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -98,7 +100,7 @@ class HomeViewModel @Inject constructor(
             uiState = uiState.copy(loading = true)
             ruinsRepository.getRuinsById(id)
                 .onSuccess { detail -> uiState = uiState.copy(ruinsDetail = detail) }
-                .onFailure { println("유적지 불러오기 실패했어용ㅎㅎ") }
+            uiState = uiState.copy(loading = false)
         }
     }
 
@@ -113,12 +115,10 @@ class HomeViewModel @Inject constructor(
 
             ruinsRepository.postComment(currentRuinsDetail.ruinsId, uiState.commentRate, uiState.commentValue)
                 .onSuccess {
-                    println("코멘트 성공")
                     updateIsCommenting(false)
                     uiState = uiState.copy(commentValue = "", commentLoading = false)
                 }
                 .onFailure {
-                    println("코멘트 실패: ${it.message}")
                     uiState = uiState.copy(commentLoading = false)
                 }
         }
@@ -173,30 +173,48 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadRuinsMap(minLat: Double, maxLat: Double, minLng: Double, maxLng: Double) {
+    private var loadRuinsJob: Job? = null
+
+    fun loadRuinsMap(
+        minLat: Double,
+        maxLat: Double,
+        minLng: Double,
+        maxLng: Double,
+        immediate: Boolean = false
+    ) {
         if (!listOf(minLat, maxLat, minLng, maxLng).all { it.isFinite() }) return
-        viewModelScope.launch {
+
+        loadRuinsJob?.cancel()
+        loadRuinsJob = viewModelScope.launch {
+            if (!immediate) delay(300)
+
             ruinsRepository.getRuinsByBounds(minLat, maxLat, minLng, maxLng)
                 .onSuccess { ruins ->
                     val filtered = ruins.filter {
                         it.latitude in minLat..maxLat && it.longitude in minLng..maxLng
                     }
-                    animationHelper.updateVisibleRuinsSmoothly(
-                        currentVisible = uiState.visibleRuins,
-                        newRuins = filtered,
-                        onUpdate = { updated ->
-                            uiState = uiState.copy(visibleRuins = updated)
-                        }
-                    )
+
+                    if (filtered.size > 50) {
+                        uiState = uiState.copy(visibleRuins = filtered)
+                    } else {
+                        animationHelper.updateVisibleRuinsSmoothly(
+                            currentVisible = uiState.visibleRuins,
+                            newRuins = filtered,
+                            onUpdate = { updated ->
+                                uiState = uiState.copy(visibleRuins = updated)
+                            }
+                        )
+                    }
                 }
         }
     }
+
+
 
     fun loadCommentById(id: Int) {
       viewModelScope.launch {
           ruinsRepository.getCommentById(id)
               .onSuccess { comments -> uiState = uiState.copy(comments = comments) }
-              .onFailure { println("댓글 불러오기 실패했어용ㅎㅎ") }
       }
     }
 

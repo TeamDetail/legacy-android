@@ -22,63 +22,49 @@ import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Red_Normal
 
 @Composable
 fun Statbar(
     modifier: Modifier,
     percent : Float,
-    title: String,
     text: String,
-    subtext: String,
+    subtext: String = "",
     barColor: Color
 ){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = if (!title.isEmpty()) {20.dp}else{0.dp})
+            .height(32.dp)
+            .clip(RoundedCornerShape(12.dp))
     ) {
-        Text(
-            text = title,
-            style = AppTextStyles.Heading2.bold,
-            color = Label
-        )
-
         Box(
             modifier = modifier
-                .fillMaxWidth(if (!title.isEmpty()) {0.9f}else{1f})
-                .height(32.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .matchParentSize()
+                .background(Fill_Normal)
+        )
+        Box(
+            modifier = modifier
+                .fillMaxWidth(percent)
+                .fillMaxHeight()
+                .background(color = barColor)
+        )
+        Box(
+            modifier = modifier
+                .matchParentSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = modifier
-                    .matchParentSize()
-                    .background(Fill_Normal)
+            Text(
+                buildAnnotatedString {
+                    append(text)
+                    withStyle(
+                        style = AppTextStyles.Caption1.Bold.toSpanStyle().copy(color = Label_Alternative)
+                    ) {
+                        append(subtext)
+                    }
+                },
+                style = AppTextStyles.Headline.bold
             )
-            Box(
-                modifier = modifier
-                    .fillMaxWidth(percent)
-                    .fillMaxHeight()
-                    .background(color = barColor)
-            )
-            Box(
-                modifier = modifier
-                    .matchParentSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    buildAnnotatedString {
-                        append("${text} ")
-                        withStyle(
-                            style = AppTextStyles.Caption1.Bold.toSpanStyle().copy(color = Label_Alternative)
-                        ) {
-                            append(subtext)
-                        }
-                    },
-                    style = AppTextStyles.Headline.bold
-                )
-            }
         }
     }
 }

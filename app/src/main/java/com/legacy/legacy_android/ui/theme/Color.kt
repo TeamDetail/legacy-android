@@ -24,6 +24,7 @@ val Purple_Netural = Color(0xFFA980CF)
 
 val Fill_Normal = Color(0xFF232424)
 val Fill_Netural = Color(0xFF383A3B)
+val Fill_Alternative = Color(0xFF48494A)
 
 val Line_Alternative = Color(0xFF383A3B)
 val Line_Netural = Color(0xFF48494A)

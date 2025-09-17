@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -84,7 +83,7 @@ fun HomeScreen(
     val ruins = viewModel.uiState.visibleRuins
     val blocks = viewModel.uiState.blocks
     val locationPermissionState =
-        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     var showPermissionDialog by remember {
         mutableStateOf(false)
     }
@@ -179,7 +178,6 @@ fun HomeScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .zIndex(99f)
     ) {
         if (viewModel.uiState.isMailOpen) {
             MailModal(onMailClick = { show -> viewModel.updateIsMailOpen(false) })
@@ -215,7 +213,7 @@ fun HomeScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    var scale by remember { mutableStateOf(1f) }
+                    var scale by remember { mutableFloatStateOf(1f) }
 
                     LaunchedEffect(Unit) {
                         while (true) {
@@ -425,14 +423,8 @@ fun HomeScreen(
         ) {
             if (viewModel.uiState.selectedId > -1 && !viewModel.uiState.isCommenting) {
                 AdventureInfo(
-                    id = viewModel.uiState.ruinsDetail?.ruinsId,
-                    viewModel = viewModel,
-                    name = viewModel.uiState.ruinsDetail?.name ?: "이름 없음",
-                    img = viewModel.uiState.ruinsDetail?.ruinsImage,
-                    info = viewModel.uiState.ruinsDetail?.detailAddress,
-                    tags = listOf("IT", "마이스터", "대구", "고등학교"),
-                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
-                    description = viewModel.uiState.ruinsDetail?.description,
+                    data = viewModel.uiState.ruinsDetail,
+                    viewModel
                 )
             } else if (viewModel.uiState.selectedId > -1 && viewModel.uiState.isCommenting) {
                 CommentModal(viewModel)

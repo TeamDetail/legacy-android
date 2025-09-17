@@ -22,6 +22,7 @@ class UserRepository @Inject constructor(
 ) {
 
     private val _profile = MutableStateFlow<UserData?>(null)
+
     val profile: StateFlow<UserData?> = _profile.asStateFlow()
 
     private var hasLoaded = false

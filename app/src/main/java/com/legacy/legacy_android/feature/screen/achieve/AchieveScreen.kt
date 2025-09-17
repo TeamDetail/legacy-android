@@ -23,6 +23,7 @@ import com.legacy.legacy_android.res.component.achieve.AchieveBox
 import com.legacy.legacy_android.res.component.achieve.AchieveBoxSkeleton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
+import com.legacy.legacy_android.res.component.modal.ClaimModal
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -40,6 +41,10 @@ fun AchieveScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchAllAchieveList()
         viewModel.updateCurrentAchieve(null)
+    }
+
+    if (viewModel.uiState.isClaimModalOpen){
+        ClaimModal(viewModel)
     }
     CommonScreenLayout(
         modifier = modifier,
@@ -86,7 +91,7 @@ fun AchieveScreen(
                     .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .border(1.dp, color = Yellow_Netural, shape = RoundedCornerShape(8.dp))
-                    .clickable{}
+                    .clickable{viewModel.claimAward() }
             ) {
                 Text(
                     modifier = Modifier.padding(vertical = 6.dp),
