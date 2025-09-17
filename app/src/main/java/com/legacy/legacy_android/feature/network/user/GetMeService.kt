@@ -1,7 +1,10 @@
 package com.legacy.legacy_android.feature.network.user
 
 import com.legacy.legacy_android.feature.data.core.BaseResponse
+import com.legacy.legacy_android.feature.network.ruins.id.Cards
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface GetMeService {
     @GET("/user/me")
@@ -10,4 +13,6 @@ interface GetMeService {
     @GET("/inventory")
     suspend fun getInventory(): BaseResponse<List<InventoryItem>>
 
+    @POST("/inventory/cardpack")
+    suspend fun cardOpen(@Body request: CardOpenRequest): BaseResponse<List<Cards>>
 }

@@ -43,6 +43,8 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.modal.ItemModal
+import com.legacy.legacy_android.res.component.modal.OpenCardModal
 import com.legacy.legacy_android.res.component.profile.DictionaryInfo
 import com.legacy.legacy_android.res.component.profile.InventoryInfo
 import com.legacy.legacy_android.res.component.profile.Scorebar
@@ -73,12 +75,19 @@ fun ProfileScreen(
         viewModel.clearProfile()
         viewModel.fetchProfile()
     }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Background_Alternative)
             .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
+        if (viewModel.uiState.openCardResponse != null){
+            OpenCardModal(viewModel)
+        }
+        if (viewModel.uiState.cardPackOpen){
+            ItemModal(viewModel)
+        }
         Box(
             modifier = modifier.align(Alignment.BottomCenter).zIndex(999f)
         ) {

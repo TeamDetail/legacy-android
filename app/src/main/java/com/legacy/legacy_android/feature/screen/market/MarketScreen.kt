@@ -35,7 +35,6 @@ fun MarketScreen(modifier: Modifier = Modifier,
         viewModel = viewModel
     ) {
         TitleBox(title = "상점", image = R.drawable.shop)
-        MarketInfo(quantity = 4, magnification = 1.75, time = viewModel.timeUntilMidnight)
         Row (horizontalArrangement = Arrangement.spacedBy(8.dp)){
             packList.forEachIndexed { index, item ->
                 StatusButton(
@@ -48,6 +47,7 @@ fun MarketScreen(modifier: Modifier = Modifier,
                 )
             }
         }
+        MarketInfo(quantity = 4, magnification = 1.75, time = viewModel.timeUntilMidnight)
         PackWrap(newList = viewModel.uiState.packs, viewModel)
     }
 

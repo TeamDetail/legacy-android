@@ -66,7 +66,7 @@ fun CommonScreenLayout(
                     .height(100.dp)
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = modifier.padding(horizontal = 12.dp)
             ) {
                 content()

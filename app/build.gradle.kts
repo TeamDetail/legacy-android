@@ -141,6 +141,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("com.google.accompanist:accompanist-pager:0.36.0")
 
     // Test
     testImplementation(libs.junit)

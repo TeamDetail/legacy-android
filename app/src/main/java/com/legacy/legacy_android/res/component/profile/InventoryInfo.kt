@@ -2,6 +2,7 @@ package com.legacy.legacy_android.res.component.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,6 +79,7 @@ fun InventoryInfo(
                 .fillMaxWidth()
                 .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                 .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
+                .clickable{viewModel.updateCardPackOpen(true)}
         ) {
             Text(
                 modifier = Modifier.padding(vertical = 8.dp),

@@ -107,7 +107,7 @@ fun RuinSearchModal(
 
                                 val latLng = LatLng(ruin.latitude, ruin.longitude)
                                 cameraPositionState.move(
-                                    CameraUpdateFactory.newLatLngZoom(latLng, 14f)
+                                    CameraUpdateFactory.newLatLngZoom(latLng, 15.5f)
                                 )
                                 viewModel.setMapLoaded()
                             }

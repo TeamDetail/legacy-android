@@ -25,8 +25,33 @@ class ProfileViewModel @Inject constructor(
     var profile by mutableStateOf<UserData?>(null)
         private set
 
+
     var uiState by mutableStateOf(ProfileUiState())
         private set
+
+    fun updateCardPackOpen(status: Boolean){
+        uiState = uiState.copy(cardPackOpen = status)
+    }
+
+    fun decreasePackOpenCount(count: Int){
+        uiState = if (uiState.packOpenCount < 2){
+            uiState.copy(packOpenCount = uiState.selectedItem!!.itemCount)
+        }else {
+            uiState.copy(packOpenCount = uiState.packOpenCount - count)
+        }
+    }
+
+    fun increasePackOpenCount(count: Int){
+        uiState = if (uiState.packOpenCount + count > uiState.selectedItem!!.itemCount){
+            uiState.copy(packOpenCount = uiState.selectedItem!!.itemCount)
+        }else{
+            uiState.copy(packOpenCount = uiState.packOpenCount + count)
+        }
+    }
+
+    fun initCardPackOpenCount(){
+        uiState = uiState.copy(packOpenCount = 1)
+    }
 
     fun changeProfileStatus(status: Int){
         uiState = uiState.copy(profileStatus = status)
@@ -77,6 +102,29 @@ class ProfileViewModel @Inject constructor(
                 )
             }.onFailure { e ->
                 Log.e("CardRepository", "카드 불러오기 실패", e)
+            }
+        }
+    }
+
+    fun initCardPack(){
+        uiState = uiState.copy(
+            openCardResponse = null
+        )
+    }
+
+    fun openCardPack(){
+        viewModelScope.launch {
+            println(uiState.selectedItem!!.itemId)
+            println(uiState.packOpenCount)
+            fetchMyInventory()
+            val result = userRepository.openCardPack(id = uiState.selectedItem!!.itemId, count = uiState.packOpenCount)
+            result.onSuccess {
+                Log.d("UserRepository", "카드팩 열기 성공: $it")
+                uiState = uiState.copy(
+                    openCardResponse = it
+                )
+            }.onFailure {
+                e-> Log.e("UserRepository", "카드팩 열기 실패", e)
             }
         }
     }

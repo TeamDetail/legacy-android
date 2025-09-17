@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.feature.screen.market
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import androidx.compose.runtime.mutableStateOf
 import javax.inject.Inject
@@ -30,6 +31,7 @@ class MarketViewModel @Inject constructor(
         uiState = uiState.copy(packStatus = status)
     }
 
+
     fun fetchMarketData() {
         viewModelScope.launch {
             val result = marketRepository.getMarketData()
@@ -57,6 +59,7 @@ class MarketViewModel @Inject constructor(
         uiState = uiState.copy(currentCardPack = cardPack)
     }
     
+    @SuppressLint("DefaultLocale")
     private fun getTimeUntilMidnightFormatted(): String {
         val now = Calendar.getInstance()
         val midnight = Calendar.getInstance().apply {

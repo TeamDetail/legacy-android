@@ -31,8 +31,7 @@ fun MarketInfo(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Fill_Normal, shape = RoundedCornerShape(20.dp)),
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Column(

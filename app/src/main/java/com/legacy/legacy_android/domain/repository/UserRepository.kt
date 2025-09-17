@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.card.CardService
 import com.legacy.legacy_android.feature.network.card.MyCardResponse
+import com.legacy.legacy_android.feature.network.ruins.id.Cards
+import com.legacy.legacy_android.feature.network.user.CardOpenRequest
 import com.legacy.legacy_android.feature.network.user.GetMeService
 import com.legacy.legacy_android.feature.network.user.InventoryItem
 import com.legacy.legacy_android.feature.network.user.InventoryResponse
@@ -45,6 +47,17 @@ class UserRepository @Inject constructor(
             Result.success(response.data)
         } catch (error: Exception) {
             Log.e("UserRepository", "인벤토리 로드 실패", error)
+            Result.failure(error)
+        }
+    }
+
+    suspend fun openCardPack(id: Int, count:Int): Result<List<Cards>?>{
+        return try{
+            val response = getMeService.cardOpen(CardOpenRequest(id, count))
+            Log.d("UserRepository", "카드 오픈 성공: ${response.data}")
+            Result.success(response.data)
+        }catch (error: Exception){
+            Log.e("UserRepository", "카드 오픈 실패", error)
             Result.failure(error)
         }
     }
