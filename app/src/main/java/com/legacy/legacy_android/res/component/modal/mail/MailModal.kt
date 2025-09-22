@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.mail.ItemData
 import com.legacy.legacy_android.feature.network.mail.MailResponse
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.ui.theme.*
 
 @Composable
@@ -233,35 +234,31 @@ private fun BottomButton(
     onReceiveAll: () -> Unit,
     onCloseDetail: () -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Fill_Normal, RoundedCornerShape(12.dp))
-            .border(
-                1.dp,
-                if (hasCurrentItem || hasRewardItems) Yellow_Netural else Line_Alternative,
-                RoundedCornerShape(12.dp)
-            )
-            .padding(vertical = 12.dp, horizontal = 10.dp)
-            .clickable {
-                when {
-                    !hasMails -> onMailClick(false)
-                    hasRewardItems -> onMailClick(false)
-                    hasCurrentItem -> onCloseDetail()
-                    else -> onReceiveAll()
-                }
-            }
-    ) {
-        Text(
-            text = when {
-                !hasMails -> "닫기"
-                hasRewardItems -> "돌아가기"
-                hasCurrentItem -> "돌아가기"
-                else -> "일괄 수령"
-            },
-            color = if (hasCurrentItem || hasRewardItems) Yellow_Netural else Label_Netural,
-            style = AppTextStyles.Caption1.Bold
-        )
+    val text = when {
+        !hasMails -> "일괄 수령"
+        hasRewardItems -> "돌아가기"
+        hasCurrentItem -> "돌아가기"
+        else -> "일괄 수령"
     }
+
+    val textColor = if (hasCurrentItem || hasRewardItems) Yellow_Netural else Label_Netural
+    val borderColor = if (hasCurrentItem || hasRewardItems) Yellow_Netural else Line_Alternative
+
+    CustomButton(
+        onClick = {
+            when {
+                !hasMails -> onMailClick(false)
+                hasRewardItems -> onMailClick(false)
+                hasCurrentItem -> onCloseDetail()
+                else -> onReceiveAll()
+            }
+        },
+        text = text,
+        modifier = Modifier.fillMaxWidth(),
+        borderColor = borderColor,
+        textColor = textColor,
+        backgroundColor = Fill_Normal,
+        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 10.dp),
+        fontSize = AppTextStyles.Caption1.Bold.fontSize
+    )
 }

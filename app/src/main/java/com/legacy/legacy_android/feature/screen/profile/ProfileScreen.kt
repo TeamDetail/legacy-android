@@ -104,7 +104,7 @@ fun ProfileScreen(
                 .align(Alignment.TopStart)
                 .verticalScroll(rememberScrollState())
         ) {
-            BackButton(selectedId = 2, title = "프로필", navHostController = navHostController,)
+            BackButton(selectedId = 2, title = "프로필", navHostController = navHostController)
             // 여기서 프로필 윗부분
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -263,7 +263,11 @@ fun RecordScreen(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Scorebar(title = "자기소개", text = profile?.description ?: "설명글이 없습니다.", modifier = modifier)
+        Scorebar(
+            title = "자기소개",
+            text = if (profile?.description.isNullOrBlank()) "자기소개가 없습니다." else profile!!.description,
+            modifier = modifier
+        )
         // 숙련
         Spacer(modifier = modifier.height(8.dp))
         Row(
@@ -375,8 +379,7 @@ fun DictionaryScreen(
                 modifier = modifier.fillMaxWidth(0.95f).height(1000.dp)
             ) {
                 items(viewModel.uiState.myCards?.cards?.chunked(2) ?: emptyList()) { cardPair ->
-                    Row(
-                    ) {
+                    Row {
                         cardPair.forEach { card ->
                             DictionaryInfo(
                                 item = card

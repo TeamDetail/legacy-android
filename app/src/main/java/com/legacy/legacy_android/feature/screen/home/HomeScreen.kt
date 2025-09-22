@@ -61,6 +61,7 @@ import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -263,9 +264,7 @@ fun HomeScreen(
                 QuizBox(
                     data = viewModel.uiState.quizData ?: emptyList(),
                     quizStatus = viewModel.uiState.quizStatus,
-                    onConfirm = { viewModel.updateHintStatus(HintStatus.CREDIT) },
                     viewModel = viewModel,
-                    ruinsId = viewModel.uiState.ruinsDetail?.ruinsId,
                     image = viewModel.uiState.ruinsDetail?.ruinsImage,
                     name = viewModel.uiState.ruinsDetail?.name,
                 )
@@ -401,15 +400,16 @@ fun HomeScreen(
             }
             blocks.forEach { blocks ->
                 Polygon(
-                    zIndex = 54f,
+                    zIndex = 56f,
                     tag = blocks.blockId,
                     points = PolygonStyle.getPolygonPointsFromLocation(
                         latitude = blocks.latitude,
                         longitude = blocks.longitude
                     ),
                     strokeWidth = 1f,
-                    strokeColor = Green_Alternative,
-                    fillColor = Color(0xFF07C002).copy(alpha = 0.40f),
+                    strokeColor = if (blocks.blockType == "NORMAL") Green_Alternative else Yellow_Netural,
+                    fillColor = if(blocks.blockType == "NORMAL"){Color(0xFF07C002).copy(alpha = 0.4f)}
+                    else{Color(0xFFEDB900).copy(alpha = 1f)},
                 )
             }
         }

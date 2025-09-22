@@ -3,6 +3,7 @@ package com.legacy.legacy_android.res.component.bars.infobar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -85,13 +86,19 @@ fun InfoBar(
                                 modifier = Modifier
                                     .height(16.dp)
                                     .width(80.dp)
-                                    .background(Label_Alternative.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                                    .background(
+                                        Label_Alternative.copy(alpha = 0.3f),
+                                        RoundedCornerShape(4.dp)
+                                    )
                             )
                             Box(
                                 modifier = Modifier
                                     .height(12.dp)
                                     .width(60.dp)
-                                    .background(Label_Alternative.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                                    .background(
+                                        Label_Alternative.copy(alpha = 0.3f),
+                                        RoundedCornerShape(4.dp)
+                                    )
                             )
                         }
                     }
@@ -103,14 +110,17 @@ fun InfoBar(
                             .fillMaxWidth(0.7f)
                             .background(Fill_Normal, RoundedCornerShape(12.dp))
                     )
-            } else {
+                } else {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
                             .fillMaxWidth(0.4f)
                             .fillMaxHeight()
-                            .clickable { navHostController.navigate("profile") }
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { navHostController.navigate("profile") }
                     ) {
                         AsyncImage(
                             model = profile?.imageUrl,
@@ -188,12 +198,13 @@ fun InfoBar(
                         .zIndex(11f)
                         .background(Background_Normal)
                 ) {
-                    OptionBar(navHostController, setIsTabClicked = {
-                        viewModel.setIsTabClicked()
-                    },
+                    OptionBar(
+                        navHostController, setIsTabClicked = {
+                            viewModel.setIsTabClicked()
+                        },
                         onMailClick = { show -> onMailClick(show) })
                 }
-                }
             }
+        }
     }
 }

@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.*
 import java.text.NumberFormat
@@ -66,16 +67,32 @@ fun AdventureInfo(
                         .fillMaxWidth()
                         .heightIn(min = 200.dp, max = 600.dp)
                         .background(
-                            Black,
+                            Background_Netural,
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                         )
                         .padding(12.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {}
                 ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(0.1f)
+                                .background(Fill_Alternative, shape = RoundedCornerShape(8.dp))
+                                .height(8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState())
                     ) {
+                        Spacer(modifier = Modifier.height(20.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -126,9 +143,9 @@ fun AdventureInfo(
                                 // 별점 표시
                                 val rating = data?.averageRating ?: 0
                                 val commentCount = data?.countComments?.toString() ?: "0"
-                                Row (
+                                Row(
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
+                                ) {
                                     for (i in 1..10) {
                                         if (i % 2 != 0) {
                                             Image(
@@ -184,31 +201,22 @@ fun AdventureInfo(
                                 Spacer(modifier = Modifier.height(12.dp))
 
                                 // 한줄평 남기기 버튼
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                                        .border(
-                                            1.dp,
-                                            color = Line_Netural,
-                                            shape = RoundedCornerShape(12.dp)
-                                        )
-                                        .clickable {
-                                            viewModel.updateIsCommenting(true)
-                                            viewModel.setCommentValue("")
-                                        }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(vertical = 8.dp),
-                                        text = "한줄평 남기기",
-                                        color = Label_Netural,
-                                        style = AppTextStyles.Caption2.Bold
-                                    )
-                                }
+                                CustomButton(
+                                    onClick = {
+                                        viewModel.updateIsCommenting(true)
+                                        viewModel.setCommentValue("")
+                                    },
+                                    text = "한줄평 남기기",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    borderColor = Line_Netural,
+                                    textColor = Label_Netural,
+                                    backgroundColor = Fill_Normal,
+                                    contentPadding = PaddingValues(vertical = 8.dp),
+                                    fontSize = AppTextStyles.Caption2.Bold.fontSize
+                                )
                             }
 
-                            // 이미지
+                                // 이미지
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -223,9 +231,9 @@ fun AdventureInfo(
                                         model = data.ruinsImage,
                                         contentDescription = "유적지 이미지",
                                         modifier = Modifier
-                                            .height(184.dp)
+                                            .height(220.dp)
                                             .border(
-                                                1.dp,
+                                                2.dp,
                                                 color = Line_Netural,
                                                 shape = RoundedCornerShape(12.dp)
                                             )
@@ -253,7 +261,7 @@ fun AdventureInfo(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
                         // description
                         if (data?.description.isNullOrBlank()) {
@@ -270,14 +278,14 @@ fun AdventureInfo(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         Box(
                             Modifier
                                 .height(1.dp)
                                 .fillMaxWidth()
                                 .background(Line_Alternative)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         // comments
                         if (viewModel.uiState.comments.isNullOrEmpty()) {
@@ -303,20 +311,15 @@ fun AdventureInfo(
         ) {}
 
         // 퀴즈 버튼
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                .fillMaxWidth()
-                .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(12.dp))
-                .clickable { data?.ruinsId?.let { viewModel.loadQuiz(it) } }
-        ) {
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = "퀴즈 풀고 탐험하기!",
-                color = Blue_Netural,
-                style = AppTextStyles.Body1.bold
-            )
-        }
+        CustomButton(
+            onClick = { data?.ruinsId?.let { viewModel.loadQuiz(it) } },
+            text = "퀴즈 풀고 탐험하기!",
+            modifier = Modifier.fillMaxWidth(),
+            borderColor = Blue_Netural,
+            textColor = Blue_Netural,
+            backgroundColor = Fill_Normal,
+            contentPadding = PaddingValues(vertical = 12.dp),
+            fontSize = AppTextStyles.Body1.bold.fontSize
+        )
     }
 }

@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.course.CourseRuins
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -91,7 +89,7 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                     style = AppTextStyles.Heading1.bold
                 )
             }
-                        Column(
+            Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 if (course == null || course.thumbnail.isBlank()) {
@@ -109,10 +107,9 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                         placeholder = painterResource(R.drawable.school_img)
                     )
                 }
-
                 course?.let {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         if (it.eventId > 0) {
                             Text(
@@ -127,10 +124,12 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                             Text(
                                 text=it.creator,
                                 style = AppTextStyles.Body2.medium,
-                                color = Label_Alternative
+                                color = Label_Alternative,
                             )
                         }
-                        Column {
+                        Column (
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
                             Text(
                                 text = it.courseName,
                                 style = AppTextStyles.Title1.bold

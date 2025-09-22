@@ -1,6 +1,8 @@
 package com.legacy.legacy_android.res.component.layout
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.modal.mail.MailModal
@@ -44,7 +45,6 @@ fun CourseScreenLayout(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     backgroundColor: Color = Background_Alternative,
-    viewModel: CourseViewModel,
     content: @Composable () -> Unit
 ) {
     var isMailModalVisible by remember { mutableStateOf(false) }
@@ -64,6 +64,10 @@ fun CourseScreenLayout(
                 .zIndex(8f)
                 .size(48.dp)
                 .background(Primary, shape = CircleShape)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ){}
         ) {
             Icon(
                 imageVector = Icons.Default.Create,

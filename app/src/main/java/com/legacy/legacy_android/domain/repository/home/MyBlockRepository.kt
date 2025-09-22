@@ -26,7 +26,7 @@ class BlockRepository @Inject constructor(
 
     suspend fun getBlocks(): Result<List<GetBlockResponse>> {
         return try {
-            val response = getBlockService.getBlockById()
+            val response = getBlockService.getBlock()
             val rawBlocks = response.data ?: emptyList()
             val distinctBlocks = rawBlocks.distinctBy { block ->
                 PolygonStyle.getGridKey(block.latitude, block.longitude)

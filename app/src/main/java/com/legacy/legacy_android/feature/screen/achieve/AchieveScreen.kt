@@ -1,15 +1,10 @@
 package com.legacy.legacy_android.feature.screen.achieve
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.achieve.AchieveBox
 import com.legacy.legacy_android.res.component.achieve.AchieveBoxSkeleton
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.modal.ClaimModal
@@ -67,14 +63,19 @@ fun AchieveScreen(
                             selectedValue = viewModel.uiState.achieveStatus,
                             onClick = {
                                 viewModel.changeAchieveStatus(index)
-                                if (index == 0){
-                                    viewModel.fetchAllAchieveList()
-                                }else if (index == 1){
-                                    viewModel.fetchAchieveListByType("EXPLORE")
-                                }else if (index == 2){
-                                viewModel.fetchAchieveListByType("LEVEL")
-                                }else{
-                                    viewModel.fetchAchieveListByType("HIDDEN")
+                                when (index) {
+                                    0 -> {
+                                        viewModel.fetchAllAchieveList()
+                                    }
+                                    1 -> {
+                                        viewModel.fetchAchieveListByType("EXPLORE")
+                                    }
+                                    2 -> {
+                                        viewModel.fetchAchieveListByType("LEVEL")
+                                    }
+                                    else -> {
+                                        viewModel.fetchAchieveListByType("HIDDEN")
+                                    }
                                 }
                             },
                             text = item,
@@ -85,21 +86,16 @@ fun AchieveScreen(
                     }
                 }
             }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
-                    .fillMaxWidth()
-                    .border(1.dp, color = Yellow_Netural, shape = RoundedCornerShape(8.dp))
-                    .clickable{viewModel.claimAward() }
-            ) {
-                Text(
-                    modifier = Modifier.padding(vertical = 6.dp),
-                    text = "보상 일괄 수령",
-                    color = Yellow_Netural,
-                    style = AppTextStyles.Caption1.Bold
-                )
-            }
+            CustomButton(
+                onClick = { viewModel.claimAward() },
+                text = "보상 일괄 수령",
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Yellow_Netural,
+                textColor = Yellow_Netural,
+                backgroundColor = Fill_Normal,
+                contentPadding = PaddingValues(vertical = 6.dp),
+                textStyle = AppTextStyles.Caption1.Bold
+            )
             Column {
                 if (viewModel.uiState.isLoading) {
                     repeat(3) {

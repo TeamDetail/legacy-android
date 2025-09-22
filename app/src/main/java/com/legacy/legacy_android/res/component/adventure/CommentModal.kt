@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +49,7 @@ fun CommentModal(
         viewModel.updateCommentRate(0)
     }
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
@@ -82,8 +80,7 @@ fun CommentModal(
                 style = AppTextStyles.Headline.bold
             )
         }
-        Row(modifier = Modifier.fillMaxWidth().clickable{viewModel.updateCommentModal(true)
-                                                        println(viewModel.uiState.isCommentModalOpen)},) {
+        Row(modifier = Modifier.fillMaxWidth().clickable{viewModel.updateCommentModal(true)}) {
             for (i in 1..10) {
                 if (i % 2 != 0) {
                     Image(
@@ -101,6 +98,7 @@ fun CommentModal(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(4.dp))
         TextField(
             value = viewModel.uiState.commentValue,
             onValueChange = { viewModel.setCommentValue(it) },

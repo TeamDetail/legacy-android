@@ -11,5 +11,5 @@ interface AchievementService {
     @GET("/achievement/{type}")
     suspend fun getAchievementsByType(@Path("type") type: String): BaseResponse<List<AchievementResponse>>
     @POST("/achievement/award")
-    suspend fun getAwardAchievement(): BaseResponse<List<AchievementAwardResponse>>
+    suspend fun getAwardAchievement(): BaseResponse<AchievementAwardResponse>
 }

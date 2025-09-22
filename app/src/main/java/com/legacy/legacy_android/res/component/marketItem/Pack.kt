@@ -1,18 +1,15 @@
 package com.legacy.legacy_android.res.component.marketItem
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,20 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.legacy.legacy_android.feature.network.achieve.CardPack
 import com.legacy.legacy_android.feature.screen.market.MarketViewModel
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Line_Alternative
-import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.ui.theme.pretendard
 import java.text.NumberFormat
@@ -77,34 +72,30 @@ fun Pack(
                     style = AppTextStyles.Caption2.Medium,
                     color = Label_Alternative
                 )
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                        .fillMaxWidth()
-                        .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                        .clickable {
-                            viewModel.setModal()
-                            viewModel.setCardPack(cardPack)
+                CustomButton(
+                    onClick = {
+                        viewModel.setModal()
+                        viewModel.setCardPack(cardPack)
+                    },
+                    text = buildAnnotatedString {
+                        append(
+                            NumberFormat.getNumberInstance(Locale.US)
+                                .format(cardPack.price)
+                                .toString()
+                        )
+                        withStyle(style = SpanStyle(color = Label)) {
+                            append(" 크레딧")
                         }
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 4.dp),
-                        textAlign = TextAlign.Center,
-                        text = buildAnnotatedString {
-                            append(
-                                NumberFormat.getNumberInstance(Locale.US).format(cardPack.price)
-                                    .toString()
-                            )
-                            withStyle(style = SpanStyle(color = Label)) {
-                                append(" 크레딧")
-                            }
-                        },
-                        style = AppTextStyles.Caption2.Bold,
-                        color = Label_Netural
-                    )
-                }
+                    }.text,
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Line_Alternative,
+                    textColor = Label_Netural,
+                    backgroundColor = Fill_Normal,
+                    outerBorderColor = Fill_Normal,
+                    fontSize = 14.sp,
+                    contentPadding = PaddingValues(vertical = 4.dp),
+                    textStyle = AppTextStyles.Caption2.Bold
+                )
             }
         }
     }

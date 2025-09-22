@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.course.PlusButton
 import com.legacy.legacy_android.res.component.course.PlusInput
 import com.legacy.legacy_android.res.component.course.RuinsBox
@@ -184,16 +181,16 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                         .height(120.dp).clip(RoundedCornerShape(12.dp)),
                     placeholder = { Text(text = "코스 설명을 입력해주세요.") },
                     colors = TextFieldDefaults.colors(
-                    focusedTextColor = Label, unfocusedTextColor = Label,
-                    focusedContainerColor = Fill_Normal,
-                    unfocusedContainerColor = Fill_Normal,
-                    disabledContainerColor = Fill_Normal,
-                    focusedIndicatorColor = Fill_Normal,
-                    unfocusedIndicatorColor = Fill_Normal,
-                    disabledIndicatorColor = Fill_Normal,
-                    unfocusedPlaceholderColor = Label,
-                    focusedPlaceholderColor = Label,
-                )
+                        focusedTextColor = Label, unfocusedTextColor = Label,
+                        focusedContainerColor = Fill_Normal,
+                        unfocusedContainerColor = Fill_Normal,
+                        disabledContainerColor = Fill_Normal,
+                        focusedIndicatorColor = Fill_Normal,
+                        unfocusedIndicatorColor = Fill_Normal,
+                        disabledIndicatorColor = Fill_Normal,
+                        unfocusedPlaceholderColor = Label,
+                        focusedPlaceholderColor = Label,
+                    )
                 )
             }
             // 유적지 선택 파트
@@ -292,7 +289,7 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                     viewModel.uiState.createSearchRuins?.forEach { it ->
                         RuinsBox(data = it, viewModel)
                     }
-                }else{
+                } else {
                     Row(
                         modifier = modifier.fillMaxWidth().padding(vertical = 12.dp),
                         horizontalArrangement = Arrangement.Center
@@ -303,36 +300,21 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
             }
         }
         Row(
-           horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 120.dp)
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
+            CustomButton(
+                text = "코스 제작 완료!",
+                onClick = {
+                    viewModel.createCourse()
+                },
+                textColor = if (isEnabled) Blue_Netural else Label_Alternative,
+                borderColor = if (isEnabled) Blue_Netural else Label_Alternative,
                 modifier = Modifier
-                    .background(
-                        Fill_Normal,
-                        shape = RoundedCornerShape(12.dp)
-                    )
                     .fillMaxWidth(0.9f)
-                    .border(
-                        1.dp,
-                        color = if (isEnabled) Blue_Netural else Label_Alternative,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .then(
-                        if (isEnabled) Modifier.clickable { viewModel.createCourse() }
-                        else Modifier
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    text = "코스 제작 완료!",
-                    color = if (isEnabled) Blue_Netural else Label_Alternative,
-                    style = AppTextStyles.Body1.bold
-                )
-            }
+            )
         }
     }
 }

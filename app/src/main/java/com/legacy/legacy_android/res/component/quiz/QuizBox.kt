@@ -23,6 +23,7 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.service.RememberClickSound
 import kotlinx.coroutines.delay
 
@@ -30,10 +31,8 @@ import kotlinx.coroutines.delay
 fun QuizBox(
     data: List<GetQuizResponse>,
     quizStatus: QuizStatus,
-    onConfirm: () -> Unit,
     viewModel: HomeViewModel,
     name: String?,
-    ruinsId: Int?,
     image: String?
 ) {
 
@@ -55,7 +54,7 @@ fun QuizBox(
                 Column(
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(vertical = 27.dp, horizontal = 37.dp)
+                        .padding(vertical = 27.dp, horizontal = 24.dp)
                         .fillMaxSize()
                 ) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -64,7 +63,7 @@ fun QuizBox(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            color = if (quizNum.value == index) Primary else Label,
+                                            color = if (quizNum.intValue == index) Primary else Label,
                                             shape = RoundedCornerShape(100.dp),
                                         )
                                         .size(8.dp)
@@ -74,9 +73,9 @@ fun QuizBox(
                     }
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "Q${quizNum.value + 1}", style = AppTextStyles.Title2.bold)
+                        Text(text = "Q${quizNum.intValue + 1}", style = AppTextStyles.Title2.bold)
                         Text(
-                            text = data[quizNum.value].ruinsName,
+                            text = data[quizNum.intValue].ruinsName,
                             color = Label_Alternative,
                             style = AppTextStyles.Body1.medium,
                             textAlign = TextAlign.Center,
@@ -85,7 +84,7 @@ fun QuizBox(
                     }
 
                     Text(
-                        text = data[quizNum.value].quizProblem,
+                        text = data[quizNum.intValue].quizProblem,
                         style = AppTextStyles.Title3.bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -93,11 +92,14 @@ fun QuizBox(
 
                     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            data[quizNum.value].optionValue.forEach { option ->
+                            data[quizNum.intValue].optionValue.forEach { option ->
                                 Box(
                                     modifier = Modifier
                                         .border(
-                                            border = BorderStroke(4.dp, if (selectedOption.value == option) Primary else Fill_Normal),
+                                            border = BorderStroke(
+                                                4.dp,
+                                                if (selectedOption.value == option) Primary else Fill_Normal
+                                            ),
                                             shape = RoundedCornerShape(12.dp)
                                         )
                                         .padding(4.dp)
@@ -113,64 +115,89 @@ fun QuizBox(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .background(Fill_Normal)
-                                            .border(1.dp, Line_Alternative, shape = RoundedCornerShape(12.dp))
+                                            .border(
+                                                1.dp,
+                                                Line_Alternative,
+                                                shape = RoundedCornerShape(12.dp)
+                                            )
                                             .padding(vertical = 12.dp)
                                     ) {
                                         Text(text = option, style = AppTextStyles.Body1.bold)
                                     }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(12.dp))
                             Box(modifier = Modifier.padding(4.dp)) {
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .background(Fill_Normal, RoundedCornerShape(12.dp))
-                                            .border(1.dp, Line_Netural, RoundedCornerShape(12.dp))
-                                            .padding(vertical = 12.dp, horizontal = 10.dp)
-                                            .clickable {
-                                                quizNum.value = 0
-                                                selectedOption.value = null
-                                                viewModel.clearQuizAnswers()
-                                                viewModel.updateQuizStatus(QuizStatus.NONE)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    CustomButton(
+                                        onClick = {
+                                            quizNum.intValue = 0
+                                            selectedOption.value = null
+                                            viewModel.clearQuizAnswers()
+                                            viewModel.updateQuizStatus(QuizStatus.NONE)
+                                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                                        },
+                                        text = "나가기",
+                                        modifier = Modifier.weight(1f),
+                                        borderColor = Line_Netural,
+                                        textColor = Label_Alternative,
+                                        backgroundColor = Fill_Normal,
+                                        contentPadding = PaddingValues(
+                                            vertical = 12.dp,
+                                            horizontal = 10.dp
+                                        ),
+                                        fontSize = AppTextStyles.Caption1.Bold.fontSize
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    CustomButton(
+                                        onClick = { /* TODO: 힌트 기능 */ },
+                                        text = "300크레딧으로 힌트 확인",
+                                        modifier = Modifier.weight(3f),
+                                        borderColor = Blue_Netural,
+                                        textColor = Blue_Netural,
+                                        backgroundColor = Fill_Normal,
+                                        contentPadding = PaddingValues(
+                                            vertical = 12.dp,
+                                            horizontal = 16.dp
+                                        ),
+                                        fontSize = AppTextStyles.Caption1.Bold.fontSize
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    CustomButton(
+                                        onClick = {
+                                            selectedOption.value?.let { selected ->
+                                                viewModel.addQuizAnswer(
+                                                    data[quizNum.intValue].quizId,
+                                                    selected
+                                                )
                                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
-                                            }
-                                    ) {
-                                        Text("나가기", color = Label_Alternative, style = AppTextStyles.Caption1.Bold)
-                                    }
-
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .background(Fill_Normal, RoundedCornerShape(12.dp))
-                                            .border(1.dp, Blue_Netural, RoundedCornerShape(12.dp))
-                                            .padding(vertical = 12.dp, horizontal = 30.dp)
-                                    ) {
-                                        Text("힌트 확인하기", color = Blue_Netural, style = AppTextStyles.Caption1.Bold)
-                                    }
-
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .background(Fill_Normal, RoundedCornerShape(12.dp))
-                                            .border(1.dp, Line_Netural, RoundedCornerShape(12.dp))
-                                            .padding(vertical = 12.dp, horizontal = 10.dp)
-                                            .clickable {
-                                                selectedOption.value?.let { selected ->
-                                                    viewModel.addQuizAnswer(data[quizNum.value].quizId, selected)
-                                                    soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
-                                                    if (quizNum.value == 2) {
-                                                        viewModel.submitQuizAnswers()
-                                                        selectedOption.value = null
-                                                    } else {
-                                                        quizNum.value++
-                                                        selectedOption.value = null
-                                                    }
+                                                if (quizNum.intValue == 2) {
+                                                    viewModel.submitQuizAnswers()
+                                                    selectedOption.value = null
+                                                } else {
+                                                    quizNum.intValue++
+                                                    selectedOption.value = null
                                                 }
                                             }
-                                    ) {
-                                        Text("다음", color = Label_Alternative, style = AppTextStyles.Caption1.Bold)
-                                    }
+                                        },
+                                        text = "다음",
+                                        modifier = Modifier.weight(1f),
+                                        borderColor = Line_Netural,
+                                        textColor = Label_Alternative,
+                                        backgroundColor = Fill_Normal,
+                                        contentPadding = PaddingValues(
+                                            vertical = 12.dp,
+                                            horizontal = 10.dp
+                                        ),
+                                        fontSize = AppTextStyles.Caption1.Bold.fontSize
+                                    )
                                 }
                             }
                         }
@@ -187,7 +214,7 @@ fun QuizBox(
                     showCollection.value = true
                 }
             } else {
-                CollectionView(viewModel, name, ruinsId, image)
+                CollectionView(viewModel, name, image)
             }
         }
 
@@ -274,11 +301,10 @@ fun CorrectView(
 fun CollectionView(
     viewModel: HomeViewModel,
     name: String?,
-    ruinsId: Int?,
     image: String?
 ){
     LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay(5000)
+        delay(5000)
         viewModel.clearQuizAnswers()
         viewModel.updateQuizStatus(QuizStatus.NONE)
     }
@@ -308,7 +334,7 @@ fun CollectionView(
                     model = image,
                     contentDescription = "유적지 이미지",
                     modifier = Modifier
-                        .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .matchParentSize(),
                     contentScale = ContentScale.Crop,
@@ -349,7 +375,7 @@ fun CollectionView(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = if (name != null) name else "",
+                    text = name ?: "",
                     fontFamily = bitbit,
                     fontSize = 16.sp,
                     color = Label
@@ -396,7 +422,7 @@ fun WrongView(
             )
             val wrongText = viewModel.uiState.wrongAnswers.joinToString(", ") { "${it + 1}번" }
             Text(
-                text = "${wrongText} 문제의 답이 잘못되었어요.\n다시 도전하면 맞출 수 있을 거예요!",
+                text = "$wrongText 문제의 답이 잘못되었어요.\n다시 도전하면 맞출 수 있을 거예요!",
                 style = AppTextStyles.Headline.medium,
                 color = Label_Alternative,
                 textAlign = TextAlign.Center

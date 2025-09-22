@@ -1,23 +1,19 @@
 package com.legacy.legacy_android.feature.screen.course
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.course.SmallCourseWrap
 import com.legacy.legacy_android.res.component.layout.CourseScreenLayout
 import com.legacy.legacy_android.res.component.title.TitleBox
@@ -41,7 +37,6 @@ fun CourseCategory(modifier: Modifier,
     CourseScreenLayout(
         modifier = modifier,
         navHostController = navHostController,
-        viewModel = viewModel
     ) {
         TitleBox(title = "코스", image = R.drawable.course)
         Column(
@@ -71,26 +66,16 @@ fun CourseCategory(modifier: Modifier,
             )
         }
 
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                .fillMaxWidth()
-                .border(
-                    1.dp,
-                    color = Line_Alternative,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .clickable {
-                    navHostController.navigate("COURSE")
-                }
-        ) {
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = "목록으로 보기",
-                color = Label,
-                style = AppTextStyles.Body1.bold
-            )
-        }
+        CustomButton(
+            onClick = { navHostController.navigate("COURSE") },
+            text = "목록으로 보기",
+            modifier = Modifier.fillMaxWidth(),
+            borderColor = Line_Alternative,
+            textColor = Label,
+            backgroundColor = Fill_Normal,
+            contentPadding = PaddingValues(vertical = 8.dp),
+            fontSize = AppTextStyles.Body1.bold.fontSize
+        )
+        Spacer(modifier.height(12.dp))
     }
 }

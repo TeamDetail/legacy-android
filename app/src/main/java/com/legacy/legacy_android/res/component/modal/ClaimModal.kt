@@ -39,7 +39,7 @@ import kotlin.collections.chunked
 import kotlin.collections.forEach
 
 @Composable
-fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel(),) {
+fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -100,8 +100,10 @@ fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel(),) {
                         )
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        viewModel.uiState.awardAchieve!!.awardItem.chunked(5).forEach { rowItems ->
-                            Row(
+                        viewModel.uiState.awardAchieve?.achievementAward
+                            ?.chunked(5)
+                            ?.forEach{  rowItems ->
+                        Row(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

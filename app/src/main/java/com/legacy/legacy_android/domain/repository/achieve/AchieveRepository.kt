@@ -46,7 +46,7 @@ class AchieveRepository @Inject constructor(
             val response = achievementService.getAwardAchievement()
             val data = response.data
             if(data != null){
-                Result.success(data[0])
+                Result.success(data)
             }else{
                 Result.failure(NullPointerException("도전과제 데이터가 null입니다."))
             }

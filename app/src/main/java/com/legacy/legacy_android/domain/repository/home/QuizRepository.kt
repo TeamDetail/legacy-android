@@ -34,6 +34,7 @@ class QuizRepository @Inject constructor(
             Result.success(response)
         }catch(e:Exception){
             Log.d("submitAnswer", "정답 문제 발생")
+            Log.d("submitAnswer", e.toString())
             Result.failure(e)
         }
     }

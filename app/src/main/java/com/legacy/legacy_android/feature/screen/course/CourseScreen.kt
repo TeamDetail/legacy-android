@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.res.component.button.CustomDropdown
 import com.legacy.legacy_android.res.component.course.CourseBox
@@ -47,7 +46,6 @@ fun CourseScreen(
             CourseScreenLayout(
                 modifier = modifier,
                 navHostController = navHostController,
-                viewModel = viewModel
             ) {
                 TitleBox(title = "코스", image = R.drawable.course)
                 Column(

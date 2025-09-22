@@ -20,7 +20,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val ruinsRepository: RuinsRepository,
     private val blockRepository: BlockRepository,
-    private val userRepository: UserRepository,
     private val quizRepository: QuizRepository,
     private val animationHelper: RuinsAnimationHelper,
 ) : ViewModel() {
@@ -116,11 +115,12 @@ class HomeViewModel @Inject constructor(
             ruinsRepository.postComment(currentRuinsDetail.ruinsId, uiState.commentRate, uiState.commentValue)
                 .onSuccess {
                     updateIsCommenting(false)
-                    uiState = uiState.copy(commentValue = "", commentLoading = false)
+                    uiState = uiState.copy(commentValue = "")
                 }
                 .onFailure {
-                    uiState = uiState.copy(commentLoading = false)
+                    println("실패")
                 }
+            uiState = uiState.copy(commentLoading = false)
         }
     }
 

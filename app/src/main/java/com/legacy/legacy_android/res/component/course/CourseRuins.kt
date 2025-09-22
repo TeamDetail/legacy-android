@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.res.component.course
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -31,12 +34,15 @@ import com.legacy.legacy_android.feature.network.ruins.id.CourseRuinsResponse
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
+import com.legacy.legacy_android.ui.theme.Fill_Alternative
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Green_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
+import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
@@ -45,10 +51,11 @@ fun CourseRuins(
     index: Int
 ){
     Row(
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier.height(200.dp)
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.height(200.dp).fillMaxWidth()
     ) {
-        Column(modifier = Modifier.fillMaxWidth(0.15f)) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.15f)) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -59,7 +66,7 @@ fun CourseRuins(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = index.toString(),
+                    text = (index+1).toString(),
                     style = AppTextStyles.Heading2.bold,
                     color = Label
                 )
@@ -93,12 +100,44 @@ fun CourseRuins(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ){
                 Text(text = "#${data.data.ruinsId}", color = Label_Alternative, style = AppTextStyles.Caption1.Medium)
-                Text(text = data.data.name ?: "이름이 없습니다.", style = AppTextStyles.Headline.bold, color = Label)
+                Text(text = data.data.name, style = AppTextStyles.Headline.bold, color = Label)
                 Spacer(Modifier.height(2.dp))
-                //TODO 별점 만들기
+                val rating = data.data.averageRating
+                val commentCount = data.data.countComments.toString()
+                Row (
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    for (i in 1..10) {
+                        if (i % 2 != 0) {
+                            Image(
+                                painter = painterResource(R.drawable.starhalfleft),
+                                contentDescription = null,
+                                modifier = Modifier.height(12.dp),
+                                colorFilter = ColorFilter.tint(
+                                    if (i <= rating) Primary else White
+                                )
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(R.drawable.starhalfright),
+                                contentDescription = null,
+                                modifier = Modifier.height(12.dp),
+                                colorFilter = ColorFilter.tint(
+                                    if (i <= rating) Primary else White
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                        }
+                    }
+                    Text(
+                        text = "(${commentCount})",
+                        style = AppTextStyles.Body2.medium,
+                        color = Fill_Alternative
+                    )
+                }
             }
             // divider
-            Box(Modifier.height(1.dp).fillMaxWidth().background(Line_Alternative))
+            Box(Modifier.height(1.dp).fillMaxWidth(0.9f).background(Line_Alternative))
             Row {
                 Text(
                     text = buildAnnotatedString {
@@ -113,12 +152,12 @@ fun CourseRuins(
         }
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(0.9f)
                 .fillMaxHeight(0.9f)
                 .clip(RoundedCornerShape(12.dp))
                 .padding(5.dp)
         ) {
-            if (data.data.ruinsImage.isNullOrBlank()) {
+            if (data.data.ruinsImage.isBlank()) {
                 SkeletonBox(
                     modifier = Modifier
                         .matchParentSize()
@@ -129,7 +168,7 @@ fun CourseRuins(
                     contentDescription = "유적지 이미지",
                     modifier = Modifier
                         .matchParentSize()
-                        .border(1.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.school_img),
