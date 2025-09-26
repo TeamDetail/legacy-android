@@ -130,7 +130,7 @@ class HomeViewModel @Inject constructor(
             uiState = uiState.copy(quizStatus = QuizStatus.LOADING)
             quizRepository.submitAnswer(quizAnswers.toList())
                 .onSuccess { response ->
-                    val wrongIndices = response.data.results
+                    val wrongIndices = response!!.results
                         .mapIndexedNotNull { index, result ->
                             if (!result.isCorrect) index else null
                         }

@@ -3,7 +3,7 @@ package com.legacy.legacy_android.feature.screen.home.model
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
-import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
+import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse

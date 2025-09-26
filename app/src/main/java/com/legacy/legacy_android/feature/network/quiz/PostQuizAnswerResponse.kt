@@ -1,9 +1,4 @@
-package com.legacy.legacy_android.feature.network.quiz.postQuizAnswer
-
-data class PostQuizAnswerWrapper(
-    val data: PostQuizAnswerResponse,
-    val status: Int
-)
+package com.legacy.legacy_android.feature.network.quiz
 
 data class PostQuizAnswerResponse(
     val blockGiven: Boolean,

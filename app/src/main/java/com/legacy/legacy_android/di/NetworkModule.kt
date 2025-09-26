@@ -4,8 +4,6 @@ import com.legacy.legacy_android.feature.network.block.Get.GetBlockService
 import com.legacy.legacy_android.feature.network.block.Post.PostBlockService
 import com.legacy.legacy_android.feature.network.core.remote.RetrofitClient
 import com.legacy.legacy_android.feature.network.login.LoginService
-import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizService
-import com.legacy.legacy_android.feature.network.quiz.postQuizAnswer.PostQuizAnswerService
 import com.legacy.legacy_android.feature.network.ruins.RuinsMapService
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdService
 import com.legacy.legacy_android.feature.network.token.TokenService
@@ -34,6 +32,7 @@ import com.legacy.legacy_android.feature.network.course.search.SearchCourseServi
 import com.legacy.legacy_android.feature.network.fcm.FcmService
 import com.legacy.legacy_android.feature.network.mail.MailService
 import com.legacy.legacy_android.feature.network.market.MarketService
+import com.legacy.legacy_android.feature.network.quiz.QuizService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
 import dagger.Binds
@@ -137,15 +136,9 @@ object NetworkModule {
     }
     @Provides
     @Singleton
-    fun provideGetQuizService(retrofit: Retrofit): GetQuizService{
-        return retrofit.create(GetQuizService::class.java)
+    fun provideQuizService(retrofit: Retrofit): QuizService{
+        return retrofit.create(QuizService::class.java)
     }
-    @Provides
-    @Singleton
-    fun providePostQuizAnswerService(retrofit: Retrofit): PostQuizAnswerService{
-        return retrofit.create(PostQuizAnswerService::class.java)
-    }
-
     @Provides
     @Singleton
     fun provideRankService(retrofit: Retrofit): RankingService{

@@ -16,8 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.White
 
 @Composable
@@ -39,7 +39,7 @@ fun CustomSearchBar(
         },
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
-            .background(Background_Normal, RoundedCornerShape(12.dp)).fillMaxWidth(),
+            .background(Fill_Normal, RoundedCornerShape(12.dp)).fillMaxWidth(),
         textStyle = AppTextStyles.Label.Medium,
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -51,12 +51,12 @@ fun CustomSearchBar(
             }
         ),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Background_Normal,
-            unfocusedContainerColor = Background_Normal,
-            disabledContainerColor = Background_Normal,
-            focusedIndicatorColor = Background_Normal,
-            unfocusedIndicatorColor = Background_Normal,
-            disabledIndicatorColor = Background_Normal,
+            focusedContainerColor = Fill_Normal,
+            unfocusedContainerColor = Fill_Normal,
+            disabledContainerColor = Fill_Normal,
+            focusedIndicatorColor = Fill_Normal,
+            unfocusedIndicatorColor = Fill_Normal,
+            disabledIndicatorColor = Fill_Normal,
             focusedPlaceholderColor = White,
             unfocusedPlaceholderColor = White,
             focusedLeadingIconColor = White,

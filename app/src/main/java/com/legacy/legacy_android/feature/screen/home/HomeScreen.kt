@@ -142,7 +142,7 @@ fun HomeScreen(
                 CameraUpdateFactory.newCameraPosition(
                     CameraPosition.fromLatLngZoom(
                         LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
-                        14f
+                        18f
                     )
                 )
             )
@@ -287,7 +287,7 @@ fun HomeScreen(
                     cameraPositionState.move(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(it.latitude, it.longitude),
-                            15.5f
+                            18f
                         )
                     )
                 }
@@ -309,7 +309,6 @@ fun HomeScreen(
         IconButton(
             onClick = {
                 viewModel.updateSearchStatus(true)
-//                viewModel.uiState = viewModel.uiState.copy(searchRuinValue = null)
             },
             modifier = Modifier
                 .align(Alignment.TopStart)

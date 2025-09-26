@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.feature.screen.login
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+    BackHandler (enabled = true) {}
     val context = LocalContext.current
     Box(modifier = modifier.fillMaxSize()) {
         Image(

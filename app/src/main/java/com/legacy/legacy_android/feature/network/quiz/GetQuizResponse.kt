@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.network.quiz.getquiz
+package com.legacy.legacy_android.feature.network.quiz
 
 data class GetQuizResponse(
     val quizId: Int,

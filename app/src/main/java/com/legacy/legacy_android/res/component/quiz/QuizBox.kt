@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.quiz.getquiz.GetQuizResponse
+import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.res.component.button.CustomButton
