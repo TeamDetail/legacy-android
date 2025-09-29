@@ -34,6 +34,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -64,6 +65,25 @@ import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import kotlinx.coroutines.delay
 
+
+val RUIN_STROKE_COLOR = Primary
+val RUIN_FILL_COLOR = Color(0xFFA980CF).copy(alpha = 0.75f)
+val NORMAL_BLOCK_STROKE_COLOR = Green_Alternative
+val NORMAL_BLOCK_FILL_COLOR = Color(0xFF07C002).copy(alpha = 0.4f)
+val SPECIAL_BLOCK_STROKE_COLOR = Yellow_Netural
+val SPECIAL_BLOCK_FILL_COLOR = Color(0xFFEDB900)
+
+object PolygonCache {
+    private val cache = mutableMapOf<String, List<LatLng>>()
+
+    fun getPoints(lat: Double, lng: Double): List<LatLng> {
+        val key = "${lat}_${lng}"
+        return cache.getOrPut(key) {
+            PolygonStyle.getPolygonPointsFromLocation(lat, lng)
+        }
+    }
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 @SuppressLint("MissingPermission")
@@ -74,11 +94,11 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+
     val mapLoaded = viewModel.isMapLoaded
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
-
     var showWarning by remember { mutableStateOf(false) }
 
     val ruins = viewModel.uiState.visibleRuins
@@ -161,7 +181,7 @@ fun HomeScreen(
                     minLng = bounds.southwest.longitude,
                     maxLng = bounds.northeast.longitude
                 )
-                if (cameraPositionState.position.zoom >= 13.5f) {
+                if (cameraPositionState.position.zoom >= 14f) {
                     showWarning = false
                     viewModel.loadRuinsMap(
                         viewModel.uiState.mapBounds.minLat,
@@ -356,13 +376,11 @@ fun HomeScreen(
             }
         }
 
-        // Google Map
+
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            onMapLoaded = {
-                viewModel.setMapLoaded()
-            },
+            onMapLoaded = { viewModel.setMapLoaded() },
             onMapClick = {
                 viewModel.updateSelectedId(-1)
                 viewModel.fetchRuinsDetail(-1)
@@ -379,37 +397,64 @@ fun HomeScreen(
                 compassEnabled = false
             )
         ) {
-            ruins.forEach { ruin ->
-                Polygon(
-                    zIndex = 55f,
-                    tag = ruin.ruinsId,
-                    points = PolygonStyle.getPolygonPointsFromLocation(
-                        latitude = ruin.latitude,
-                        longitude = ruin.longitude
-                    ),
-                    strokeColor = Primary,
-                    strokeWidth = 1f,
-                    fillColor = Color(0xFFA980CF).copy(alpha = 0.75f),
-                    clickable = true,
-                    onClick = {
-                        viewModel.updateSelectedId(ruin.ruinsId)
-                        viewModel.fetchRuinsDetail(ruin.ruinsId)
-                    }
-                )
+            var shouldRender by remember { mutableStateOf(true) }
+
+            LaunchedEffect(cameraPositionState.isMoving) {
+                shouldRender = !cameraPositionState.isMoving
+                if (!cameraPositionState.isMoving) {
+                    delay(50)
+                    shouldRender = true
+                }
             }
-            blocks.forEach { blocks ->
-                Polygon(
-                    zIndex = 56f,
-                    tag = blocks.blockId,
-                    points = PolygonStyle.getPolygonPointsFromLocation(
-                        latitude = blocks.latitude,
-                        longitude = blocks.longitude
-                    ),
-                    strokeWidth = 1f,
-                    strokeColor = if (blocks.blockType == "NORMAL") Green_Alternative else Yellow_Netural,
-                    fillColor = if(blocks.blockType == "NORMAL"){Color(0xFF07C002).copy(alpha = 0.4f)}
-                    else{Color(0xFFEDB900).copy(alpha = 1f)},
-                )
+
+            val zoom = cameraPositionState.position.zoom
+            if (zoom >= 14f && shouldRender) {
+                val mapBounds = viewModel.uiState.mapBounds
+
+                val visibleRuins = remember(ruins, mapBounds) {
+                    ruins.filter { ruin ->
+                        ruin.latitude in mapBounds.minLat..mapBounds.maxLat &&
+                                ruin.longitude in mapBounds.minLng..mapBounds.maxLng
+                    }
+                }
+
+                val visibleBlocks = remember(blocks, mapBounds) {
+                    blocks.filter { block ->
+                        block.latitude in mapBounds.minLat..mapBounds.maxLat &&
+                                block.longitude in mapBounds.minLng..mapBounds.maxLng
+                    }
+                }
+
+                for (ruin in visibleRuins) {
+                    key(ruin.ruinsId) {
+                        Polygon(
+                            zIndex = 55f,
+                            tag = ruin.ruinsId,
+                            points = PolygonCache.getPoints(ruin.latitude, ruin.longitude),
+                            strokeColor = RUIN_STROKE_COLOR,
+                            strokeWidth = 1f,
+                            fillColor = RUIN_FILL_COLOR,
+                            clickable = true,
+                            onClick = {
+                                viewModel.updateSelectedId(ruin.ruinsId)
+                                viewModel.fetchRuinsDetail(ruin.ruinsId)
+                            }
+                        )
+                    }
+                }
+
+                for (block in visibleBlocks) {
+                    key(block.blockId) {
+                        Polygon(
+                            zIndex = 56f,
+                            tag = block.blockId,
+                            points = PolygonCache.getPoints(block.latitude, block.longitude),
+                            strokeWidth = 1f,
+                            strokeColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_STROKE_COLOR else SPECIAL_BLOCK_STROKE_COLOR,
+                            fillColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_FILL_COLOR else SPECIAL_BLOCK_FILL_COLOR
+                        )
+                    }
+                }
             }
         }
 

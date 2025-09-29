@@ -1,7 +1,6 @@
 package com.legacy.legacy_android.res.component.adventure
 
 import com.google.android.gms.maps.model.LatLng
-import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
 import kotlin.math.floor
 
 data class Block(

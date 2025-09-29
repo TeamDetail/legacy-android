@@ -109,35 +109,47 @@ fun AdventureInfo(
                                 )
 
                                 // ID
-                                if (data?.ruinsId == null) {
-                                    SkeletonBox(
-                                        modifier = Modifier
-                                            .height(24.dp)
-                                            .fillMaxWidth(0.3f)
-                                            .clip(RoundedCornerShape(4.dp)),
-                                    )
-                                } else {
-                                    Text(
-                                        text = "#" + NumberFormat.getNumberInstance(Locale.US)
-                                            .format(data.ruinsId),
-                                        style = AppTextStyles.Caption1.Medium,
-                                        color = Label_Alternative
-                                    )
+                                when {
+                                    data == null -> {
+                                        SkeletonBox(
+                                            modifier = Modifier
+                                                .height(24.dp)
+                                                .fillMaxWidth(0.3f)
+                                                .clip(RoundedCornerShape(4.dp)),
+                                        )
+                                    }
+                                    data.ruinsId == 0 -> {
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                    }
+                                    else -> {
+                                        Text(
+                                            text = "#" + NumberFormat.getNumberInstance(Locale.US)
+                                                .format(data.ruinsId),
+                                            style = AppTextStyles.Caption1.Medium,
+                                            color = Label_Alternative
+                                        )
+                                    }
                                 }
 
                                 // info
-                                if (data?.name.isNullOrBlank()) {
-                                    SkeletonBox(
-                                        modifier = Modifier
-                                            .height(24.dp)
-                                            .fillMaxWidth(0.6f)
-                                            .clip(RoundedCornerShape(4.dp)),
-                                    )
-                                } else {
-                                    Text(
-                                        text = data.name,
-                                        style = AppTextStyles.Headline.bold
-                                    )
+                                when {
+                                    data == null -> {
+                                        SkeletonBox(
+                                            modifier = Modifier
+                                                .height(24.dp)
+                                                .fillMaxWidth(0.6f)
+                                                .clip(RoundedCornerShape(4.dp)),
+                                        )
+                                    }
+                                    data.name.isBlank() -> {
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                    }
+                                    else -> {
+                                        Text(
+                                            text = data.name,
+                                            style = AppTextStyles.Headline.bold
+                                        )
+                                    }
                                 }
 
                                 // 별점 표시
@@ -184,18 +196,23 @@ fun AdventureInfo(
 
                                 // 탐험자 수 / 획득 비율
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    SkeletonBox(
-                                        modifier = Modifier
-                                            .height(40.dp)
-                                            .weight(1f)
-                                            .clip(RoundedCornerShape(4.dp))
-                                    )
-                                    SkeletonBox(
-                                        modifier = Modifier
-                                            .height(40.dp)
-                                            .weight(1f)
-                                            .clip(RoundedCornerShape(4.dp))
-                                    )
+                                    if (data == null) {
+                                        SkeletonBox(
+                                            modifier = Modifier
+                                                .height(40.dp)
+                                                .weight(1f)
+                                                .clip(RoundedCornerShape(4.dp))
+                                        )
+                                        SkeletonBox(
+                                            modifier = Modifier
+                                                .height(40.dp)
+                                                .weight(1f)
+                                                .clip(RoundedCornerShape(4.dp))
+                                        )
+                                    } else {
+                                        Spacer(modifier = Modifier.height(40.dp).weight(1f))
+                                        Spacer(modifier = Modifier.height(40.dp).weight(1f))
+                                    }
                                 }
 
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -216,7 +233,7 @@ fun AdventureInfo(
                                 )
                             }
 
-                                // 이미지
+                            // 이미지
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -224,39 +241,45 @@ fun AdventureInfo(
                                     .clip(RoundedCornerShape(12.dp))
                                     .padding(5.dp)
                             ) {
-                                if (data?.ruinsImage.isNullOrBlank()) {
-                                    SkeletonBox(modifier = Modifier.matchParentSize())
-                                } else {
-                                    AsyncImage(
-                                        model = data.ruinsImage,
-                                        contentDescription = "유적지 이미지",
-                                        modifier = Modifier
-                                            .height(220.dp)
-                                            .border(
-                                                2.dp,
-                                                color = Line_Netural,
-                                                shape = RoundedCornerShape(12.dp)
-                                            )
-                                            .clip(RoundedCornerShape(12.dp)),
-                                        contentScale = ContentScale.Crop,
-                                        error = painterResource(R.drawable.school_img),
-                                        placeholder = painterResource(R.drawable.school_img)
-                                    )
-                                    Box(
-                                        modifier = Modifier
-                                            .matchParentSize()
-                                            .background(Background_Normal.copy(alpha = 0.5f))
-                                            .clip(RoundedCornerShape(12.dp))
-                                    )
-                                    Text(
-                                        modifier = Modifier
-                                            .align(Alignment.BottomStart)
-                                            .padding(12.dp),
-                                        text = data.name,
-                                        fontFamily = bitbit,
-                                        fontSize = 16.sp,
-                                        color = Label
-                                    )
+                                when {
+                                    data == null -> {
+                                        SkeletonBox(modifier = Modifier.matchParentSize())
+                                    }
+                                    data.ruinsImage.isBlank() -> {
+                                        Spacer(modifier = Modifier.matchParentSize())
+                                    }
+                                    else -> {
+                                        AsyncImage(
+                                            model = data.ruinsImage,
+                                            contentDescription = "유적지 이미지",
+                                            modifier = Modifier
+                                                .height(220.dp)
+                                                .border(
+                                                    2.dp,
+                                                    color = Line_Netural,
+                                                    shape = RoundedCornerShape(12.dp)
+                                                )
+                                                .clip(RoundedCornerShape(12.dp)),
+                                            contentScale = ContentScale.Crop,
+                                            error = painterResource(R.drawable.school_img),
+                                            placeholder = painterResource(R.drawable.school_img)
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .matchParentSize()
+                                                .background(Background_Normal.copy(alpha = 0.5f))
+                                                .clip(RoundedCornerShape(12.dp))
+                                        )
+                                        Text(
+                                            modifier = Modifier
+                                                .align(Alignment.BottomStart)
+                                                .padding(12.dp),
+                                            text = data.name,
+                                            fontFamily = bitbit,
+                                            fontSize = 16.sp,
+                                            color = Label
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -264,18 +287,24 @@ fun AdventureInfo(
                         Spacer(modifier = Modifier.height(20.dp))
 
                         // description
-                        if (data?.description.isNullOrBlank()) {
-                            SkeletonBox(
-                                modifier = Modifier
-                                    .height(60.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(4.dp))
-                            )
-                        } else {
-                            Text(
-                                text = data.description,
-                                style = AppTextStyles.Body2.medium
-                            )
+                        when {
+                            data == null -> {
+                                SkeletonBox(
+                                    modifier = Modifier
+                                        .height(60.dp)
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(4.dp))
+                                )
+                            }
+                            data.description.isBlank() -> {
+                                Spacer(modifier = Modifier.height(60.dp))
+                            }
+                            else -> {
+                                Text(
+                                    text = data.description,
+                                    style = AppTextStyles.Body2.medium
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -288,20 +317,26 @@ fun AdventureInfo(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // comments
-                        if (viewModel.uiState.comments.isNullOrEmpty()) {
-                            repeat(2) {
-                                SkeletonBox(
-                                    modifier = Modifier
-                                        .height(184.dp)
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(12.dp))
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
+                        when {
+                            data == null -> {
+                                repeat(2) {
+                                    SkeletonBox(
+                                        modifier = Modifier
+                                            .height(184.dp)
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(12.dp))
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
                             }
-                        } else {
-                            viewModel.uiState.comments?.forEach { it ->
-                                CommentBox(comment = it)
-                                Spacer(modifier = Modifier.height(20.dp))
+                            viewModel.uiState.comments.isNullOrEmpty() -> {
+                                Spacer(modifier = Modifier.height(40.dp))
+                            }
+                            else -> {
+                                viewModel.uiState.comments?.forEach { it ->
+                                    CommentBox(comment = it)
+                                    Spacer(modifier = Modifier.height(20.dp))
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))

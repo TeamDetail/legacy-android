@@ -116,7 +116,7 @@ fun ProfileScreen(
                     SkeletonBox(
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(CircleShape),
+                            .clip(RoundedCornerShape(12.dp)),
                     )
 
                     Column(

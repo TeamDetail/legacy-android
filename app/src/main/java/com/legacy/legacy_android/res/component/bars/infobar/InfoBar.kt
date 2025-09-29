@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
@@ -39,7 +38,6 @@ fun InfoBar(
     val profile by viewModel.profileFlow.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.clearProfile()
         viewModel.fetchProfile()
     }
 
@@ -74,7 +72,7 @@ fun InfoBar(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .clip(CircleShape)
+                                .clip(RoundedCornerShape(8.dp))
                                 .background(Label_Alternative.copy(alpha = 0.3f))
                         )
                         Column(
