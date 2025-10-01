@@ -15,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.achieve.AchieveBox
-import com.legacy.legacy_android.res.component.achieve.AchieveBoxSkeleton
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout

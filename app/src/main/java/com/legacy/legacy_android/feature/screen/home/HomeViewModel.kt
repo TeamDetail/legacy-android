@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.home.*
 import com.legacy.legacy_android.feature.screen.home.helper.RuinsAnimationHelper
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
@@ -53,7 +52,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateCommentRate(rate: Int) {
-      uiState = uiState.copy(commentRate = rate)
+        uiState = uiState.copy(commentRate = rate)
     }
 
     fun updateIsCommenting(isCommenting: Boolean) {
@@ -66,11 +65,11 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun updateQuizStatus(status: QuizStatus){
+    fun updateQuizStatus(status: QuizStatus) {
         uiState = uiState.copy(quizStatus = status)
     }
 
-    fun updateSearchStatus(status: Boolean){
+    fun updateSearchStatus(status: Boolean) {
         uiState = uiState.copy(isSearchRuinOpen = status)
     }
 
@@ -112,7 +111,11 @@ class HomeViewModel @Inject constructor(
 
             uiState = uiState.copy(commentLoading = true)
 
-            ruinsRepository.postComment(currentRuinsDetail.ruinsId, uiState.commentRate, uiState.commentValue)
+            ruinsRepository.postComment(
+                currentRuinsDetail.ruinsId,
+                uiState.commentRate,
+                uiState.commentValue
+            )
                 .onSuccess {
                     updateIsCommenting(false)
                     uiState = uiState.copy(commentValue = "")
@@ -161,7 +164,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchRuins(name: String){
+    fun searchRuins(name: String) {
         viewModelScope.launch {
             uiState = uiState.copy(createSearchRuins = null)
             uiState = uiState.copy(isSearchLoading = true)
@@ -210,20 +213,29 @@ class HomeViewModel @Inject constructor(
     }
 
 
-
     fun loadCommentById(id: Int) {
-      viewModelScope.launch {
-          ruinsRepository.getCommentById(id)
-              .onSuccess { comments -> uiState = uiState.copy(comments = comments) }
-      }
+        viewModelScope.launch {
+            ruinsRepository.getCommentById(id)
+                .onSuccess { comments -> uiState = uiState.copy(comments = comments) }
+        }
     }
 
     fun loadQuiz(ruinsId: Int?) {
         viewModelScope.launch {
             quizRepository.getQuizById(ruinsId)
-                .onSuccess {
-                    quiz -> uiState = uiState.copy(quizData = quiz)
+                .onSuccess { quiz ->
+                    uiState = uiState.copy(quizData = quiz)
                     updateQuizStatus(QuizStatus.WORKING)
+                }
+        }
+    }
+
+    fun loadHint(quizId: Int) {
+        viewModelScope.launch {
+            quizRepository.getQuiz(quizId)
+                .onSuccess { hint ->
+                    uiState = uiState.copy(hintData = hint)
+                    updateHintStatus(HintStatus.HINT)
                 }
         }
     }

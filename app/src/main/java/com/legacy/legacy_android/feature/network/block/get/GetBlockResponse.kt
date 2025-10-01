@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.feature.network.block.Get
+package com.legacy.legacy_android.feature.network.block.get
 
 data class GetBlockResponse (
     val blockId: Int,

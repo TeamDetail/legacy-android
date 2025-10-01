@@ -66,7 +66,7 @@ fun CreditModal(
                         append(
                             text = "${
                                 NumberFormat.getNumberInstance(Locale.US).format(credit)
-                            } 블록"
+                            } 크레딧"
                         )
                         withStyle(style = SpanStyle(color = Yellow_Netural)) {
                             append("이 소모됩니다.")

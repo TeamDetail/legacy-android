@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,7 +44,7 @@ import com.legacy.legacy_android.ui.theme.White
 fun RateModal(
     viewModel: HomeViewModel
 ) {
-    var tempRate by remember { mutableStateOf(viewModel.uiState.commentRate) }
+    var tempRate by remember { mutableIntStateOf(viewModel.uiState.commentRate) }
     val (soundPool, soundId) = RememberClickSound()
 
     Box(
@@ -76,7 +75,7 @@ fun RateModal(
                     style = AppTextStyles.Title2.bold,
                     color = Primary
                 )
-                Row (){
+                Row {
                     for (i in 1..10) {
                         if (i % 2 != 0) {
                             Image(
@@ -107,9 +106,15 @@ fun RateModal(
                     }
                 }
 
-                Text(text = "클릭해서 별점 선택..", color = Label_Alternative, style = AppTextStyles.Caption1.Medium)
+                Text(
+                    text = "클릭해서 별점 선택..",
+                    color = Label_Alternative,
+                    style = AppTextStyles.Caption1.Medium
+                )
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

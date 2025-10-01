@@ -1,4 +1,5 @@
 package com.legacy.legacy_android.res.component.bars
+
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.Image
@@ -22,9 +23,11 @@ import com.legacy.legacy_android.feature.data.user.clearToken
 import com.legacy.legacy_android.ui.theme.Background_Normal
 
 @Composable
-fun OptionBar(navHostController: NavHostController,
-              setIsTabClicked: () -> Unit,
-              onMailClick: (Boolean) -> Unit) {
+fun OptionBar(
+    navHostController: NavHostController,
+    setIsTabClicked: () -> Unit,
+    onMailClick: (Boolean) -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     Box(
@@ -37,11 +40,12 @@ fun OptionBar(navHostController: NavHostController,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val iconModifier = Modifier.size(30.dp)
-            Image(painter = painterResource(R.drawable.friends), contentDescription = null,
+            Image(
+                painter = painterResource(R.drawable.friends), contentDescription = null,
                 modifier = iconModifier.clickable {
                     setIsTabClicked()
-                navHostController.navigate("friend")
-            })
+                    navHostController.navigate("friend")
+                })
             Image(
                 painter = painterResource(R.drawable.mail),
                 contentDescription = null,
@@ -50,7 +54,8 @@ fun OptionBar(navHostController: NavHostController,
                     onMailClick(true)
                 }
             )
-            Image(painter = painterResource(R.drawable.setting), contentDescription = null,
+            Image(
+                painter = painterResource(R.drawable.setting), contentDescription = null,
                 modifier = iconModifier.clickable {
                     setIsTabClicked()
                     navHostController.navigate("setting")

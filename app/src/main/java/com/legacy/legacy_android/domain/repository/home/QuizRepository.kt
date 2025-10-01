@@ -1,7 +1,6 @@
 package com.legacy.legacy_android.domain.repository.home
 
 import android.util.Log
-import com.legacy.legacy_android.feature.data.core.BaseResponse
 import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
 import com.legacy.legacy_android.feature.network.quiz.PostQuizAnswerRequest
 import com.legacy.legacy_android.feature.network.quiz.PostQuizAnswerResponse
@@ -34,6 +33,17 @@ class QuizRepository @Inject constructor(
         }catch(e:Exception){
             Log.d("submitAnswer", "정답 문제 발생")
             Log.d("submitAnswer", e.toString())
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getQuiz(quizId:Int?): Result<String?>{
+        return try{
+            val response = quizService.getQuizHint(quizId)
+            Result.success(response.data)
+        }catch(e:Exception){
+            Log.d("getQuiz", "힌트 문제 발생")
+            Log.d("getQuiz", e.toString())
             Result.failure(e)
         }
     }

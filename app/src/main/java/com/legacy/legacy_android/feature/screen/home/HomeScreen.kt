@@ -288,8 +288,8 @@ fun HomeScreen(
                     name = viewModel.uiState.ruinsDetail?.name,
                 )
                 if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
-                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 3000, onConfirm = {
-                        viewModel.updateHintStatus(HintStatus.HINT)
+                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {
+                        viewModel.loadHint(quizId  = viewModel.uiState.quizData!![0].quizId)
                     }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
                 } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(

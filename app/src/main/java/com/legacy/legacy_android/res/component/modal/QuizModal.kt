@@ -42,12 +42,12 @@ fun QuizModal(
                 .padding(vertical = 27.dp, horizontal = 37.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Column (
+            Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "힌트 : ${hint}",
+                    text = "힌트 : $hint",
                     style = AppTextStyles.Headline.medium,
                     color = Label_Alternative
                 )
@@ -59,10 +59,12 @@ fun QuizModal(
                     .fillMaxWidth()
                     .border(1.dp, color = Blue_Netural, shape = RoundedCornerShape(8.dp))
                     .clickable(
-                        onClick = {onConfirm()
-                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)}
+                        onClick = {
+                            onConfirm()
+                            soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                        }
                     )
-            ){
+            ) {
                 Text(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 8.dp),

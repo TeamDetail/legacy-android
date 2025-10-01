@@ -1,7 +1,6 @@
 package com.legacy.legacy_android.res.component.button
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +28,7 @@ import com.legacy.legacy_android.ui.theme.Label
 
 @Composable
 
-fun CustomDropdown(setSelect: (String) -> Unit, selected: String, options: List<String>){
+fun CustomDropdown(setSelect: (String) -> Unit, selected: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.wrapContentSize()) {

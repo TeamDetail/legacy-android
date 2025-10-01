@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
+import com.legacy.legacy_android.feature.screen.home.model.HintStatus
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.service.RememberClickSound
@@ -155,7 +156,7 @@ fun QuizBox(
                                     Spacer(modifier = Modifier.width(8.dp))
 
                                     CustomButton(
-                                        onClick = { /* TODO: 힌트 기능 */ },
+                                        onClick = { viewModel.updateHintStatus(HintStatus.CREDIT) },
                                         text = "300크레딧으로 힌트 확인",
                                         modifier = Modifier.weight(3f),
                                         borderColor = Blue_Netural,

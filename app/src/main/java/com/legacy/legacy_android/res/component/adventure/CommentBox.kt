@@ -54,7 +54,7 @@ fun CommentBox(comment: RuinsCommentResponse) {
                 )
             }
         }
-        Row(){
+        Row {
             for (i in 1..10) {
                 if (i % 2 != 0) {
                     Image(
@@ -72,6 +72,6 @@ fun CommentBox(comment: RuinsCommentResponse) {
                 }
             }
         }
-        Text(text = comment.comment, style = AppTextStyles.Caption2.regular, )
+        Text(text = comment.comment, style = AppTextStyles.Caption2.regular)
     }
 }

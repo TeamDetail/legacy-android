@@ -55,12 +55,16 @@ fun RankingBar(
             modifier = Modifier
                 .background(color = Background_Normal, shape = RoundedCornerShape(20.dp))
                 .border(
-                    width = 1.dp, color = if (rank == 1) {
-                        Primary
-                    } else if (rank == 2) {
-                        Red_Netural
-                    } else {
-                        Blue_Netural
+                    width = 1.dp, color = when (rank) {
+                        1 -> {
+                            Primary
+                        }
+                        2 -> {
+                            Red_Netural
+                        }
+                        else -> {
+                            Blue_Netural
+                        }
                     }, shape = RoundedCornerShape(20.dp)
                 )
 
@@ -133,12 +137,16 @@ fun RankingBar(
                         ) {
                             Text(
                                 text = "${rank}위",
-                                color = if (rank == 1) {
-                                    Primary
-                                } else if (rank == 2) {
-                                    Red_Netural
-                                } else {
-                                    Blue_Netural
+                                color = when (rank) {
+                                    1 -> {
+                                        Primary
+                                    }
+                                    2 -> {
+                                        Red_Netural
+                                    }
+                                    else -> {
+                                        Blue_Netural
+                                    }
                                 },
                                 fontFamily = pretendard,
                                 fontWeight = FontWeight.Bold,

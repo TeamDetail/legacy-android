@@ -40,7 +40,7 @@ import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Netural
 
 @Composable
-fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHostController: NavHostController,) {
+fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHostController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

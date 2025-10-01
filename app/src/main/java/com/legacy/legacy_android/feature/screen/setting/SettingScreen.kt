@@ -15,14 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.res.component.button.BackButton
-import com.legacy.legacy_android.res.component.friend.FriendBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 
 @Composable

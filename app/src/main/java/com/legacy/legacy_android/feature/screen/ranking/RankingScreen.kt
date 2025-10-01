@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.layout.CommonScreenLayout
 import com.legacy.legacy_android.res.component.ranking.RankingBar
@@ -65,7 +64,7 @@ fun RankingScreen(
             }
             // 여기서부터 랭킹바 Wrapper
             Row(
-                horizontalArrangement = Arrangement.spacedBy(-6.dp),
+                horizontalArrangement = Arrangement.spacedBy((-6).dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -100,7 +99,7 @@ fun RankingScreen(
                     )
                 }
             }
-            Column(modifier.offset(0.dp, -120.dp)){
+            Column(modifier.offset(0.dp, (-120).dp)){
                 RankingTable(
                     modifier,
                     rankingData = viewModel.uiState.rankingData ?: emptyList()

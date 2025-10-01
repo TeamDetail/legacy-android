@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+@Suppress("DEPRECATION")
 @HiltViewModel
 class LocationViewModel @Inject constructor(
     @ApplicationContext private val context: Context
@@ -27,10 +28,8 @@ class LocationViewModel @Inject constructor(
     val locationFlow: StateFlow<LatLng?> = _locationFlow.asStateFlow()
 
     private val _isLocationPermissionGranted = MutableStateFlow(false)
-    val isLocationPermissionGranted: StateFlow<Boolean> = _isLocationPermissionGranted.asStateFlow()
 
     private val _isLocationServiceRunning = MutableStateFlow(false)
-    val isLocationServiceRunning: StateFlow<Boolean> = _isLocationServiceRunning.asStateFlow()
 
     private var locationCallback: LocationCallback? = null
 
@@ -93,7 +92,7 @@ class LocationViewModel @Inject constructor(
             _isLocationServiceRunning.value = true
             getLastKnownLocation()
 
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             _isLocationPermissionGranted.value = false
             _isLocationServiceRunning.value = false
         }
@@ -118,19 +117,8 @@ class LocationViewModel @Inject constructor(
                     _locationFlow.value = LatLng(it.latitude, it.longitude)
                 }
             }
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             _isLocationPermissionGranted.value = false
-        }
-    }
-
-    fun updatePermissionStatus() {
-        val wasGranted = _isLocationPermissionGranted.value
-        checkLocationPermission()
-
-        if (!wasGranted && _isLocationPermissionGranted.value) {
-            startLocationUpdates()
-        } else if (wasGranted && !_isLocationPermissionGranted.value) {
-            stopLocationUpdates()
         }
     }
 
@@ -155,7 +143,7 @@ class LocationViewModel @Inject constructor(
             }.addOnFailureListener {
                 callback(null)
             }
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             _isLocationPermissionGranted.value = false
             callback(null)
         }

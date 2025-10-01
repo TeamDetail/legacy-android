@@ -14,4 +14,6 @@ data class FriendUiState (
     val friendCode: String = "",
     val searchFriend: MutableState<String> = mutableStateOf(""),
     val requestError: Boolean? = null,
+    val setDeleteFriend: Boolean = false,
+    val currentFriend: FriendResponse? = null
 )

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.friend.FriendRepository
+import com.legacy.legacy_android.feature.network.friend.FriendResponse
 import com.legacy.legacy_android.feature.screen.friend.model.FriendUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -34,7 +35,6 @@ class FriendViewModel @Inject constructor(
     fun sendFriendRequest() {
         viewModelScope.launch {
             if (uiState.friendCode.isBlank()) return@launch
-
             val result = friendRepository.sendRequest(uiState.friendCode)
             result.onSuccess {
                 uiState = uiState.copy(
@@ -122,5 +122,23 @@ class FriendViewModel @Inject constructor(
                 uiState = uiState.copy(receiveRequestList = emptyList())
             }
         }
+    }
+
+    fun deleteFriend(friendId: Long){
+        viewModelScope.launch {
+            val result = friendRepository.deleteFriend(friendId)
+            result.onSuccess {
+                fetchFriendList()
+            }.onFailure {
+            }
+        }
+    }
+
+    fun setDeleteFriend(value: Boolean){
+        uiState = uiState.copy(setDeleteFriend = value)
+    }
+
+    fun setCurrentFriend(value: FriendResponse){
+        uiState = uiState.copy(currentFriend = value)
     }
 }

@@ -16,4 +16,9 @@ interface QuizService {
     suspend fun getQuizById(
         @Path("ruinsId") ruinsId : Int?
     ): BaseResponse<List<GetQuizResponse>>
+
+    @GET("/quiz/hint/{quizId}")
+    suspend fun getQuizHint(
+        @Path("quizId") quizId : Int?
+    ): BaseResponse<String>
 }

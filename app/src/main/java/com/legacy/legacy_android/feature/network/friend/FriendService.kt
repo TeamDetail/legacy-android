@@ -27,4 +27,6 @@ interface FriendService {
 
     @POST("/friends/request/{requestId}/accept")
     suspend fun acceptRequest(@Path("requestId") requestId: Long): BaseResponse<String>
+    @DELETE("/friends/{friendId}")
+    suspend fun deleteFriend(@Path("friendId") friendId: Long): BaseResponse<String>
 }

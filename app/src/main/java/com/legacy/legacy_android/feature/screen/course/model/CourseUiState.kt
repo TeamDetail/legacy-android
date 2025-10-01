@@ -6,7 +6,6 @@ import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 
-enum class CourseStatus { ALL, INFO}
 
 data class CourseUiState(
     // dropdown value
@@ -18,7 +17,6 @@ data class CourseUiState(
     val popularCourse: List<SearchCourseResponse> = emptyList(),
     val recentCourse: List<SearchCourseResponse> = emptyList(),
     val eventCourse: List<SearchCourseResponse> = emptyList(),
-    val courseStatus: CourseStatus = CourseStatus.ALL,
     val currentCourse: AllCourseResponse? = null,
     val searchCourse: List<SearchCourseResponse> = emptyList(),
     val searchCourseName: String ="",

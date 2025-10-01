@@ -3,7 +3,6 @@ package com.legacy.legacy_android.res.component.ranking
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -31,11 +30,11 @@ fun RankingTable(
                 if (index > 2) {
                     RankingRowBar(
                         rank = index,
-                        blocks = item?.allBlocks ?: 0,
-                        level = item?.level ?: 0,
-                        name = item?.nickname ?: "",
-                        title = item?.title?.name ?: ""
-                    );
+                        blocks = item.allBlocks,
+                        level = item.level,
+                        name = item.nickname,
+                        title = item.title.name
+                    )
                 }
             }
         }

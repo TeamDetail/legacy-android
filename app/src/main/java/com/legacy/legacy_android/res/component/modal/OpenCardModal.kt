@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.legacy.legacy_android.res.component.modal
 
 import androidx.compose.foundation.background
@@ -101,7 +103,7 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                                 .clip(RoundedCornerShape(20.dp))
                                 .border(1.dp, Line_Netural, RoundedCornerShape(12.dp)),
                             contentScale = ContentScale.Fit,
-                            error = painterResource(com.legacy.legacy_android.R.drawable.school_img),
+                            error = painterResource(R.drawable.school_img),
                             placeholder = painterResource(R.drawable.school_img)
                         )
                         Box(

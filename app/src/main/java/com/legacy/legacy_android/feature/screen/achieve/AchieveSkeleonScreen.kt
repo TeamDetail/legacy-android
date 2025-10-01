@@ -1,4 +1,4 @@
-package com.legacy.legacy_android.res.component.achieve
+package com.legacy.legacy_android.feature.screen.achieve
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

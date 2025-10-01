@@ -84,7 +84,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
     }
 
     private suspend fun ensureEmailPermission(context: Context) {
-        suspendCancellableCoroutine<Unit> { continuation ->
+        suspendCancellableCoroutine { continuation ->
             UserApiClient.instance.me { user, error ->
                 if (error != null) {
                     Log.e(TAG, "사용자 정보 요청 실패", error)

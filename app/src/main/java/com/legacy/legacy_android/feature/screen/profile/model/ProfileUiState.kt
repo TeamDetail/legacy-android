@@ -3,7 +3,6 @@ package com.legacy.legacy_android.feature.screen.profile.model
 import com.legacy.legacy_android.feature.network.card.MyCardResponse
 import com.legacy.legacy_android.feature.network.ruins.id.Cards
 import com.legacy.legacy_android.feature.network.user.InventoryItem
-import com.legacy.legacy_android.feature.network.user.InventoryResponse
 
 data class ProfileUiState(
     val profileStatus: Int = 0,

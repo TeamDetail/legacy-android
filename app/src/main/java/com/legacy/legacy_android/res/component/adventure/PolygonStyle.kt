@@ -3,19 +3,13 @@ package com.legacy.legacy_android.res.component.adventure
 import com.google.android.gms.maps.model.LatLng
 import kotlin.math.floor
 
-data class Block(
-    val blockId: String,
-    val latitude: Double,
-    val longitude: Double
-)
-
 object PolygonStyle {
 
     // 상수
-    private val latPerPixel = 0.000724
-    private val lonPerPixel = 0.000909
-    private val defaultStrokeWidthToLatitude = 0.00000905
-    private val defaultStrokeWidthToLongitude = 0.0000113625
+    private const val latPerPixel = 0.000724
+    private const val lonPerPixel = 0.000909
+    private const val defaultStrokeWidthToLatitude = 0.00000905
+    private const val defaultStrokeWidthToLongitude = 0.0000113625
     private val koreaTopLeftCorner = LatLng(43.00268544185012, 124.27407423789127)
 
     // 격자에 맞춘 TopLeft 좌표 반환

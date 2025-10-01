@@ -107,4 +107,14 @@ class FriendRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun deleteFriend(friendId: Long): Result<Unit> {
+        return try {
+            friendService.deleteFriend(friendId)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("FriendRepository", "친구 삭제 실패: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
 }

@@ -7,11 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.legacy.legacy_android.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,9 +42,5 @@ class InfoBarViewModel @Inject constructor(
                 Log.e("InfoBarViewModel", "프로필 로드 실패", e)
             }
         }
-    }
-
-    fun clearProfile() {
-        userRepository.clearProfile()
     }
 }

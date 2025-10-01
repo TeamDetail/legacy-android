@@ -6,5 +6,6 @@ data class FriendResponse(
     val profileImage: String,
     val friendCode: String,
     val isKakaoFriend: Boolean,
-    val isMutualFriend: Boolean
+    val isMutualFriend: Boolean,
+    val level: Int
 )

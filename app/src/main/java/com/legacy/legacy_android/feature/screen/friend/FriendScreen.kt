@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,13 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.network.Nav
-import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.res.component.button.BackButton
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.friend.FriendBar
 import com.legacy.legacy_android.res.component.friend.RequestFriendBar
 import com.legacy.legacy_android.res.component.modal.AlertModal
+import com.legacy.legacy_android.res.component.modal.FriendModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Background_Normal
@@ -73,13 +75,29 @@ fun FriendScreen(
     val selectedId = Nav.getNavStatus()
     LaunchedEffect(Unit) {
         viewModel.changeFriendCode("")
+        viewModel.fetchMyCode()
+        viewModel.fetchFriendList()
+        viewModel.fetchSentRequestList()
+        viewModel.fetchRequestList()
     }
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Background_Alternative)
     ) {
-        if (viewModel.uiState.requestError != null){
+        if (viewModel.uiState.setDeleteFriend) {
+            FriendModal(
+                friendName = viewModel.uiState.currentFriend?.nickname ?: "",
+                onConfirm = {
+                    viewModel.deleteFriend(viewModel.uiState.currentFriend!!.userId)
+                    viewModel.setDeleteFriend(false)
+                },
+                onCancel = {
+                    viewModel.setDeleteFriend(false)
+                }
+            )
+        }
+        if (viewModel.uiState.requestError != null) {
             AlertModal(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -130,24 +148,43 @@ fun FriendScreen(
 
 @Composable
 fun ListScreen(viewModel: FriendViewModel) {
-    LaunchedEffect(Unit) {
-        viewModel.fetchFriendList()
-    }
     if (viewModel.uiState.friendList.isEmpty()) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text("친구가 없습니다.", style = AppTextStyles.Heading2.bold, color = Label)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "친구가 없습니다!",
+                    style = AppTextStyles.Heading1.bold,
+                    color = Label
+                )
+                CustomButton(
+                    text = "추가하러 가기",
+                    onClick = { viewModel.changeFriendStatus(2) },
+                    textColor = Label_Netural,
+                    borderColor = Line_Alternative,
+                    modifier = Modifier.width(160.dp)
+                )
+            }
         }
     } else {
         Spacer(modifier = Modifier.height(4.dp))
-        viewModel.uiState.friendList.forEach { it ->
-            FriendBar(
-                data = it
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            viewModel.uiState.friendList.forEach { friend ->
+                FriendBar(
+                    data = friend,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
-
 @Composable
 fun WaitingScreen(viewModel: FriendViewModel) {
     LaunchedEffect(Unit) {
@@ -268,9 +305,6 @@ fun WaitingScreen(viewModel: FriendViewModel) {
 @Composable
 fun AddFriendScreen(viewModel: FriendViewModel) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        viewModel.fetchMyCode()
-    }
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -355,7 +389,10 @@ fun AddFriendScreen(viewModel: FriendViewModel) {
                 )
             )
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Line_Alternative))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Line_Alternative))
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()

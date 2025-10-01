@@ -109,7 +109,7 @@ fun RuinsBox(
                 )
             } else {
                 AsyncImage(
-                    model = data?.ruinsImage,
+                    model = data.ruinsImage,
                     contentDescription = "유적지 이미지",
                     modifier = Modifier
                         .matchParentSize()
@@ -129,7 +129,7 @@ fun RuinsBox(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = data?.name ?: "",
+                    text = data.name,
                     fontFamily = bitbit,
                     fontSize = 16.sp,
                     color = Label
