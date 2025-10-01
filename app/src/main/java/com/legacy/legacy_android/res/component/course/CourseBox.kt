@@ -27,15 +27,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.course.all.AllCourseResponse
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
-import com.legacy.legacy_android.feature.screen.course.model.CourseStatus
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Green_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Assitive
 import com.legacy.legacy_android.ui.theme.Label_Netural
@@ -147,7 +145,7 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                             Text(
                                 text = course.clearCount.toString(),
                                 style = AppTextStyles.Label.Medium,
-                                color = if(course.clear){Green_Netural}else{Label_Assitive}
+                                color = if(course.clear){Blue_Netural}else{Label_Assitive}
                             )
                         }
                     }
@@ -168,7 +166,7 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .fillMaxWidth(((course.clearRuinsCount).toFloat() / (course.maxRuinsCount)))
-                                    .background(Green_Netural)
+                                    .background(Blue_Netural)
                             )
                         }
                         Text(

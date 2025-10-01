@@ -17,6 +17,7 @@ import javax.inject.Singleton
 import android.content.Context
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.achieve.AchievementService
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
@@ -30,6 +31,7 @@ import com.legacy.legacy_android.feature.network.course.all.PopularCourseService
 import com.legacy.legacy_android.feature.network.course.all.RecentCourseService
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseService
 import com.legacy.legacy_android.feature.network.fcm.FcmService
+import com.legacy.legacy_android.feature.network.friend.FriendService
 import com.legacy.legacy_android.feature.network.mail.MailService
 import com.legacy.legacy_android.feature.network.market.MarketService
 import com.legacy.legacy_android.feature.network.quiz.QuizService
@@ -178,8 +180,11 @@ object NetworkModule {
         return retrofit.create(MarketService::class.java)
     }
     @Provides
-    fun provideMarketRepository(service: MarketService): MarketRepository {
-        return MarketRepository(service)
+    fun provideMarketRepository(
+        marketService: MarketService,
+        userRepository: UserRepository
+    ): MarketRepository {
+        return MarketRepository(marketService, userRepository)
     }
 
     @Provides
@@ -201,5 +206,10 @@ object NetworkModule {
     @Singleton
     fun provideAchievementService(retrofit: Retrofit): AchievementService{
         return retrofit.create(AchievementService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFriendService(retrofit: Retrofit): FriendService{
+        return retrofit.create(FriendService::class.java)
     }
 }

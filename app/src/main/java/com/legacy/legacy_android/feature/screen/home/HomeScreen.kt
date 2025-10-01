@@ -34,7 +34,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -397,18 +396,10 @@ fun HomeScreen(
                 compassEnabled = false
             )
         ) {
-            var shouldRender by remember { mutableStateOf(true) }
 
-            LaunchedEffect(cameraPositionState.isMoving) {
-                shouldRender = !cameraPositionState.isMoving
-                if (!cameraPositionState.isMoving) {
-                    delay(50)
-                    shouldRender = true
-                }
-            }
 
             val zoom = cameraPositionState.position.zoom
-            if (zoom >= 14f && shouldRender) {
+            if (zoom >= 14f) {
                 val mapBounds = viewModel.uiState.mapBounds
 
                 val visibleRuins = remember(ruins, mapBounds) {

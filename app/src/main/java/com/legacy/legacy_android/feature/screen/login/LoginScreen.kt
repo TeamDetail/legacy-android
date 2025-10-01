@@ -105,7 +105,7 @@ fun LoginScreen(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (viewModel.loadingState.value != true) {
+                    if (!viewModel.loadingState.value) {
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()

@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.screen.market.MarketViewModel
-import com.legacy.legacy_android.res.component.marketItem.MarketInfo
 import com.legacy.legacy_android.res.component.modal.MarketModal
 
 @Composable
@@ -26,12 +25,11 @@ fun MarketLayout(
                 credit = viewModel.uiState.currentCardPack?.price,
                 onConfirm = {
                     viewModel.uiState.currentCardPack?.cardpackId?.let { id ->
-                        viewModel.buyCardPack(id)
+                        viewModel.buyCardPack(id, viewModel.uiState.currentCardPack!!.price)
                         viewModel.setModal()
                     }
                 },
                 onCancel = {viewModel.setModal()},
-                modifier = Modifier.fillMaxSize()
             )
         }
     }

@@ -28,7 +28,6 @@ class CourseRepository @Inject constructor(
     private val searchCourseService: SearchCourseService,
     private val createCourseService: CreateCourseService,
     private val courseByIdService: CourseByIdService,
-    private val userRepository: UserRepository
 ) {
     suspend fun getAllCourse(): Result<List<SearchCourseResponse>> {
         return try {

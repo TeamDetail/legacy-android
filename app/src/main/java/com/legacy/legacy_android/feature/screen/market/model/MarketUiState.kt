@@ -7,4 +7,5 @@ data class MarketUiState(
     val packs: List<CardPack>? = null,
     val isModalOpen: Boolean = false,
     val currentCardPack: CardPack? = null,
+    val successBuy: Boolean? = null,
 )

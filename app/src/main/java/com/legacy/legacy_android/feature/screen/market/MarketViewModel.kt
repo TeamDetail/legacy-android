@@ -45,6 +45,10 @@ class MarketViewModel @Inject constructor(
         uiState = uiState.copy(packStatus = status)
     }
 
+    fun changeSuccessBuy(success: Boolean?) {
+        uiState = uiState.copy(successBuy = success)
+    }
+
     fun fetchMarketData() {
         viewModelScope.launch {
             val result = marketRepository.getMarketData()
@@ -56,11 +60,18 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    fun buyCardPack(id: Int) {
+    fun buyCardPack(id: Int, price: Int) {
         viewModelScope.launch {
-            marketRepository.buyCardPack(id)
-            userRepository.fetchProfile(force = true)
-            fetchMarketData()
+            changeSuccessBuy(null)
+            val result = marketRepository.buyCardPack(id, price)
+
+            changeSuccessBuy(result.isSuccess)
+            if (result.isSuccess) {
+                launch { userRepository.fetchProfile(force = true) }
+                launch { fetchMarketData() }
+            }
+            delay(3000)
+            changeSuccessBuy(null)
         }
     }
 

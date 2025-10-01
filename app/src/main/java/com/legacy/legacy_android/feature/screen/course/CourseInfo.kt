@@ -35,8 +35,8 @@ import com.legacy.legacy_android.res.component.course.CourseRuins
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Green_Netural
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Assitive
 import com.legacy.legacy_android.ui.theme.Label_Netural
@@ -191,7 +191,7 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                                     Text(
                                         text = it.clearCount.toString(),
                                         style = AppTextStyles.Body2.medium,
-                                        color = if (it.clear) Green_Netural else Label_Assitive
+                                        color = if (it.clear) Blue_Netural else Label_Assitive
                                     )
                                 }
                             }
@@ -210,7 +210,7 @@ fun CourseInfo(modifier: Modifier,  viewModel: CourseViewModel, navHostControlle
                                         modifier = Modifier
                                             .fillMaxHeight()
                                             .fillMaxWidth(((course.clearRuinsCount).toFloat() / (course.maxRuinsCount)))
-                                            .background(Green_Netural)
+                                            .background(Blue_Netural)
                                     )
                                 }
                                 Text(

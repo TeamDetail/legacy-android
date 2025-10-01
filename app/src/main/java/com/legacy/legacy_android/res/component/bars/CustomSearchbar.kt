@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.White
 
 @Composable
@@ -30,7 +32,7 @@ fun CustomSearchBar(
     TextField(
         value = query.value,
         onValueChange = { query.value = it },
-        placeholder = { Text(placeholder) },
+        placeholder = { Text(placeholder, color = Label_Alternative)  },
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.search),
@@ -57,10 +59,10 @@ fun CustomSearchBar(
             focusedIndicatorColor = Fill_Normal,
             unfocusedIndicatorColor = Fill_Normal,
             disabledIndicatorColor = Fill_Normal,
-            focusedPlaceholderColor = White,
-            unfocusedPlaceholderColor = White,
-            focusedLeadingIconColor = White,
-            unfocusedLeadingIconColor = White,
+            focusedPlaceholderColor = Label,
+            unfocusedPlaceholderColor = Label,
+            focusedLeadingIconColor = Label,
+            unfocusedLeadingIconColor = Label,
         )
     )
 }

@@ -128,16 +128,16 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                         .background(shape = RoundedCornerShape(12.dp), color = Background_Netural),
                     value = viewModel.uiState.createCourseName,
                     onValueChange = { viewModel.setCreateCourseName(it) },
-                    placeholder = { Text(text = "코스 이름을 입력해주세요..", color = White) },
+                    placeholder = { Text(text = "코스 이름을 입력해주세요..", color = Label_Alternative) },
                     colors = TextFieldDefaults.colors(
-                        focusedTextColor = White,
-                        unfocusedTextColor = White,
-                        focusedContainerColor = Background_Normal,
-                        unfocusedContainerColor = Background_Normal,
-                        disabledContainerColor = Background_Normal,
-                        focusedIndicatorColor = Background_Normal,
-                        unfocusedIndicatorColor = Background_Normal,
-                        disabledIndicatorColor = Background_Normal
+                        focusedTextColor = Label,
+                        unfocusedTextColor = Label,
+                        focusedContainerColor = Background_Netural,
+                        unfocusedContainerColor = Background_Netural,
+                        disabledContainerColor = Background_Netural,
+                        focusedIndicatorColor = Background_Netural,
+                        unfocusedIndicatorColor = Background_Netural,
+                        disabledIndicatorColor = Background_Netural
                     )
                 )
                 // 해시태그 설정

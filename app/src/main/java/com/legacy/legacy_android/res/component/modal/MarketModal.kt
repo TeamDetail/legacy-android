@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,18 +22,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.legacy.legacy_android.feature.screen.market.MarketViewModel
 import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Assitive
 import com.legacy.legacy_android.ui.theme.Label_Netural
-import com.legacy.legacy_android.ui.theme.Purple_Netural
 import com.legacy.legacy_android.ui.theme.Purple_Normal
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import java.text.NumberFormat
@@ -45,7 +40,6 @@ fun MarketModal(
     credit: Int?,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val (soundPool, soundId) = RememberClickSound()
 
@@ -63,7 +57,8 @@ fun MarketModal(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .background(Background_Normal, shape = RoundedCornerShape(20.dp))
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.8f)
+                .padding(horizontal = 28.dp)
         ) {
             Column(
                 modifier = Modifier

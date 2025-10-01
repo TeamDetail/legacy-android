@@ -180,7 +180,7 @@ fun ProfileScreen(
                             style = AppTextStyles.Body1.bold
                         )
                         profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
-                            TitleBar(title = it)
+                            TitleBar(title = it, modifier = Modifier.height(20.dp))
                         }
                     }
                 }
@@ -432,7 +432,11 @@ fun InventoryScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     if (index < inventory.size) {
-                        Text(text = inventory[index].itemName)
+                        Image(
+                            painter = painterResource(R.drawable.cardpack),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))
+                        )
                     }
                 }
             }

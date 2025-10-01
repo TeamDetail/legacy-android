@@ -6,10 +6,20 @@ import com.legacy.legacy_android.feature.network.market.MarketResponse
 import com.legacy.legacy_android.feature.network.market.MarketService
 import javax.inject.Singleton
 import android.util.Log
+import com.legacy.legacy_android.domain.repository.UserRepository
+import com.legacy.legacy_android.feature.network.user.UserData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
 @Singleton
 class MarketRepository(
-    private val marketService: MarketService
+    private val marketService: MarketService,
+    private val userRepository: UserRepository
 ) {
+    val profile: StateFlow<UserData?>
+        get() = userRepository.profile
+
     suspend fun getMarketData(): Result<List<CardPack>?> {
         return try {
             val response: BaseResponse<MarketResponse> = marketService.getMarket()
@@ -21,15 +31,20 @@ class MarketRepository(
     }
 
 
-    suspend fun buyCardPack(id: Int): Result<BaseResponse<Nothing>> {
+    suspend fun buyCardPack(id: Int, price: Int): Result<BaseResponse<Nothing>> {
         return try {
-            val response: BaseResponse<Nothing> = marketService.buyCardPack(id)
-            Log.d("Market", "카드팩 구매 성공: $response")
-            Result.success(response)
+            val currentProfile = profile.value
+            if (currentProfile == null) {
+                return Result.failure(Exception("프로필 정보를 불러올 수 없습니다"))
+            }
+            if (currentProfile.credit >= price) {
+                val response: BaseResponse<Nothing> = marketService.buyCardPack(id)
+                Result.success(response)
+            } else {
+                Result.failure(Exception("크레딧이 부족합니다"))
+            }
         } catch (e: Exception) {
-            Log.e("Market", "카드팩 구매 실패 ${id.toString()}", e)
             Result.failure(e)
         }
     }
-
 }

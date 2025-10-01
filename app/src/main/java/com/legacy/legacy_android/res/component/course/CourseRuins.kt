@@ -34,9 +34,9 @@ import com.legacy.legacy_android.feature.network.ruins.id.CourseRuinsResponse
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Alternative
 import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Green_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Alternative
@@ -60,7 +60,7 @@ fun CourseRuins(
                 modifier = Modifier
                     .size(40.dp)
                     .background(
-                        if (data.clear) Green_Netural else Fill_Normal,
+                        if (data.clear) Blue_Netural else Fill_Normal,
                         shape = RoundedCornerShape(100.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -85,7 +85,7 @@ fun CourseRuins(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                         .fillMaxWidth()
                         .height(24.dp)
-                        .background(Green_Netural, shape = RoundedCornerShape(12.dp))
+                        .background(Blue_Netural, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         text = if (index >= 0) (index + 1).toString() else "",

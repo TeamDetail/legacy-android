@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.res.component.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,8 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Netural
@@ -42,9 +46,10 @@ fun InventoryInfo(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
-                modifier = Modifier.size(120.dp)
-                    .background(color = Fill_Normal, shape = RoundedCornerShape(12.dp))
+            Image(
+                painter = painterResource(R.drawable.cardpack),
+                contentDescription = null,
+                modifier = Modifier.size(120.dp).clip(RoundedCornerShape(8.dp))
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
