@@ -48,7 +48,37 @@ class CourseViewModel @Inject constructor(
 
     fun setCreateDescription(description: String) {
         uiState = uiState.copy(createCourseDescription = description)
+    }
 
+    fun getFilteredCourses(): List<SearchCourseResponse> {
+        val courses = uiState.searchCourse.ifEmpty {
+            uiState.allCourse
+        }
+        return courses
+            .filter { course ->
+                when (uiState.selectedEvent) {
+                    "전체" -> true
+                    "이벤트" -> course.eventId != 0
+                    "일반" -> course.eventId == 0
+                    else -> true
+                }
+            }
+            .filter { course ->
+                when (uiState.selectedStatus) {
+                    "전체" -> true
+                    "클리어" -> course.clear
+                    "미클리어" -> !course.clear
+                    else -> true
+                }
+            }
+            .let { filteredList ->
+                when (uiState.selectedNew) {
+                    "최신" -> filteredList
+                    "인기순" -> filteredList.sortedByDescending { it.heartCount }
+                    "클리어순" -> filteredList.sortedByDescending { it.clearCount }
+                    else -> filteredList
+                }
+            }
     }
 
     fun filterRuinElem(item: RuinsIdResponse) {

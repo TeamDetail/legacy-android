@@ -304,16 +304,36 @@ class MainActivity : AppCompatActivity() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleObserver)
     }
 
+    private fun clearTokens() {
+        getSharedPreferences("auth", Context.MODE_PRIVATE)
+            .edit()
+            .remove("access_token")
+            .remove("refresh_token")
+            .apply()
+    }
+    
     private fun determineStartDestination(): String {
-        val refreshToken = getRefToken(this)
         val accessToken = getAccToken(this)
+        val refreshToken = getRefToken(this)
+
         return when {
-            isTokenValid(accessToken) -> ScreenNavigate.HOME.name
-            isTokenValid(refreshToken) -> ScreenNavigate.HOME.name
-            else -> ScreenNavigate.LOGIN.name
+            isTokenValid(accessToken) -> {
+                Log.d("MainActivity", "유효한 accessToken 존재")
+                ScreenNavigate.HOME.name
+            }
+
+            isTokenValid(refreshToken) -> {
+                Log.d("MainActivity", "refreshToken으로 토큰 갱신 필요")
+                ScreenNavigate.HOME.name
+            }
+
+            else -> {
+                Log.d("MainActivity", "유효한 토큰 없음 - 로그인 필요")
+                clearTokens()
+                ScreenNavigate.LOGIN.name
+            }
         }
     }
-
     private fun handleDestinationChange(route: String?) {
         val targetBgm = when (route) {
             ScreenNavigate.LOGIN.name -> BgmType.LOGIN

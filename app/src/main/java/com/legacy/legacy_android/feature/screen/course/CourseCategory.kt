@@ -23,11 +23,11 @@ import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 
 @Composable
-fun CourseCategory(modifier: Modifier,
-                   viewModel: CourseViewModel = hiltViewModel(),
-                   navHostController: NavHostController
+fun CourseCategory(
+    modifier: Modifier,
+    viewModel: CourseViewModel = hiltViewModel(),
+    navHostController: NavHostController
 ) {
-
     LaunchedEffect(Unit) {
         viewModel.loadEventCourses()
         viewModel.loadPopularCourses()

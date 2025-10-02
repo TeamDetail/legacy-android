@@ -37,85 +37,88 @@ fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
     navHostController: NavHostController,
 ) {
-
     LaunchedEffect(Unit) {
         viewModel.loadAllCourses()
     }
+
+
+    val displayedCourses = viewModel.uiState.displayedCourses
     val query = remember { mutableStateOf("") }
 
-            CourseScreenLayout(
-                modifier = modifier,
-                navHostController = navHostController,
+    CourseScreenLayout(
+        modifier = modifier,
+        navHostController = navHostController,
+    ) {
+        TitleBox(title = "코스", image = R.drawable.course)
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                    .fillMaxWidth()
+                    .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
+                    .clickable { navHostController.navigate("course_category") }
             ) {
-                TitleBox(title = "코스", image = R.drawable.course)
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // 탑바
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-                            .fillMaxWidth()
-                            .border(
-                                1.dp,
-                                color = Line_Alternative,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clickable {
-                                navHostController.navigate("course_category")
-                            }
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            text = "추천 페이지로 보기",
-                            color = Label,
-                            style = AppTextStyles.Body1.bold
-                        )
-                    }
-                    CustomSearchBar(
-                        query = query,
-                        placeholder = "코스 이름으로 검색",
-                        onSearch = { keyword ->
-                            println("검색 실행: $keyword")
-                            viewModel.searchCourses(query.value)
-                        },
-                        modifier = modifier
-                    )
-                    Row (
-                        modifier = modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        CustomDropdown(
-                            options = viewModel.eventList,
-                            selected = viewModel.uiState.selectedEvent,
-                            setSelect = { viewModel.setSelectedEventList(it) }
-                        )
-                        Row (
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ){
-                            CustomDropdown(
-                                options = viewModel.newList,
-                                selected = viewModel.uiState.selectedNew,
-                                setSelect = { viewModel.setSelectedNewList(it) }
-                            )
-                            CustomDropdown(
-                                options = viewModel.statusList,
-                                selected = viewModel.uiState.selectedStatus,
-                                setSelect = { viewModel.setSelectedStatusList(it) }
-                            )
-                        }
-                    }
+                Text(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    text = "추천 페이지로 보기",
+                    color = Label,
+                    style = AppTextStyles.Body1.bold
+                )
+            }
 
-                    if (viewModel.uiState.searchCourse.isEmpty()) {
-                        viewModel.uiState.allCourse.forEach { course ->
-                            CourseBox(course = course, viewModel = viewModel, navHostController)
-                        }
-                    } else {
-                        viewModel.uiState.searchCourse.forEach { course ->
-                            CourseBox(course = course, viewModel = viewModel, navHostController)
-                        }
-                    }
+            CustomSearchBar(
+                query = query,
+                placeholder = "코스 이름으로 검색",
+                onSearch = { viewModel.searchCourses(it) },
+                modifier = modifier
+            )
+
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CustomDropdown(
+                    options = viewModel.eventList,
+                    selected = viewModel.uiState.selectedEvent,
+                    setSelect = { viewModel.setSelectedEventList(it) }
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CustomDropdown(
+                        options = viewModel.newList,
+                        selected = viewModel.uiState.selectedNew,
+                        setSelect = { viewModel.setSelectedNewList(it) }
+                    )
+                    CustomDropdown(
+                        options = viewModel.statusList,
+                        selected = viewModel.uiState.selectedStatus,
+                        setSelect = { viewModel.setSelectedStatusList(it) }
+                    )
+                }
+            }
+
+            if (displayedCourses.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "검색 결과가 없습니다",
+                        style = AppTextStyles.Body1.medium,
+                        color = Label
+                    )
+                }
+            } else {
+                displayedCourses.forEach { course ->
+                    CourseBox(
+                        course = course,
+                        viewModel = viewModel,
+                        navHostController = navHostController
+                    )
                 }
             }
         }
+    }
+}

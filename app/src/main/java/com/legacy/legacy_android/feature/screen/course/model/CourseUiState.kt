@@ -19,15 +19,47 @@ data class CourseUiState(
     val eventCourse: List<SearchCourseResponse> = emptyList(),
     val currentCourse: AllCourseResponse? = null,
     val searchCourse: List<SearchCourseResponse> = emptyList(),
-    val searchCourseName: String ="",
+    val searchCourseName: String = "",
     // create value
     val createCourseName: String = "",
     val createRuinsName: String = "",
-    val createCourseHashName: String ="",
+    val createCourseHashName: String = "",
     val createCourseHashTags: List<String> = emptyList(),
     val isHashTag: MutableState<Boolean> = mutableStateOf(false),
     val createSearchRuins: List<RuinsIdResponse>? = emptyList(),
     val createSelectedRuins: List<RuinsIdResponse>? = emptyList(),
     val createCourseDescription: String = "",
     val isCreateLoading: Boolean = false
-)
+) {
+    val displayedCourses: List<SearchCourseResponse>
+        get() {
+            val sourceCourses = searchCourse.ifEmpty { allCourse }
+
+            return sourceCourses
+                .filter { course ->
+                    val eventMatch = when (selectedEvent) {
+                        "전체" -> true
+                        "이벤트" -> course.eventId != 0
+                        "일반" -> course.eventId == 0
+                        else -> true
+                    }
+
+                    val statusMatch = when (selectedStatus) {
+                        "전체" -> true
+                        "클리어" -> course.clear
+                        "미클리어" -> !course.clear
+                        else -> true
+                    }
+
+                    eventMatch && statusMatch
+                }
+                .let { filtered ->
+                    when (selectedNew) {
+                        "최신" -> filtered.sortedByDescending { it.courseId }
+                        "인기순" -> filtered.sortedByDescending { it.heartCount }
+                        "클리어순" -> filtered.sortedByDescending { it.clearCount }
+                        else -> filtered
+                    }
+                }
+        }
+}
