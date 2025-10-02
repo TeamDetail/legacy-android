@@ -72,13 +72,17 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
     navHostController: NavHostController,
-){
-    val statusList = listOf("기록", "칭호", "도감", "인벤토리")
+) {
+    val statusList = listOf("개요", "도감", "인벤토리", "칭호")
     val profile by viewModel.profileFlow.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.clearProfile()
         viewModel.fetchProfile()
         viewModel.fetchMyCollection()
+        viewModel.setSelectedItem(null)
+        viewModel.fetchMyInventory()
+        viewModel.getTitles()
     }
 
     Box(
@@ -87,14 +91,16 @@ fun ProfileScreen(
             .background(Background_Alternative)
             .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
-        if (viewModel.uiState.openCardResponse != null){
+        if (viewModel.uiState.openCardResponse != null) {
             OpenCardModal(viewModel)
         }
-        if (viewModel.uiState.cardPackOpen){
+        if (viewModel.uiState.cardPackOpen) {
             ItemModal(viewModel)
         }
         Box(
-            modifier = modifier.align(Alignment.BottomCenter).zIndex(999f)
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .zIndex(999f)
         ) {
             if (viewModel.uiState.selectedItem != null) {
                 InventoryInfo(viewModel)
@@ -171,9 +177,12 @@ fun ProfileScreen(
                             Image(
                                 painter = painterResource(R.drawable.edit),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp).clickable {
-                                    viewModel.setSelectedItem(null)
-                                    navHostController.navigate("profile_edit") }
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clickable {
+                                        viewModel.setSelectedItem(null)
+                                        navHostController.navigate("profile_edit")
+                                    }
                             )
                         }
                         Text(
@@ -198,8 +207,10 @@ fun ProfileScreen(
                     statusList.forEachIndexed { index, item ->
                         StatusButton(
                             selectedValue = viewModel.uiState.profileStatus,
-                            onClick = { viewModel.changeProfileStatus(index)
-                                viewModel.setSelectedItem(null)},
+                            onClick = {
+                                viewModel.changeProfileStatus(index)
+                                viewModel.setSelectedItem(null)
+                            },
                             text = item,
                             id = index,
                             selectedColor = Primary,
@@ -214,16 +225,20 @@ fun ProfileScreen(
                     modifier = modifier,
                     viewModel = viewModel,
                 )
-                1 -> TitleScreen(
-                    modifier = modifier,
-                    viewModel = viewModel
-                )
-                2 -> { DictionaryScreen(
-                    modifier = modifier,
-                    viewModel = viewModel
-                )
+
+                1 -> {
+                    DictionaryScreen(
+                        modifier = modifier,
+                        viewModel = viewModel
+                    )
                 }
-                3 -> InventoryScreen(
+
+                2 -> InventoryScreen(
+                    modifier = modifier,
+                    viewModel = viewModel
+                )
+
+                3 -> TitleScreen(
                     modifier = modifier,
                     viewModel = viewModel
                 )
@@ -238,9 +253,6 @@ fun RecordScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val profile by viewModel.profileFlow.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.fetchProfile()
-    }
     val expStat = listOf(
         StatTableResponse("완수한 총 도전과제", profile?.record?.experience?.adventureAchieve.toString()),
         StatTableResponse("완수한 히든 도전과제", profile?.record?.experience?.hiddenAchieve.toString()),
@@ -341,18 +353,24 @@ fun RecordScreen(
 fun TitleScreen(
     modifier: Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
-){
-
+) {
+    Column {
+        Text(text = "보유한 칭호", color = Label_Alternative, style = AppTextStyles.Body2.bold)
+        Spacer(modifier = modifier.height(8.dp))
+        viewModel.uiState.titleList?.forEach { it ->
+            Text(text = it.name, style = AppTextStyles.Body1.bold)
+        }
+    }
 }
 
 @Composable
 fun DictionaryScreen(
     modifier: Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
-){
-    Row (
+) {
+    Row(
         modifier = modifier.fillMaxSize()
-    ){
+    ) {
         Row(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -375,8 +393,10 @@ fun DictionaryScreen(
                     )
                 }
             }
-            LazyColumn (
-                modifier = modifier.fillMaxWidth(0.95f).height(1000.dp)
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth(0.95f)
+                    .height(1000.dp)
             ) {
                 item {
                     Statbar(
@@ -394,9 +414,14 @@ fun DictionaryScreen(
                         }",
                         subtext = "",
                         barColor = Fill_Netural,
+                        textStyle = AppTextStyles.Caption2.Bold
                     )
                 }
-                items(viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.chunked(2) ?: emptyList()) { cardPair ->
+                items(
+                    viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.chunked(
+                        2
+                    ) ?: emptyList()
+                ) { cardPair ->
                     Row {
                         cardPair.forEach { card ->
                             DictionaryInfo(
@@ -416,16 +441,12 @@ fun InventoryScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val inventory = viewModel.uiState.myInventory ?: emptyList()
-
-    LaunchedEffect(Unit) {
-        viewModel.setSelectedItem(null)
-        viewModel.fetchMyInventory()
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(7),
-            modifier = modifier.fillMaxSize().height(1000.dp),
+            modifier = modifier
+                .fillMaxSize()
+                .height(1000.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -439,10 +460,10 @@ fun InventoryScreen(
                             width = 1.dp,
                             shape = RoundedCornerShape(8.dp),
                             color = Line_Alternative
-                        ).clickable {
+                        )
+                        .clickable {
                             if (index < inventory.size) {
                                 viewModel.setSelectedItem(viewModel.uiState.myInventory!![index])
-                                println(viewModel.uiState.myInventory)
                             } else {
                                 viewModel.setSelectedItem(null)
                             }
@@ -453,7 +474,9 @@ fun InventoryScreen(
                         Image(
                             painter = painterResource(R.drawable.cardpack),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
                         )
                     }
                 }

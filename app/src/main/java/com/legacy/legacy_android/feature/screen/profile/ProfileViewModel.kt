@@ -113,8 +113,6 @@ class ProfileViewModel @Inject constructor(
 
     fun openCardPack(){
         viewModelScope.launch {
-            println(uiState.selectedItem!!.itemId)
-            println(uiState.packOpenCount)
             fetchMyInventory()
             val result = userRepository.openCardPack(id = uiState.selectedItem!!.itemId, count = uiState.packOpenCount)
             result.onSuccess {
@@ -124,6 +122,18 @@ class ProfileViewModel @Inject constructor(
                 )
             }.onFailure {
                 e-> Log.e("UserRepository", "카드팩 열기 실패", e)
+            }
+        }
+    }
+
+    fun getTitles(){
+        viewModelScope.launch {
+            val result = userRepository.getTitles()
+            result.onSuccess {
+                Log.d("UserRepository", "칭호 불러오기 성공: $it")
+                uiState = uiState.copy(
+                    titleList = it
+                )
             }
         }
     }

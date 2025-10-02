@@ -76,7 +76,8 @@ fun RankingScreen(
                         blocks = viewModel.uiState.rankingData?.get(1)?.allBlocks ?: 0,
                         name = viewModel.uiState.rankingData?.get(1)?.nickname ?: "이름 없음",
                         title = viewModel.uiState.rankingData?.get(1)?.title?.name ?: " ",
-                        zIndex = 2f
+                        zIndex = 2f,
+                        img = viewModel.uiState.rankingData?.get(1)?.imageUrl
                     )
                 }
                 RankingBar(
@@ -84,7 +85,8 @@ fun RankingScreen(
                     blocks = viewModel.uiState.rankingData?.get(0)?.allBlocks ?: 0,
                     name = viewModel.uiState.rankingData?.get(0)?.nickname ?: "이름 없음",
                     title = viewModel.uiState.rankingData?.get(0)?.title?.name ?: " ",
-                    zIndex = 3f
+                    zIndex = 3f,
+                    img = viewModel.uiState.rankingData?.get(0)?.imageUrl
                 )
                 Box(
                     modifier = modifier
@@ -95,7 +97,8 @@ fun RankingScreen(
                         blocks = viewModel.uiState.rankingData?.get(2)?.allBlocks ?: 0,
                         name = viewModel.uiState.rankingData?.get(2)?.nickname ?: "이름 없음",
                         title = viewModel.uiState.rankingData?.get(2)?.title?.name ?: " ",
-                        zIndex = 1f
+                        zIndex = 1f,
+                        img = viewModel.uiState.rankingData?.get(2)?.imageUrl
                     )
                 }
             }

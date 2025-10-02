@@ -143,6 +143,7 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                                 viewModel.updateCardPackOpen(false)
                                 viewModel.setSelectedItem(null)
                                 viewModel.initCardPack()
+                                viewModel.fetchMyInventory()
                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                             }
                             .padding(vertical = 12.dp, horizontal = 16.dp)

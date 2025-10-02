@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -25,7 +26,8 @@ fun Statbar(
     percent: Int,
     text: String,
     subtext: String = "",
-    barColor: Color
+    barColor: Color,
+    textStyle: TextStyle = AppTextStyles.Headline.bold
 ){
     Box(
         modifier = modifier
@@ -58,7 +60,7 @@ fun Statbar(
                         append(subtext)
                     }
                 },
-                style = AppTextStyles.Headline.bold
+                style = textStyle
             )
         }
     }

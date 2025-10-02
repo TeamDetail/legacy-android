@@ -44,10 +44,10 @@ import com.legacy.legacy_android.ui.theme.White
 fun CommentModal(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
     LaunchedEffect(Unit) {
         viewModel.updateCommentRate(0)
     }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,9 +57,9 @@ fun CommentModal(
             .background(Background_Netural, shape = RoundedCornerShape(20.dp))
             .padding(12.dp)
             .imePadding()
-            .clickable{
-                viewModel.fetchRuinsDetail(viewModel.uiState.ruinsDetail!!.ruinsId)
-                viewModel.updateIsCommenting(true)}
+            .clickable {
+                viewModel.updateIsCommenting(true)
+            }
     ) {
         Text(
             text = "한줄평 남기기",
@@ -71,28 +71,36 @@ fun CommentModal(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "#${viewModel.uiState.ruinsDetail?.ruinsId}",
+                text = "#${viewModel.uiState.selectedRuinsDetail?.ruinsId ?: ""}",
                 style = AppTextStyles.Caption1.Medium,
                 color = Label_Alternative
             )
             Text(
-                text = "${viewModel.uiState.ruinsDetail?.name}",
+                text = viewModel.uiState.selectedRuinsDetail?.name ?: "",
                 style = AppTextStyles.Headline.bold
             )
         }
-        Row(modifier = Modifier.fillMaxWidth().clickable{viewModel.updateCommentModal(true)}) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { viewModel.updateCommentModal(true) }
+        ) {
             for (i in 1..10) {
                 if (i % 2 != 0) {
                     Image(
                         painter = painterResource(R.drawable.starhalfleft),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(if (i <= viewModel.uiState.commentRate) Primary else White)
+                        colorFilter = ColorFilter.tint(
+                            if (i <= viewModel.uiState.commentRate) Primary else White
+                        )
                     )
                 } else {
                     Image(
                         painter = painterResource(R.drawable.starhalfright),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(if (i <= viewModel.uiState.commentRate) Primary else White)
+                        colorFilter = ColorFilter.tint(
+                            if (i <= viewModel.uiState.commentRate) Primary else White
+                        )
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                 }
@@ -102,13 +110,15 @@ fun CommentModal(
         TextField(
             value = viewModel.uiState.commentValue,
             onValueChange = { viewModel.setCommentValue(it) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(color = Background_Normal, shape = RoundedCornerShape(12.dp))
                 .height(120.dp)
                 .clip(RoundedCornerShape(12.dp)),
             placeholder = { Text(text = "유적지에 대한 감상을 입력해주세요!") },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Label, unfocusedTextColor = Label,
+                focusedTextColor = Label,
+                unfocusedTextColor = Label,
                 focusedContainerColor = Fill_Normal,
                 unfocusedContainerColor = Fill_Normal,
                 disabledContainerColor = Fill_Normal,

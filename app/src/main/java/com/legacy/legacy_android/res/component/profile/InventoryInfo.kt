@@ -29,6 +29,7 @@ import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Line_Alternative
+import kotlinx.coroutines.delay
 
 @Composable
 fun InventoryInfo(
@@ -84,7 +85,8 @@ fun InventoryInfo(
                 .fillMaxWidth()
                 .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                 .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                .clickable{viewModel.updateCardPackOpen(true)}
+                .clickable{viewModel.updateCardPackOpen(true)
+                }
         ) {
             Text(
                 modifier = Modifier.padding(vertical = 8.dp),

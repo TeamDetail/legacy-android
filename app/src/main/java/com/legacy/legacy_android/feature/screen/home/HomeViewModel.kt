@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.legacy.legacy_android.domain.repository.home.*
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.helper.RuinsAnimationHelper
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
 import com.legacy.legacy_android.feature.screen.home.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,12 +42,17 @@ class HomeViewModel @Inject constructor(
 
     private val quizAnswers = mutableListOf<QuizAnswer>()
 
+    private var fetchRuinsDetailJob: Job? = null
+    private var loadQuizJob: Job? = null
+    private var loadCommentJob: Job? = null
+    private var searchRuinsJob: Job? = null
+
     fun updateIsMailOpen(isOpen: Boolean) {
         uiState = uiState.copy(isMailOpen = isOpen)
     }
 
-    fun updateSelectedId(id: Int) {
-        uiState = uiState.copy(selectedId = id)
+    fun updateSelectedId(ids: List<Int>) {
+        uiState = uiState.copy(selectedId = ids)
     }
 
     fun updateCommentModal(isOpen: Boolean) {
@@ -81,6 +89,10 @@ class HomeViewModel @Inject constructor(
         quizAnswers.add(QuizAnswer(quizId, answer))
     }
 
+    fun addSelectedId(id: Int) {
+        uiState = uiState.copy(selectedId = uiState.selectedId + id)
+    }
+
     fun clearQuizAnswers() {
         quizAnswers.clear()
     }
@@ -89,58 +101,66 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(commentValue = value)
     }
 
-    fun fetchRuinsDetail(id: Int) {
-        if (id == -1) {
-            uiState = uiState.copy(ruinsDetail = null)
+    fun setSelectedRuinsDetail(ruin: RuinsIdResponse) {
+        uiState = uiState.copy(selectedRuinsDetail = ruin)
+    }
+
+
+    fun fetchRuinsDetail(ids: List<Int>) {
+        if (ids.isEmpty()) {
+            uiState = uiState.copy(ruinsDetail = emptyList())
             return
         }
-        viewModelScope.launch {
+
+        fetchRuinsDetailJob?.cancel()
+        fetchRuinsDetailJob = viewModelScope.launch {
             uiState = uiState.copy(loading = true)
-            ruinsRepository.getRuinsById(id)
-                .onSuccess { detail -> uiState = uiState.copy(ruinsDetail = detail) }
+
+            val details = ids.map { id ->
+                async { ruinsRepository.getRuinsById(id) }
+            }.awaitAll()
+
+            val successDetails = details.mapNotNull { it.getOrNull() }
+            uiState = uiState.copy(ruinsDetail = successDetails)
+
             uiState = uiState.copy(loading = false)
         }
     }
-
     fun initRuinsDetail(){
         uiState = uiState.copy(ruinsDetail = null)
     }
 
     fun submitComment() {
         viewModelScope.launch {
-            val currentRuinsDetail = uiState.ruinsDetail
-            if (currentRuinsDetail == null) {
-                return@launch
-            }
-
             uiState = uiState.copy(commentLoading = true)
 
             ruinsRepository.postComment(
-                currentRuinsDetail.ruinsId,
+                uiState.selectedRuinsDetail!!.ruinsId,
                 uiState.commentRate,
                 uiState.commentValue
             )
                 .onSuccess {
                     updateIsCommenting(false)
                     uiState = uiState.copy(commentValue = "")
+                    loadCommentById(uiState.selectedRuinsDetail!!.ruinsId)
                 }
                 .onFailure {
-                    println("실패")
+                    println("댓글 작성 실패: $it")
                 }
             uiState = uiState.copy(commentLoading = false)
         }
     }
-
 
     fun submitQuizAnswers() {
         viewModelScope.launch {
             uiState = uiState.copy(quizStatus = QuizStatus.LOADING)
             quizRepository.submitAnswer(quizAnswers.toList())
                 .onSuccess { response ->
-                    val wrongIndices = response!!.results
-                        .mapIndexedNotNull { index, result ->
+                    val wrongIndices = response?.results
+                        ?.mapIndexedNotNull { index, result ->
                             if (!result.isCorrect) index else null
-                        }
+                        } ?: emptyList()
+
                     uiState = uiState.copy(
                         wrongAnswers = wrongIndices,
                         quizStatus = if (wrongIndices.isEmpty()) QuizStatus.SUCCESS else QuizStatus.RETRY
@@ -148,8 +168,6 @@ class HomeViewModel @Inject constructor(
                     clearQuizAnswers()
                 }
                 .onFailure {
-                    println("실패했음")
-                    println(quizAnswers.toList())
                 }
         }
     }
@@ -169,13 +187,23 @@ class HomeViewModel @Inject constructor(
     }
 
     fun searchRuins(name: String) {
-        viewModelScope.launch {
-            uiState = uiState.copy(createSearchRuins = null)
-            uiState = uiState.copy(isSearchLoading = true)
+        if (name.isBlank()) return
+
+        searchRuinsJob?.cancel()
+        searchRuinsJob = viewModelScope.launch {
+            uiState = uiState.copy(
+                createSearchRuins = null,
+                isSearchLoading = true
+            )
+
             ruinsRepository.getSearchRuins(name)
                 .onSuccess { ruins ->
                     uiState = uiState.copy(createSearchRuins = ruins)
                 }
+                .onFailure {
+                    println("검색 실패: $it")
+                }
+
             uiState = uiState.copy(isSearchLoading = false)
         }
     }
@@ -216,16 +244,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
     fun loadCommentById(id: Int) {
-        viewModelScope.launch {
+        loadCommentJob?.cancel()
+        loadCommentJob = viewModelScope.launch {
             ruinsRepository.getCommentById(id)
                 .onSuccess { comments -> uiState = uiState.copy(comments = comments) }
         }
     }
 
     fun loadQuiz(ruinsId: Int?) {
-        viewModelScope.launch {
+        if (ruinsId == null) return
+
+        loadQuizJob?.cancel()
+        loadQuizJob = viewModelScope.launch {
             quizRepository.getQuizById(ruinsId)
                 .onSuccess { quiz ->
                     uiState = uiState.copy(quizData = quiz)

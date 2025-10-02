@@ -1,6 +1,5 @@
 package com.legacy.legacy_android.res.component.ranking
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -34,7 +34,9 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import com.legacy.legacy_android.ui.theme.pretendard
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.AsyncImage
 
 @Composable
 fun RankingBar(
@@ -43,12 +45,13 @@ fun RankingBar(
     name : String?,
     title : String?,
     zIndex: Float,
+    img: String?
 ) {
     Box(
         modifier = Modifier
             .border(2.dp, Background_Normal, shape = RoundedCornerShape(20.dp))
             .padding(2.dp)
-            .width(100.dp)
+            .width(110.dp)
             .zIndex(zIndex)
     ) {
         Box(
@@ -123,13 +126,15 @@ fun RankingBar(
                                 .clip(RoundedCornerShape(8.dp))
                         )
                     } else {
-                        Image(
+                        AsyncImage(
+                            model = img,
+                            contentDescription = "프로필 이미지",
                             modifier = Modifier
-                                .width(40.dp)
-                                .height(40.dp)
-                                .clip(RoundedCornerShape(30.dp)),
-                            painter = painterResource(R.drawable.temp_profile),
-                            contentDescription = null
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.school_img),
+                            error = painterResource(R.drawable.school_img)
                         )
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,

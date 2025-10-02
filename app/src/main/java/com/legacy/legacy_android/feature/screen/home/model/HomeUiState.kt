@@ -19,11 +19,12 @@ data class MapBounds(
 
 data class HomeUiState(
     val loading: Boolean = false,
-    val selectedId: Int = -1,
+    val selectedId: List<Int> = emptyList(),
     val hintStatus: HintStatus = HintStatus.NO,
     val quizStatus: QuizStatus = QuizStatus.NONE,
     val visibleRuins: List<RuinsMapResponse> = emptyList(),
-    val ruinsDetail: RuinsIdResponse? = null,
+    val ruinsDetail: List<RuinsIdResponse>? = emptyList(),
+    val selectedRuinsDetail: RuinsIdResponse? = null,
     val quizData: List<GetQuizResponse>? = null,
     val blocks: List<GetBlockResponse> = emptyList(),
     val wrongAnswers: List<Int> = emptyList(),

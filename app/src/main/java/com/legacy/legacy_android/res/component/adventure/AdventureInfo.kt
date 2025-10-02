@@ -1,28 +1,30 @@
 package com.legacy.legacy_android.res.component.adventure
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
@@ -30,19 +32,37 @@ import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.*
+import kotlinx.coroutines.delay
 import java.text.NumberFormat
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdventureInfo(
-    data: RuinsIdResponse?,
+    data: List<RuinsIdResponse>?,
     viewModel: HomeViewModel,
 ) {
+    val scrollStates = remember(data?.size) {
+        List(data?.size ?: 0) { ScrollState(0) }
+    }
     val scaffoldState = rememberBottomSheetScaffoldState()
+    val pagerState = rememberPagerState(pageCount = { data?.size ?: 0 })
+    val interactionSource = remember { MutableInteractionSource() }
 
-    LaunchedEffect(data?.ruinsId) {
-        data?.ruinsId?.let { viewModel.loadCommentById(it) }
+    LaunchedEffect(data?.firstOrNull()?.ruinsId) {
+        data?.firstOrNull()?.let {
+            viewModel.loadCommentById(it.ruinsId)
+            viewModel.setSelectedRuinsDetail(it)
+        }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        delay(100)
+        data?.getOrNull(pagerState.currentPage)?.let { currentRuin ->
+            viewModel.loadCommentById(currentRuin.ruinsId)
+            viewModel.setSelectedRuinsDetail(currentRuin)
+        }
     }
 
     Box(
@@ -50,16 +70,16 @@ fun AdventureInfo(
             .fillMaxSize()
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = interactionSource
             ) {
-                viewModel.updateSelectedId(-1)
+                viewModel.updateSelectedId(emptyList())
             },
         contentAlignment = Alignment.BottomCenter
     ) {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = 302.dp,
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetShape = RoundedCornerShape(16.dp),
             sheetDragHandle = { },
             sheetContent = {
                 Column(
@@ -73,281 +93,41 @@ fun AdventureInfo(
                         .padding(12.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
+                            interactionSource = interactionSource
                         ) {}
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(0.1f)
-                                .background(Fill_Alternative, shape = RoundedCornerShape(8.dp))
-                                .height(8.dp)
+                    PagerIndicator(data, pagerState)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.weight(1f),
+                    ) { page ->
+                        val currentData = data?.getOrNull(page)
+                        val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
+
+                        val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                        val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+                        val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+
+                        RuinsDetailPage(
+                            currentData = currentData,
+                            viewModel = viewModel,
+                            scrollState = scrollState,
+                            scale = scale,
+                            alpha = alpha
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(6.dp),
-                                modifier = Modifier.fillMaxWidth(0.5f)
-                            ) {
-                                // 유적지 탐험 제목
-                                Text(
-                                    text = "유적지 탐험",
-                                    color = White,
-                                    style = AppTextStyles.Headline.bold
-                                )
-
-                                // ID
-                                when {
-                                    data == null -> {
-                                        SkeletonBox(
-                                            modifier = Modifier
-                                                .height(24.dp)
-                                                .fillMaxWidth(0.3f)
-                                                .clip(RoundedCornerShape(4.dp)),
-                                        )
-                                    }
-                                    data.ruinsId == 0 -> {
-                                        Spacer(modifier = Modifier.height(24.dp))
-                                    }
-                                    else -> {
-                                        Text(
-                                            text = "#" + NumberFormat.getNumberInstance(Locale.US)
-                                                .format(data.ruinsId),
-                                            style = AppTextStyles.Caption1.Medium,
-                                            color = Label_Alternative
-                                        )
-                                    }
-                                }
-
-                                // info
-                                when {
-                                    data == null -> {
-                                        SkeletonBox(
-                                            modifier = Modifier
-                                                .height(24.dp)
-                                                .fillMaxWidth(0.6f)
-                                                .clip(RoundedCornerShape(4.dp)),
-                                        )
-                                    }
-                                    data.name.isBlank() -> {
-                                        Spacer(modifier = Modifier.height(24.dp))
-                                    }
-                                    else -> {
-                                        Text(
-                                            text = data.name,
-                                            style = AppTextStyles.Headline.bold
-                                        )
-                                    }
-                                }
-
-                                // 별점 표시
-                                val rating = data?.averageRating ?: 0
-                                val commentCount = data?.countComments?.toString() ?: "0"
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    for (i in 1..10) {
-                                        if (i % 2 != 0) {
-                                            Image(
-                                                painter = painterResource(R.drawable.starhalfleft),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(
-                                                    if (i <= rating) Primary else White
-                                                )
-                                            )
-                                        } else {
-                                            Image(
-                                                painter = painterResource(R.drawable.starhalfright),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(
-                                                    if (i <= rating) Primary else White
-                                                )
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                        }
-                                    }
-                                    Text(
-                                        text = "(${commentCount})",
-                                        style = AppTextStyles.Body2.medium,
-                                        color = Fill_Alternative
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Box(
-                                    Modifier
-                                        .height(1.dp)
-                                        .fillMaxWidth()
-                                        .background(Line_Alternative)
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                // 탐험자 수 / 획득 비율
-                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    if (data == null) {
-                                        SkeletonBox(
-                                            modifier = Modifier
-                                                .height(40.dp)
-                                                .weight(1f)
-                                                .clip(RoundedCornerShape(4.dp))
-                                        )
-                                        SkeletonBox(
-                                            modifier = Modifier
-                                                .height(40.dp)
-                                                .weight(1f)
-                                                .clip(RoundedCornerShape(4.dp))
-                                        )
-                                    } else {
-                                        Spacer(modifier = Modifier.height(40.dp).weight(1f))
-                                        Spacer(modifier = Modifier.height(40.dp).weight(1f))
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                // 한줄평 남기기 버튼
-                                CustomButton(
-                                    onClick = {
-                                        viewModel.updateIsCommenting(true)
-                                        viewModel.setCommentValue("")
-                                    },
-                                    text = "한줄평 남기기",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    borderColor = Line_Netural,
-                                    textColor = Label_Netural,
-                                    backgroundColor = Fill_Normal,
-                                    contentPadding = PaddingValues(vertical = 8.dp),
-                                    fontSize = AppTextStyles.Caption2.Bold.fontSize
-                                )
-                            }
-
-                            // 이미지
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.9f)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .padding(5.dp)
-                            ) {
-                                when {
-                                    data == null -> {
-                                        SkeletonBox(modifier = Modifier.matchParentSize())
-                                    }
-                                    data.ruinsImage.isBlank() -> {
-                                        Spacer(modifier = Modifier.matchParentSize())
-                                    }
-                                    else -> {
-                                        AsyncImage(
-                                            model = data.ruinsImage,
-                                            contentDescription = "유적지 이미지",
-                                            modifier = Modifier
-                                                .height(220.dp)
-                                                .border(
-                                                    2.dp,
-                                                    color = Line_Netural,
-                                                    shape = RoundedCornerShape(12.dp)
-                                                )
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            contentScale = ContentScale.Crop,
-                                            error = painterResource(R.drawable.school_img),
-                                            placeholder = painterResource(R.drawable.school_img)
-                                        )
-                                        Box(
-                                            modifier = Modifier
-                                                .matchParentSize()
-                                                .background(Background_Normal.copy(alpha = 0.5f))
-                                                .clip(RoundedCornerShape(12.dp))
-                                        )
-                                        Text(
-                                            modifier = Modifier
-                                                .align(Alignment.BottomStart)
-                                                .padding(12.dp),
-                                            text = data.name,
-                                            fontFamily = bitbit,
-                                            fontSize = 16.sp,
-                                            color = Label
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // description
-                        when {
-                            data == null -> {
-                                SkeletonBox(
-                                    modifier = Modifier
-                                        .height(60.dp)
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(4.dp))
-                                )
-                            }
-                            data.description.isBlank() -> {
-                                Spacer(modifier = Modifier.height(60.dp))
-                            }
-                            else -> {
-                                Text(
-                                    text = data.description,
-                                    style = AppTextStyles.Body2.medium
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Box(
-                            Modifier
-                                .height(1.dp)
-                                .fillMaxWidth()
-                                .background(Line_Alternative)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // comments
-                        when {
-                            data == null -> {
-                                repeat(2) {
-                                    SkeletonBox(
-                                        modifier = Modifier
-                                            .height(184.dp)
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(12.dp))
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                            }
-                            viewModel.uiState.comments.isNullOrEmpty() -> {
-                                Spacer(modifier = Modifier.height(40.dp))
-                            }
-                            else -> {
-                                viewModel.uiState.comments?.forEach { it ->
-                                    CommentBox(comment = it)
-                                    Spacer(modifier = Modifier.height(20.dp))
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
             }
         ) {}
 
-        // 퀴즈 버튼
         CustomButton(
-            onClick = { data?.ruinsId?.let { viewModel.loadQuiz(it) } },
+            onClick = {
+                data?.getOrNull(pagerState.currentPage)?.ruinsId?.let {
+                    viewModel.loadQuiz(it)
+                }
+            },
             text = "퀴즈 풀고 탐험하기!",
             modifier = Modifier.fillMaxWidth(),
             borderColor = Blue_Netural,
@@ -356,5 +136,341 @@ fun AdventureInfo(
             contentPadding = PaddingValues(vertical = 12.dp),
             fontSize = AppTextStyles.Body1.bold.fontSize
         )
+    }
+}
+
+@Composable
+private fun PagerIndicator(
+    data: List<RuinsIdResponse>?,
+    pagerState: PagerState
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.1f)
+                .background(Fill_Alternative, shape = RoundedCornerShape(8.dp))
+                .height(8.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (data != null && data.size > 1) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Fill_Netural, shape = RoundedCornerShape(12.dp))
+                    .height(24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (pagerState.currentPage == 0) {
+                        "옆으로 넘겨서 더 많은 유적지 확인 →"
+                    } else {
+                        "${pagerState.currentPage + 1} / ${data.size}"
+                    },
+                    style = AppTextStyles.Caption1.Medium,
+                    color = Label_Netural
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RuinsDetailPage(
+    currentData: RuinsIdResponse?,
+    viewModel: HomeViewModel,
+    scrollState: ScrollState,
+    scale: Float,
+    alpha: Float
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+                this.alpha = alpha
+            }
+            .verticalScroll(scrollState)
+    ) {
+        Spacer(modifier = Modifier.height(20.dp))
+
+        RuinsHeader(currentData, viewModel)
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        RuinsDescription(currentData)
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        CommentsSection(currentData, viewModel)
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+private fun RuinsHeader(
+    currentData: RuinsIdResponse?,
+    viewModel: HomeViewModel
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.fillMaxWidth(0.5f)
+        ) {
+            Text(
+                text = "유적지 탐험",
+                color = White,
+                style = AppTextStyles.Headline.bold
+            )
+
+            when {
+                currentData == null -> {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .height(24.dp)
+                            .fillMaxWidth(0.3f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                }
+                currentData.ruinsId == 0 -> {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+                else -> {
+                    Text(
+                        text = "#${NumberFormat.getNumberInstance(Locale.US).format(currentData.ruinsId)}",
+                        style = AppTextStyles.Caption1.Medium,
+                        color = Label_Alternative
+                    )
+                }
+            }
+
+            when {
+                currentData == null -> {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .height(24.dp)
+                            .fillMaxWidth(0.6f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                }
+                currentData.name.isBlank() -> {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+                else -> {
+                    Text(
+                        text = currentData.name,
+                        style = AppTextStyles.Headline.bold
+                    )
+                }
+            }
+
+            StarRating(
+                rating = currentData?.averageRating ?: 0,
+                commentCount = currentData?.countComments?.toString() ?: "0"
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(Line_Alternative)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (currentData == null) {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .weight(1f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                    SkeletonBox(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .weight(1f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                } else {
+                    Spacer(modifier = Modifier.height(40.dp).weight(1f))
+                    Spacer(modifier = Modifier.height(40.dp).weight(1f))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CustomButton(
+                onClick = {
+                    viewModel.updateIsCommenting(true)
+                    viewModel.setCommentValue("")
+                },
+                text = "한줄평 남기기",
+                modifier = Modifier.fillMaxWidth(),
+                borderColor = Line_Netural,
+                textColor = Label_Netural,
+                backgroundColor = Fill_Normal,
+                contentPadding = PaddingValues(vertical = 8.dp),
+                fontSize = AppTextStyles.Caption2.Bold.fontSize
+            )
+        }
+
+        RuinsImage(currentData)
+    }
+}
+
+@Composable
+private fun StarRating(rating: Int, commentCount: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        for (i in 1..10) {
+            if (i % 2 != 0) {
+                Image(
+                    painter = painterResource(R.drawable.starhalfleft),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(
+                        if (i <= rating) Primary else White
+                    )
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.starhalfright),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(
+                        if (i <= rating) Primary else White
+                    )
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+        }
+        Text(
+            text = "($commentCount)",
+            style = AppTextStyles.Body2.medium,
+            color = Fill_Alternative
+        )
+    }
+}
+
+@Composable
+private fun RuinsImage(currentData: RuinsIdResponse?) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.9f)
+            .clip(RoundedCornerShape(12.dp))
+            .padding(5.dp)
+    ) {
+        when {
+            currentData == null -> {
+                SkeletonBox(modifier = Modifier.matchParentSize())
+            }
+            currentData.ruinsImage.isBlank() -> {
+                Spacer(modifier = Modifier.matchParentSize())
+            }
+            else -> {
+                AsyncImage(
+                    model = currentData.ruinsImage,
+                    contentDescription = "유적지 이미지",
+                    modifier = Modifier
+                        .height(220.dp)
+                        .border(
+                            2.dp,
+                            color = Line_Netural,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(R.drawable.school_img),
+                    placeholder = painterResource(R.drawable.school_img)
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Background_Normal.copy(alpha = 0.5f))
+                        .clip(RoundedCornerShape(12.dp))
+                )
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(12.dp),
+                    text = currentData.name,
+                    fontFamily = bitbit,
+                    fontSize = 16.sp,
+                    color = Label
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RuinsDescription(currentData: RuinsIdResponse?) {
+    when {
+        currentData == null -> {
+            SkeletonBox(
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp))
+            )
+        }
+        currentData.description.isBlank() -> {
+            Spacer(modifier = Modifier.height(60.dp))
+        }
+        else -> {
+            Text(
+                text = currentData.description,
+                style = AppTextStyles.Body2.medium
+            )
+        }
+    }
+}
+
+@Composable
+private fun Divider() {
+    Box(
+        Modifier
+            .height(1.dp)
+            .fillMaxWidth()
+            .background(Line_Alternative)
+    )
+}
+
+@Composable
+private fun CommentsSection(
+    currentData: RuinsIdResponse?,
+    viewModel: HomeViewModel
+) {
+    when {
+        currentData == null -> {
+            repeat(2) {
+                SkeletonBox(
+                    modifier = Modifier
+                        .height(184.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        viewModel.uiState.comments.isNullOrEmpty() -> {
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+        else -> {
+            viewModel.uiState.comments?.forEach { comment ->
+                CommentBox(comment = comment)
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
     }
 }

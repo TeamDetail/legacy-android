@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -84,7 +85,9 @@ fun RuinSearchModal(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
-                val ruins = viewModel.uiState.createSearchRuins
+                val ruins = remember(viewModel.uiState.createSearchRuins) {
+                    viewModel.uiState.createSearchRuins
+                }
                 if (ruins.isNullOrEmpty() && !viewModel.uiState.isSearchLoading) {
                     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Text("검색 결과가 없습니다.", style = AppTextStyles.Label.Medium)
@@ -94,15 +97,12 @@ fun RuinSearchModal(
                         Text("검색 중입니다...", style = AppTextStyles.Label.Medium)
                     }
                 } else {
-                    ruins?.forEach { ruin ->
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
-                            modifier = Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                viewModel.fetchRuinsDetail(ruin.ruinsId)
-                                viewModel.updateSelectedId(ruin.ruinsId)
+                    ruins?.forEachIndexed { index, ruin ->
+                        RuinSearchItem(
+                            ruin = ruin,
+                            onClick = {
+                                viewModel.fetchRuinsDetail(listOf(ruin.ruinsId))
+                                viewModel.updateSelectedId(listOf(ruin.ruinsId))
                                 viewModel.updateSearchStatus(false)
 
                                 val latLng = LatLng(ruin.latitude, ruin.longitude)
@@ -111,14 +111,29 @@ fun RuinSearchModal(
                                 )
                                 viewModel.setMapLoaded()
                             }
-                        ) {
-                            Text("#${ruin.ruinsId}", color = Label_Alternative)
-                            Text(ruin.name, color = Label)
-                            Text(ruin.detailAddress, color = Label_Alternative)
-                        }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun RuinSearchItem(
+    ruin: RuinsIdResponse,
+    onClick: () -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = Modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = onClick
+        )
+    ) {
+        Text("#${ruin.ruinsId}", color = Label_Alternative)
+        Text(ruin.name, color = Label)
+        Text(ruin.detailAddress, color = Label_Alternative)
     }
 }

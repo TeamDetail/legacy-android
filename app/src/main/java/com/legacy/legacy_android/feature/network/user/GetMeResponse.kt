@@ -43,5 +43,6 @@ data class Adventure(
 data class Title(
     val name: String,
     val content: String,
-    val styleId: Int
+    val styleId: Int,
+    val grade: Int
 )

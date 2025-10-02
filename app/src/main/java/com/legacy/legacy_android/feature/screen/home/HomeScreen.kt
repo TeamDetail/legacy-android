@@ -83,6 +83,12 @@ object PolygonCache {
     }
 }
 
+fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    return kotlin.math.sqrt(
+        (lat2 - lat1) * (lat2 - lat1) + (lon2 - lon1) * (lon2 - lon1)
+    )
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 @SuppressLint("MissingPermission")
@@ -102,15 +108,15 @@ fun HomeScreen(
 
     val ruins = viewModel.uiState.visibleRuins
     val blocks = viewModel.uiState.blocks
-    val locationPermissionState =
-        rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    var showPermissionDialog by remember {
-        mutableStateOf(false)
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    var showPermissionDialog by remember { mutableStateOf(false) }
+
+    val permissions = remember {
+        listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
-    val permissions = listOf(
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
     val permissionState = rememberMultiplePermissionsState(permissions = permissions)
 
     val allRequiredPermission = permissionState.allPermissionsGranted
@@ -151,7 +157,6 @@ fun HomeScreen(
             val loc = currentLocation!!
             viewModel.createBlock(loc.latitude, loc.longitude)
             viewModel.loadBlocks()
-            println("Current location: $currentLocation")
         }
     }
 
@@ -168,7 +173,6 @@ fun HomeScreen(
             hasMovedToCurrentLocation = true
         }
     }
-
 
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
@@ -195,9 +199,32 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(ruins) {
+        val overlapping = mutableListOf<Pair<Int, Int>>()
+
+        ruins.forEachIndexed { i, ruin1 ->
+            ruins.forEachIndexed { j, ruin2 ->
+                if (i < j) {
+                    val distance = calculateDistance(
+                        ruin1.latitude, ruin1.longitude,
+                        ruin2.latitude, ruin2.longitude
+                    )
+
+                    if (distance < 0.001) {
+                        overlapping.add(Pair(ruin1.ruinsId, ruin2.ruinsId))
+                        println("겹침 발견: ${ruin1.ruinsId} <-> ${ruin2.ruinsId}, 거리: ${(distance * 111000).toInt()}m")
+                    }
+                }
+            }
+        }
+
+        if (overlapping.isNotEmpty()) {
+            println("총 ${overlapping.size}개의 겹침 발견")
+        }
+    }
+
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         if (viewModel.uiState.isMailOpen) {
             MailModal(onMailClick = { show -> viewModel.updateIsMailOpen(false) })
@@ -205,7 +232,7 @@ fun HomeScreen(
         if (viewModel.uiState.isCommentModalOpen) {
             RateModal(viewModel)
         }
-        // InfoBar
+
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = modifier
@@ -218,6 +245,7 @@ fun HomeScreen(
                 navHostController,
                 onMailClick = { show -> viewModel.updateIsMailOpen(true) })
         }
+
         if (!mapLoaded) {
             Box(
                 modifier = Modifier
@@ -266,8 +294,8 @@ fun HomeScreen(
                 }
             }
         }
+
         if (viewModel.uiState.quizStatus != QuizStatus.NONE) {
-            // quizbox의 맨 뒷 배경
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = modifier
@@ -284,12 +312,12 @@ fun HomeScreen(
                     data = viewModel.uiState.quizData ?: emptyList(),
                     quizStatus = viewModel.uiState.quizStatus,
                     viewModel = viewModel,
-                    image = viewModel.uiState.ruinsDetail?.ruinsImage,
-                    name = viewModel.uiState.ruinsDetail?.name,
+                    image = viewModel.uiState.selectedRuinsDetail?.ruinsImage,
+                    name = viewModel.uiState.selectedRuinsDetail?.name,
                 )
                 if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
                     CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {
-                        viewModel.loadHint(quizId  = viewModel.uiState.quizData!![0].quizId)
+                        viewModel.loadHint(quizId = viewModel.uiState.quizData!![0].quizId)
                     }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
                 } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(
@@ -300,6 +328,7 @@ fun HomeScreen(
                 }
             }
         }
+
         IconButton(
             onClick = {
                 currentLocation?.let {
@@ -324,7 +353,7 @@ fun HomeScreen(
                 tint = White
             )
         }
-        // 검색
+
         IconButton(
             onClick = {
                 viewModel.updateSearchStatus(true)
@@ -342,7 +371,7 @@ fun HomeScreen(
                 tint = White
             )
         }
-        // 경고 띄우기
+
         AnimatedVisibility(
             visible = showWarning,
             enter = fadeIn(),
@@ -375,14 +404,13 @@ fun HomeScreen(
             }
         }
 
-
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             onMapLoaded = { viewModel.setMapLoaded() },
             onMapClick = {
-                viewModel.updateSelectedId(-1)
-                viewModel.fetchRuinsDetail(-1)
+                viewModel.updateSelectedId(emptyList())
+                viewModel.fetchRuinsDetail(emptyList())
                 viewModel.initRuinsDetail()
                 viewModel.updateIsCommenting(false)
             },
@@ -397,8 +425,6 @@ fun HomeScreen(
                 compassEnabled = false
             )
         ) {
-
-
             val zoom = cameraPositionState.position.zoom
             if (zoom >= 14f) {
                 val mapBounds = viewModel.uiState.mapBounds
@@ -410,6 +436,10 @@ fun HomeScreen(
                     }
                 }
 
+                val groupedRuins = remember(visibleRuins) {
+                    visibleRuins.groupBy { "${it.latitude}_${it.longitude}" }
+                }
+
                 val visibleBlocks = remember(blocks, mapBounds) {
                     blocks.filter { block ->
                         block.latitude in mapBounds.minLat..mapBounds.maxLat &&
@@ -417,31 +447,37 @@ fun HomeScreen(
                     }
                 }
 
-                for (ruin in visibleRuins) {
-                    key(ruin.ruinsId) {
+                groupedRuins.forEach { (location, ruinsAtLocation) ->
+                    key(location) {
+                        val mainRuin = ruinsAtLocation.first()
                         Polygon(
                             zIndex = 55f,
-                            tag = ruin.ruinsId,
-                            points = PolygonCache.getPoints(ruin.latitude, ruin.longitude),
+                            tag = mainRuin.ruinsId,
+                            points = remember(mainRuin.ruinsId) {
+                                PolygonCache.getPoints(mainRuin.latitude, mainRuin.longitude)
+                            },
                             strokeColor = RUIN_STROKE_COLOR,
-                            strokeWidth = 1f,
+                            strokeWidth = if (ruinsAtLocation.size > 1) 2f else 1f,
                             fillColor = RUIN_FILL_COLOR,
                             clickable = true,
                             onClick = {
                                 viewModel.initRuinsDetail()
-                                viewModel.updateSelectedId(ruin.ruinsId)
-                                viewModel.fetchRuinsDetail(ruin.ruinsId)
+                                val ids = ruinsAtLocation.map { it.ruinsId }
+                                viewModel.updateSelectedId(ids)
+                                viewModel.fetchRuinsDetail(ids)
                             }
                         )
                     }
                 }
 
-                for (block in visibleBlocks) {
+                visibleBlocks.forEachIndexed { index, block ->
                     key(block.blockId) {
                         Polygon(
-                            zIndex = 56f,
+                            zIndex = (56f + index * 0.01f),
                             tag = block.blockId,
-                            points = PolygonCache.getPoints(block.latitude, block.longitude),
+                            points = remember(block.blockId) {
+                                PolygonCache.getPoints(block.latitude, block.longitude)
+                            },
                             strokeWidth = 1f,
                             strokeColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_STROKE_COLOR else SPECIAL_BLOCK_STROKE_COLOR,
                             fillColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_FILL_COLOR else SPECIAL_BLOCK_FILL_COLOR
@@ -451,27 +487,24 @@ fun HomeScreen(
             }
         }
 
-        // NavBar + Adventure Info
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(vertical = 40.dp, horizontal = 12.dp)
                 .zIndex(7f)
         ) {
-            if (viewModel.uiState.selectedId > -1 && !viewModel.uiState.isCommenting) {
+            if (viewModel.uiState.selectedId.isNotEmpty() && !viewModel.uiState.isCommenting) {
                 AdventureInfo(
                     data = viewModel.uiState.ruinsDetail,
                     viewModel
                 )
-            } else if (viewModel.uiState.selectedId > -1 && viewModel.uiState.isCommenting) {
+            } else if (viewModel.uiState.selectedId.isNotEmpty() && viewModel.uiState.isCommenting) {
                 CommentModal(viewModel)
             } else {
                 NavBar(navHostController = navHostController)
             }
         }
 
-
-        // 유적지 검색
         if (viewModel.uiState.isSearchRuinOpen) {
             Box(
                 contentAlignment = Alignment.Center,

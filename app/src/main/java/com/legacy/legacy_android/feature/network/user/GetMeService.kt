@@ -15,4 +15,6 @@ interface GetMeService {
 
     @POST("/inventory/cardpack")
     suspend fun cardOpen(@Body request: CardOpenRequest): BaseResponse<List<Cards>>
+    @GET("/user/titles")
+    suspend fun getTitles(): BaseResponse<List<Title>>
 }

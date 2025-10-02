@@ -1,6 +1,5 @@
 package com.legacy.legacy_android.res.component.ranking
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.SmallTitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -37,7 +38,8 @@ fun RankingRowBar(
     blocks: Int?,
     name: String?,
     title: String?,
-    level: Int?
+    level: Int?,
+    img: String?
 ) {
     val normalized = blocks?.let { it % 1000 }
     Row(
@@ -68,7 +70,7 @@ fun RankingRowBar(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        if (name == null || title == null || level == null) {
+        if (name == null || title == null || level == null || img == null) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.weight(1f)
@@ -103,12 +105,15 @@ fun RankingRowBar(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
-                Image(
+                AsyncImage(
+                    model = img,
+                    contentDescription = "프로필 이미지",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
-                    painter = painterResource(R.drawable.temp_profile),
-                    contentDescription = null
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.school_img),
+                    error = painterResource(R.drawable.school_img)
                 )
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)

@@ -5,6 +5,7 @@ import com.legacy.legacy_android.feature.network.ruins.id.Cards
 import com.legacy.legacy_android.feature.network.user.CardOpenRequest
 import com.legacy.legacy_android.feature.network.user.GetMeService
 import com.legacy.legacy_android.feature.network.user.InventoryItem
+import com.legacy.legacy_android.feature.network.user.Title
 import com.legacy.legacy_android.feature.network.user.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -63,5 +64,15 @@ class UserRepository @Inject constructor(
         Log.d("UserRepository", "프로필 데이터 초기화")
         _profile.value = null
         hasLoaded = false
+    }
+    suspend fun getTitles(): Result<List<Title>?>{
+        return try {
+            val response = getMeService.getTitles()
+            Log.d("UserRepository", "타이틀 로드 성공: ${response.data}")
+            Result.success(response.data)
+        } catch (error: Exception) {
+            Log.e("UserRepository", "타이틀 로드 실패", error)
+            Result.failure(error)
+        }
     }
 }

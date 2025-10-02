@@ -31,7 +31,8 @@ fun RankingTable(
                         blocks = item.allBlocks,
                         level = item.level,
                         name = item.nickname,
-                        title = item.title.name
+                        title = item.title.name,
+                        img = item.imageUrl
                     )
                 }
             }

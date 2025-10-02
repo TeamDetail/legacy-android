@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +34,7 @@ fun MarketScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchMarketData()
     }
-    val packList = listOf("카드 팩", "크레딧 충전")
+    val packList = remember { listOf("카드 팩", "크레딧 충전") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MarketLayout(
