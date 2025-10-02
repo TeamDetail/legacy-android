@@ -46,12 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.network.Nav
+import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.friend.FriendBar
 import com.legacy.legacy_android.res.component.friend.RequestFriendBar
+import com.legacy.legacy_android.res.component.friend.SearchFriendBar
 import com.legacy.legacy_android.res.component.modal.AlertModal
 import com.legacy.legacy_android.res.component.modal.FriendModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -398,12 +400,21 @@ fun AddFriendScreen(viewModel: FriendViewModel) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "이름으로 검색하기", color = Label_Netural, style = AppTextStyles.Body1.medium)
-//            CustomSearchBar(
-//                query = viewModel.uiState.searchFriend,
-//                placeholder = "친구 이름으로 검색..",
-//                onSearch = ",
-//                modifier = Modifier
-//            )
+            CustomSearchBar(
+                query = viewModel.uiState.searchFriend,
+                placeholder = "친구 이름으로 검색..",
+                onSearch = { query ->
+                    viewModel.searchFriend()
+                },
+                modifier = Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            viewModel.uiState.searchFriendList.forEach { it->
+                SearchFriendBar(
+                    data = it,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }

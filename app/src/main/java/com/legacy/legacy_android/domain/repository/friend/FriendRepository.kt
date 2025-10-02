@@ -4,6 +4,7 @@ import android.util.Log
 import com.legacy.legacy_android.feature.network.friend.FriendReqResponse
 import com.legacy.legacy_android.feature.network.friend.FriendResponse
 import com.legacy.legacy_android.feature.network.friend.FriendService
+import com.legacy.legacy_android.feature.network.friend.SearchFriendResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -114,6 +115,21 @@ class FriendRepository @Inject constructor(
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e("FriendRepository", "친구 삭제 실패: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun searchFriend(nickname: String): Result<List<SearchFriendResponse>> {
+        return try {
+            val response = friendService.searchFriends(nickname)
+            val data = response.data
+            if (data != null) {
+                Result.success(data)
+            } else {
+                Result.failure(NullPointerException("친구 검색 데이터가 null입니다."))
+            }
+        } catch (e: Exception) {
+            Log.e("FriendRepository", "친구 검색 실패: ${e.message}", e)
             Result.failure(e)
         }
     }

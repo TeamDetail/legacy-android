@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+@Stable
 class HomeViewModel @Inject constructor(
     private val ruinsRepository: RuinsRepository,
     private val blockRepository: BlockRepository,
@@ -89,10 +90,6 @@ class HomeViewModel @Inject constructor(
         quizAnswers.add(QuizAnswer(quizId, answer))
     }
 
-    fun addSelectedId(id: Int) {
-        uiState = uiState.copy(selectedId = uiState.selectedId + id)
-    }
-
     fun clearQuizAnswers() {
         quizAnswers.clear()
     }
@@ -105,10 +102,11 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(selectedRuinsDetail = ruin)
     }
 
-
     fun fetchRuinsDetail(ids: List<Int>) {
+        uiState = uiState.copy(ruinsDetail = null)
+        uiState = uiState.copy(selectedRuinsDetail = null)
         if (ids.isEmpty()) {
-            uiState = uiState.copy(ruinsDetail = emptyList())
+            uiState = uiState.copy(ruinsDetail = null)
             return
         }
 
@@ -196,7 +194,7 @@ class HomeViewModel @Inject constructor(
                 isSearchLoading = true
             )
 
-            ruinsRepository.getSearchRuins(name)
+            ruinsRepository.getSearchRuins(name.trim())
                 .onSuccess { ruins ->
                     uiState = uiState.copy(createSearchRuins = ruins)
                 }

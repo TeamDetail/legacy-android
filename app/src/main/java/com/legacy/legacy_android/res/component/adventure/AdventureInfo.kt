@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -49,6 +50,7 @@ fun AdventureInfo(
     val scaffoldState = rememberBottomSheetScaffoldState()
     val pagerState = rememberPagerState(pageCount = { data?.size ?: 0 })
     val interactionSource = remember { MutableInteractionSource() }
+
 
     LaunchedEffect(data?.firstOrNull()?.ruinsId) {
         data?.firstOrNull()?.let {
@@ -101,12 +103,13 @@ fun AdventureInfo(
 
                     HorizontalPager(
                         state = pagerState,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) { page ->
                         val currentData = data?.getOrNull(page)
                         val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
 
-                        val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                        val pageOffset =
+                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
                         val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
                         val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
 
@@ -228,23 +231,34 @@ private fun RuinsHeader(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier.fillMaxWidth(0.5f)
         ) {
-            Text(
-                text = "유적지 탐험",
-                color = White,
-                style = AppTextStyles.Headline.bold
-            )
+            // 유적지 탐험 타이틀
+            if (currentData == null) {
+                SkeletonBox(
+                    modifier = Modifier
+                        .height(28.dp)
+                        .fillMaxWidth(0.6f)
+                        .clip(RoundedCornerShape(4.dp))
+                )
+            } else {
+                Text(
+                    text = "유적지 탐험",
+                    color = White,
+                    style = AppTextStyles.Headline.bold
+                )
+            }
 
+            // 유적지 ID
             when {
                 currentData == null -> {
                     SkeletonBox(
                         modifier = Modifier
-                            .height(24.dp)
+                            .height(20.dp)
                             .fillMaxWidth(0.3f)
                             .clip(RoundedCornerShape(4.dp))
                     )
                 }
                 currentData.ruinsId == 0 -> {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
                 else -> {
                     Text(
@@ -255,17 +269,18 @@ private fun RuinsHeader(
                 }
             }
 
+            // 유적지 이름
             when {
                 currentData == null -> {
                     SkeletonBox(
                         modifier = Modifier
-                            .height(24.dp)
-                            .fillMaxWidth(0.6f)
+                            .height(28.dp)
+                            .fillMaxWidth(0.7f)
                             .clip(RoundedCornerShape(4.dp))
                     )
                 }
                 currentData.name.isBlank() -> {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(28.dp))
                 }
                 else -> {
                     Text(
@@ -275,10 +290,20 @@ private fun RuinsHeader(
                 }
             }
 
-            StarRating(
-                rating = currentData?.averageRating ?: 0,
-                commentCount = currentData?.countComments?.toString() ?: "0"
-            )
+            // 별점 및 댓글 수
+            if (currentData == null) {
+                SkeletonBox(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .fillMaxWidth(0.5f)
+                        .clip(RoundedCornerShape(4.dp))
+                )
+            } else {
+                StarRating(
+                    rating = currentData.averageRating,
+                    commentCount = currentData.countComments.toString()
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
             Box(
@@ -289,6 +314,7 @@ private fun RuinsHeader(
             )
             Spacer(modifier = Modifier.height(4.dp))
 
+            // 빈 공간
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 if (currentData == null) {
                     SkeletonBox(
@@ -311,19 +337,29 @@ private fun RuinsHeader(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            CustomButton(
-                onClick = {
-                    viewModel.updateIsCommenting(true)
-                    viewModel.setCommentValue("")
-                },
-                text = "한줄평 남기기",
-                modifier = Modifier.fillMaxWidth(),
-                borderColor = Line_Netural,
-                textColor = Label_Netural,
-                backgroundColor = Fill_Normal,
-                contentPadding = PaddingValues(vertical = 8.dp),
-                fontSize = AppTextStyles.Caption2.Bold.fontSize
-            )
+            // 한줄평 남기기 버튼
+            if (currentData == null) {
+                SkeletonBox(
+                    modifier = Modifier
+                        .height(36.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            } else {
+                CustomButton(
+                    onClick = {
+                        viewModel.updateIsCommenting(true)
+                        viewModel.setCommentValue("")
+                    },
+                    text = "한줄평 남기기",
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Line_Netural,
+                    textColor = Label_Netural,
+                    backgroundColor = Fill_Normal,
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    fontSize = AppTextStyles.Caption2.Bold.fontSize
+                )
+            }
         }
 
         RuinsImage(currentData)
@@ -372,7 +408,12 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
     ) {
         when {
             currentData == null -> {
-                SkeletonBox(modifier = Modifier.matchParentSize())
+                SkeletonBox(
+                    modifier = Modifier
+                        .height(220.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                )
             }
             currentData.ruinsImage.isBlank() -> {
                 Spacer(modifier = Modifier.matchParentSize())
@@ -399,6 +440,36 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
                         .background(Background_Normal.copy(alpha = 0.5f))
                         .clip(RoundedCornerShape(12.dp))
                 )
+
+                // 카테고리 (상단)
+                Column (
+                    modifier = Modifier.padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ){
+                    Text(
+                        text = currentData.card!!.nationAttributeName,
+                        modifier = Modifier
+                            .background(Primary, shape = RoundedCornerShape(24.dp))
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        style = AppTextStyles.Label.Bold
+                    )
+                    Text(
+                        text = currentData.card.lineAttributeName,
+                        modifier = Modifier
+                            .background(Blue_Netural, shape = RoundedCornerShape(24.dp))
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        style = AppTextStyles.Label.Bold
+                    )
+                    Text(
+                        text = currentData.card.regionAttributeName,
+                        modifier = Modifier
+                            .background(Red_Netural, shape = RoundedCornerShape(24.dp))
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        style = AppTextStyles.Label.Bold
+                    )
+                }
+
+                // 유적지 이름 (하단)
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -419,13 +490,17 @@ private fun RuinsDescription(currentData: RuinsIdResponse?) {
         currentData == null -> {
             SkeletonBox(
                 modifier = Modifier
-                    .height(60.dp)
+                    .height(80.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp))
             )
         }
         currentData.description.isBlank() -> {
-            Spacer(modifier = Modifier.height(60.dp))
+            Text(
+                text = "설명글이 없습니다.",
+                style = AppTextStyles.Body2.medium,
+                color = Label_Alternative
+            )
         }
         else -> {
             Text(
@@ -464,7 +539,29 @@ private fun CommentsSection(
             }
         }
         viewModel.uiState.comments.isNullOrEmpty() -> {
-            Spacer(modifier = Modifier.height(40.dp))
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "남겨진 한줄평이 없습니다..",
+                    style = AppTextStyles.Headline.bold
+                )
+                Spacer(Modifier.height(12.dp))
+                CustomButton(
+                    onClick = {
+                        viewModel.updateIsCommenting(true)
+                        viewModel.setCommentValue("")
+                    },
+                    text = "유적지에 첫 한줄평 남기기",
+                    textStyle = AppTextStyles.Caption1.Bold,
+                    textColor = Label_Netural,
+                    borderColor = Line_Alternative,
+                    modifier = Modifier.wrapContentWidth()
+                )
+                Spacer(Modifier.height(30.dp))
+            }
         }
         else -> {
             viewModel.uiState.comments?.forEach { comment ->

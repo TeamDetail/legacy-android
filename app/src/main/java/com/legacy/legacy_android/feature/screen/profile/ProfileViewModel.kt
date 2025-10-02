@@ -81,7 +81,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val result = userRepository.getInventory()
             result.onSuccess {
-                Log.d("UserRepository", "인벤토리 불러오기 성공: $it")
                 uiState = uiState.copy(
                     myInventory = it
                 )
@@ -116,7 +115,6 @@ class ProfileViewModel @Inject constructor(
             fetchMyInventory()
             val result = userRepository.openCardPack(id = uiState.selectedItem!!.itemId, count = uiState.packOpenCount)
             result.onSuccess {
-                Log.d("UserRepository", "카드팩 열기 성공: $it")
                 uiState = uiState.copy(
                     openCardResponse = it
                 )
@@ -130,7 +128,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val result = userRepository.getTitles()
             result.onSuccess {
-                Log.d("UserRepository", "칭호 불러오기 성공: $it")
                 uiState = uiState.copy(
                     titleList = it
                 )

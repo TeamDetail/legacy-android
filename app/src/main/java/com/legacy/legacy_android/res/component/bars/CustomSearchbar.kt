@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -52,12 +53,12 @@ fun CustomSearchBar(
             }
         ),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Fill_Normal,
-            unfocusedContainerColor = Fill_Normal,
-            disabledContainerColor = Fill_Normal,
-            focusedIndicatorColor = Fill_Normal,
-            unfocusedIndicatorColor = Fill_Normal,
-            disabledIndicatorColor = Fill_Normal,
+            focusedContainerColor = Background_Normal,
+            unfocusedContainerColor = Background_Normal,
+            disabledContainerColor = Background_Normal,
+            focusedIndicatorColor = Background_Normal,
+            unfocusedIndicatorColor = Background_Normal,
+            disabledIndicatorColor = Background_Normal,
             focusedPlaceholderColor = Label,
             unfocusedPlaceholderColor = Label,
             focusedLeadingIconColor = Label,

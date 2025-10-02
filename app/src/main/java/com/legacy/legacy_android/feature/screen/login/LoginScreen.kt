@@ -33,8 +33,14 @@ import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.legacy.legacy_android.res.component.button.LoginButton
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Black
+import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label
+import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Netural80
+import com.legacy.legacy_android.ui.theme.White
 
 @Composable
 fun LoginScreen(
@@ -76,7 +82,7 @@ fun LoginScreen(
                 )
             }
             Column(
-                verticalArrangement = Arrangement.spacedBy(25.dp, Alignment.Top),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally,
             )
             {
@@ -84,91 +90,85 @@ fun LoginScreen(
                     text = "소셜 로그인하고 곧바로 뛰어드세요!",
                     style = AppTextStyles.Body2.bold
                 )
-                Box(
-                    modifier = modifier
-                        .width(321.dp)
-                        .height(54.dp)
-                        .background(Color(0xFFFEE500), shape = RoundedCornerShape(16.dp))
-                        .clickable (
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ){
-                            if (!viewModel.loadingState.value) {
-                                viewModel.loginWithKakao(
-                                    context = context,
-                                    navHostController = navHostController,
-                                    onFailure = { error ->
-                                        Log.e("LoginScreen", "카카오 로그인 실패", error)
-                                    }
-                                )
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (!viewModel.loadingState.value) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.kakao),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(20.dp)
+                LoginButton(
+                    onClick = {
+                        if (!viewModel.loadingState.value) {
+                            viewModel.loginWithKakao(
+                                context = context,
+                                navHostController = navHostController,
+                                onFailure = { error ->
+                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
+                                }
                             )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                text = "카카오 로그인",
-                                style = AppTextStyles.Body2.medium.merge(
-                                    TextStyle(
-                                        color = Color(0xFF181600),
-                                        textAlign = TextAlign.Center,
-                                    )
-                                )
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Box(modifier = Modifier.width(20.dp))
                         }
-                    }else{
-                        Text("로그인 중입니다...",
-                            style = AppTextStyles.Body2.medium.merge(
-                                TextStyle(
-                                    color = Color(0xFF181600),
-                                    textAlign = TextAlign.Center,
-                                )
+                    },
+                    icon = painterResource(R.drawable.kakao),
+                    name = "Kakao",
+                    bgColor = Color(0xFFFEE500),
+                    color = Black,
+                    viewModel = viewModel
+                )
+                LoginButton(
+                    onClick = {
+                        if (!viewModel.loadingState.value) {
+                            viewModel.loginWithKakao(
+                                context = context,
+                                navHostController = navHostController,
+                                onFailure = { error ->
+                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
+                                }
                             )
-                        )
-                    }
-                }
+                        }
+                    },
+                    icon = painterResource(R.drawable.google),
+                    name = "Google",
+                    bgColor = White,
+                    color = Black,
+                    viewModel = viewModel
+                )
+                LoginButton(
+                    onClick = {
+                        if (!viewModel.loadingState.value) {
+                            viewModel.loginWithKakao(
+                                context = context,
+                                navHostController = navHostController,
+                                onFailure = { error ->
+                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
+                                }
+                            )
+                        }
+                    },
+                    icon = painterResource(R.drawable.apple),
+                    name = "Apple",
+                    bgColor = Fill_Normal,
+                    color = Label,
+                    viewModel = viewModel
+                )
             }
         }
     }
-
-    Box(modifier = modifier.fillMaxSize()) {
+    Column (modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
             modifier = modifier
-                .align(Alignment.Center)
-                .padding(top = 800.dp)
+                .padding(bottom = 48.dp)
         ) {
             Text(
                 text = "서비스 약관",
                 style = AppTextStyles.Label.Medium.merge(
-                    color = Netural80,
+                    color = Label_Alternative,
                 )
             )
             Text(
                 text = " · ",
                 style = AppTextStyles.Label.Medium.merge(
-                    color = Netural80,
+                    color = Label_Alternative,
                 )
             )
             Text(
                 text = "개인정보처리방침",
                 style = AppTextStyles.Label.Medium.merge(
-                    color = Netural80,
+                    color = Label_Alternative,
                 )
             )
         }

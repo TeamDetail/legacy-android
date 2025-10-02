@@ -34,7 +34,7 @@ fun CustomButton(
     contentPadding: PaddingValues = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
     fontSize: TextUnit = 16.sp,
     cornerRadius: Int = 12,
-    textStyle: TextStyle = AppTextStyles.Body1.bold // 기본값
+    textStyle: TextStyle = AppTextStyles.Body1.bold
 ) {
     // 바깥 테두리
     Box(

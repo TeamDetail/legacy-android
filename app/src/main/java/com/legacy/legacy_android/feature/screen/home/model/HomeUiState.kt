@@ -23,7 +23,7 @@ data class HomeUiState(
     val hintStatus: HintStatus = HintStatus.NO,
     val quizStatus: QuizStatus = QuizStatus.NONE,
     val visibleRuins: List<RuinsMapResponse> = emptyList(),
-    val ruinsDetail: List<RuinsIdResponse>? = emptyList(),
+    val ruinsDetail: List<RuinsIdResponse>? = null,
     val selectedRuinsDetail: RuinsIdResponse? = null,
     val quizData: List<GetQuizResponse>? = null,
     val blocks: List<GetBlockResponse> = emptyList(),

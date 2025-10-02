@@ -10,6 +10,7 @@ plugins {
 }
 
 android {
+
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
@@ -59,6 +60,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_metrics",
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.buildDir.absolutePath}/compose_metrics"
+        )
     }
 
     buildFeatures {
@@ -68,11 +75,11 @@ android {
 }
 
 dependencies {
-    // Versions
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
 
-    // Firebase (BOM으로 통합 관리)
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")

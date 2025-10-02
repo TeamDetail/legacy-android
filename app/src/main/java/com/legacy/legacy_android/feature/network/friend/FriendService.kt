@@ -29,4 +29,7 @@ interface FriendService {
     suspend fun acceptRequest(@Path("requestId") requestId: Long): BaseResponse<String>
     @DELETE("/friends/{friendId}")
     suspend fun deleteFriend(@Path("friendId") friendId: Long): BaseResponse<String>
+
+    @GET("/friends/search")
+    suspend fun searchFriends(@Query("nickname") nickname: String): BaseResponse<List<SearchFriendResponse>>
 }

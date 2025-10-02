@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModel @Inject constructor(
     private val friendRepository: FriendRepository
-): ViewModel() {
+) : ViewModel() {
 
     var uiState by mutableStateOf(FriendUiState())
         private set
@@ -124,7 +124,7 @@ class FriendViewModel @Inject constructor(
         }
     }
 
-    fun deleteFriend(friendId: Long){
+    fun deleteFriend(friendId: Long) {
         viewModelScope.launch {
             val result = friendRepository.deleteFriend(friendId)
             result.onSuccess {
@@ -134,11 +134,20 @@ class FriendViewModel @Inject constructor(
         }
     }
 
-    fun setDeleteFriend(value: Boolean){
+    fun setDeleteFriend(value: Boolean) {
         uiState = uiState.copy(setDeleteFriend = value)
     }
 
-    fun setCurrentFriend(value: FriendResponse){
+    fun setCurrentFriend(value: FriendResponse) {
         uiState = uiState.copy(currentFriend = value)
+    }
+
+    fun searchFriend() {
+        viewModelScope.launch {
+            val result = friendRepository.searchFriend(uiState.searchFriend.value)
+            result.onSuccess { friendList ->
+                uiState = uiState.copy(searchFriendList = friendList)
+            }
+        }
     }
 }

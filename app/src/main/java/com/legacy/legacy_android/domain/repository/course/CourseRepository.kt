@@ -94,7 +94,6 @@ class CourseRepository @Inject constructor(
             val response = searchCourseService.getSearchCourse(name)
             val data = response.data
             if (data != null) {
-                println("search Course성공")
                 Result.success(data)
             } else {
                 Result.failure(NullPointerException("SearchCourse data null"))
@@ -111,7 +110,6 @@ class CourseRepository @Inject constructor(
             if (response.status == 200 || response.status == 201) {
                 val body = response.data
                 if (body != null) {
-                    println("Course 만들기 성공")
                     Result.success(body)
                 } else {
                     Result.failure(Exception("Course 만들기 성공했지만 data가 null임"))
@@ -130,7 +128,6 @@ class CourseRepository @Inject constructor(
             val response = courseByIdService.getCourseById(id)
             val data = response.data
             if (data != null) {
-                println("getCourseById 성공")
                 Result.success(data)
             } else {
                 Result.failure(NullPointerException("CourseById data null"))

@@ -9,3 +9,12 @@ data class FriendResponse(
     val isMutualFriend: Boolean,
     val level: Int
 )
+
+data class SearchFriendResponse(
+    val userId: Long,
+    val nickname: String,
+    val profileImage: String,
+    val level: Int,
+    val friendCode: String,
+    val isAlreadyFriend: Boolean
+)

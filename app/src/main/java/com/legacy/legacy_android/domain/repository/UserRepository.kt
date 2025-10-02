@@ -30,7 +30,6 @@ class UserRepository @Inject constructor(
             val response = getMeService.getMe()
             _profile.value = response.data
             hasLoaded = true
-            Log.d("UserRepository", "프로필 로드 성공: ${response.data?.nickname}")
         } catch (error: Exception) {
             Log.e("UserRepository", "프로필 로드 실패", error)
             _profile.value = null
@@ -41,7 +40,6 @@ class UserRepository @Inject constructor(
     suspend fun getInventory(): Result<List<InventoryItem>?>{
         return try {
             val response = getMeService.getInventory()
-            Log.d("UserRepository", "인벤토리 로드 성공: ${response.data}")
             Result.success(response.data)
         } catch (error: Exception) {
             Log.e("UserRepository", "인벤토리 로드 실패", error)
@@ -52,7 +50,6 @@ class UserRepository @Inject constructor(
     suspend fun openCardPack(id: Int, count:Int): Result<List<Cards>?>{
         return try{
             val response = getMeService.cardOpen(CardOpenRequest(id, count))
-            Log.d("UserRepository", "카드 오픈 성공: ${response.data}")
             Result.success(response.data)
         }catch (error: Exception){
             Log.e("UserRepository", "카드 오픈 실패", error)
@@ -68,7 +65,6 @@ class UserRepository @Inject constructor(
     suspend fun getTitles(): Result<List<Title>?>{
         return try {
             val response = getMeService.getTitles()
-            Log.d("UserRepository", "타이틀 로드 성공: ${response.data}")
             Result.success(response.data)
         } catch (error: Exception) {
             Log.e("UserRepository", "타이틀 로드 실패", error)
