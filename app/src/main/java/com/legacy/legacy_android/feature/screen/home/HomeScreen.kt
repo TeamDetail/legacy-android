@@ -312,8 +312,7 @@ fun HomeScreen(
                     data = viewModel.uiState.quizData ?: emptyList(),
                     quizStatus = viewModel.uiState.quizStatus,
                     viewModel = viewModel,
-                    image = viewModel.uiState.selectedRuinsDetail?.ruinsImage,
-                    name = viewModel.uiState.selectedRuinsDetail?.name,
+                    ruin = viewModel.uiState.selectedRuinsDetail
                 )
                 if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
                     CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {

@@ -2,14 +2,12 @@ package com.legacy.legacy_android.feature.screen.course
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,13 +29,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.course.PlusButton
 import com.legacy.legacy_android.res.component.course.PlusInput
@@ -52,9 +48,7 @@ import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Label_Assitive
-import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.White
-import com.legacy.legacy_android.ui.theme.bitbit
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -235,41 +229,14 @@ fun CreateCourse(modifier: Modifier, viewModel: CourseViewModel, navController: 
                                     color = White
                                 )
                             }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.9f)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .padding(5.dp)
-                            ) {
-                                AsyncImage(
-                                    model = item.ruinsImage,
-                                    contentDescription = item.name,
-                                    modifier = Modifier
-                                        .height(144.dp)
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .border(1.dp, Line_Netural, RoundedCornerShape(12.dp)),
-                                    contentScale = ContentScale.Crop,
-                                    error = painterResource(R.drawable.school_img),
-                                    placeholder = painterResource(R.drawable.school_img)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .width(144.dp)
-                                        .background(Background_Normal.copy(alpha = 0.5f))
-                                        .padding(8.dp)
-                                ) {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.BottomEnd),
-                                        text = item.name,
-                                        fontFamily = bitbit,
-                                        fontSize = 12.sp,
-                                        color = Label
-                                    )
-                                }
-                            }
+                            RuinImage(
+                                image = item.ruinsImage,
+                                name = item.name,
+                                nationAttributeName = item.card!!.nationAttributeName,
+                                regionAttributeName = item.card.regionAttributeName,
+                                lineAttributeName = item.card.lineAttributeName,
+                                height = 180
+                            )
                         }
                     }
                 }

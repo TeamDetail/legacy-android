@@ -12,18 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import com.legacy.legacy_android.ui.theme.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
+import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
 import com.legacy.legacy_android.feature.screen.home.model.HintStatus
 import com.legacy.legacy_android.feature.screen.home.model.QuizStatus
+import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.service.RememberClickSound
 import kotlinx.coroutines.delay
@@ -33,8 +32,7 @@ fun QuizBox(
     data: List<GetQuizResponse>,
     quizStatus: QuizStatus,
     viewModel: HomeViewModel,
-    name: String?,
-    image: String?
+    ruin: RuinsIdResponse?
 ) {
 
     val (soundPool, soundId) = RememberClickSound()
@@ -58,7 +56,10 @@ fun QuizBox(
                         .padding(vertical = 27.dp, horizontal = 24.dp)
                         .fillMaxSize()
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             repeat(3) { index ->
                                 Box(
@@ -73,7 +74,10 @@ fun QuizBox(
                         }
                     }
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(text = "Q${quizNum.intValue + 1}", style = AppTextStyles.Title2.bold)
                         Text(
                             text = data[quizNum.intValue].ruinsName,
@@ -91,7 +95,10 @@ fun QuizBox(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             data[quizNum.intValue].optionValue.forEach { option ->
                                 Box(
@@ -215,12 +222,17 @@ fun QuizBox(
                     showCollection.value = true
                 }
             } else {
-                CollectionView(viewModel, name, image)
+                CollectionView(viewModel, ruin)
             }
         }
 
         QuizStatus.RETRY -> {
-            WrongView(selectedOption = selectedOption, showCollection = showCollection, viewModel = viewModel, quizNum = quizNum)
+            WrongView(
+                selectedOption = selectedOption,
+                showCollection = showCollection,
+                viewModel = viewModel,
+                quizNum = quizNum
+            )
         }
 
         QuizStatus.LOADING -> {
@@ -301,9 +313,8 @@ fun CorrectView(
 @Composable
 fun CollectionView(
     viewModel: HomeViewModel,
-    name: String?,
-    image: String?
-){
+    data: RuinsIdResponse?,
+) {
     LaunchedEffect(Unit) {
         delay(5000)
         viewModel.clearQuizAnswers()
@@ -323,7 +334,7 @@ fun CollectionView(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .padding(vertical = 27.dp, horizontal = 37.dp)
-        )   {
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
@@ -331,64 +342,22 @@ fun CollectionView(
                     .clip(RoundedCornerShape(12.dp))
                     .padding(5.dp)
             ) {
-                AsyncImage(
-                    model = image,
-                    contentDescription = "유적지 이미지",
-                    modifier = Modifier
-                        .border(2.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .matchParentSize(),
-                    contentScale = ContentScale.Crop,
-                    error = painterResource(R.drawable.school_img),
-                    placeholder = painterResource(R.drawable.school_img)
-                )
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(Background_Normal.copy(alpha = 0.5f))
-                        .clip(RoundedCornerShape(12.dp))
-                )
-
-//                    Column(
-//                        verticalArrangement = Arrangement.spacedBy(2.dp),
-//                        modifier = Modifier
-//                            .align(Alignment.TopStart)
-//
-//                    ) {
-//
-//                        // 태그 매핑
-//                        tags?.forEach { item ->
-//                            Box(
-//                                modifier = Modifier
-//                                    .background(Purple_Netural, shape = RoundedCornerShape(24.dp))
-//                            ) {
-//                                Text(
-//                                    text = item,
-//                                    style = AppTextStyles.Label.Bold,
-//                                    modifier = Modifier
-//                                        .padding(horizontal = 12.dp, vertical = 4.dp)
-//                                )
-//                            }
-//                        }
-//                    }
-
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    text = name ?: "",
-                    fontFamily = bitbit,
-                    fontSize = 16.sp,
-                    color = Label
+                RuinImage(
+                    image = data!!.ruinsImage,
+                    name = data.name,
+                    nationAttributeName = data.card!!.nationAttributeName,
+                    regionAttributeName = data.card.regionAttributeName,
+                    lineAttributeName = data.card.lineAttributeName,
+                    height = 400,
                 )
             }
-        }
             Text(
                 text = "카드를 획득했어요!",
                 style = AppTextStyles.Title2.bold
             )
         }
     }
+}
 
 @Composable
 fun WrongView(
@@ -396,7 +365,7 @@ fun WrongView(
     quizNum: MutableState<Int>,
     showCollection: MutableState<Boolean>,
     viewModel: HomeViewModel,
-){
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -410,7 +379,7 @@ fun WrongView(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .padding(vertical = 27.dp, horizontal = 37.dp)
-        )   {
+        ) {
             Image(
                 painter = painterResource(R.drawable.sad),
                 contentDescription = "sad",
@@ -421,7 +390,8 @@ fun WrongView(
                 style = AppTextStyles.Title2.bold,
                 textAlign = TextAlign.Center,
             )
-            val wrongText = viewModel.uiState.wrongAnswers.joinToString(", ") { "${it + 1}번" }
+            val wrongText =
+                viewModel.uiState.wrongAnswers.joinToString(", ") { "${it + 1}번" }
             Text(
                 text = "$wrongText 문제의 답이 잘못되었어요.\n다시 도전하면 맞출 수 있을 거예요!",
                 style = AppTextStyles.Headline.medium,
@@ -443,7 +413,7 @@ fun WrongView(
                             viewModel.updateQuizStatus(QuizStatus.NONE)
                         }
                     )
-            ){
+            ) {
                 Text(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 8.dp),

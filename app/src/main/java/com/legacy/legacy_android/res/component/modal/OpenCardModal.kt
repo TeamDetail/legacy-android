@@ -2,6 +2,8 @@
 
 package com.legacy.legacy_android.res.component.modal
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,16 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.google.accompanist.pager.*
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
+import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.service.RememberClickSound
 import com.legacy.legacy_android.ui.theme.*
 
@@ -60,7 +62,7 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "카드 획득",
+                    text = "카드 획득!!",
                     style = AppTextStyles.Title2.bold,
                 )
                 Text(
@@ -69,7 +71,6 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                     color = Label_Alternative
                 )
 
-                // HorizontalPager
                 HorizontalPager(
                     count = openCards.size,
                     state = pagerState,
@@ -89,49 +90,69 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                         .background(Fill_Normal, RoundedCornerShape(20.dp))
                 ) { page ->
                     val card = openCards[page]
+
+                    var isFlipped by remember { mutableStateOf(false) }
+
+                    val rotation by animateFloatAsState(
+                        targetValue = if (isFlipped) 180f else 0f,
+                        animationSpec = tween(
+                            durationMillis = 600,
+                            easing = FastOutSlowInEasing
+                        ),
+                        label = "card_flip"
+                    )
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.9f)
                             .clip(RoundedCornerShape(12.dp))
+                            .clickable {
+                                if (!isFlipped) {
+                                    isFlipped = true
+                                    soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                                }
+                            }
+                            .graphicsLayer {
+                                rotationY = rotation
+                                cameraDistance = 12f * density
+                            }
                     ) {
-                        AsyncImage(
-                            model = card.cardImageUrl,
-                            contentDescription = card.cardName,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(20.dp))
-                                .border(1.dp, Line_Netural, RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Fit,
-                            error = painterResource(R.drawable.school_img),
-                            placeholder = painterResource(R.drawable.school_img)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .width(144.dp)
-                                .background(Background_Normal.copy(alpha = 0.5f))
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.BottomEnd),
-                                text = card.cardName,
-                                fontFamily = bitbit,
-                                fontSize = 20.sp,
-                                color = Label
+                        if (rotation <= 90f) {
+                            Image(
+                                painter = painterResource(R.drawable.unknown),
+                                contentDescription = "카드 뒷면",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
                             )
+                        }
+                        else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .graphicsLayer {
+                                        rotationY = 180f
+                                    }
+                            ) {
+                                RuinImage(
+                                    image = card.cardImageUrl,
+                                    height = 280,
+                                    name = card.cardName,
+                                    lineAttributeName = card.lineAttributeName,
+                                    nationAttributeName = card.nationAttributeName,
+                                    regionAttributeName = card.regionAttributeName,
+                                )
+                            }
                         }
                     }
                 }
 
-                // 페이지 번호 표시
                 Text(
                     text = "${pagerState.currentPage + 1} / ${openCards.size}",
                     style = AppTextStyles.Caption1.Bold,
                     color = Label_Alternative
                 )
 
-                // 마지막 페이지일 때만 닫기 버튼
                 if (pagerState.currentPage == openCards.lastIndex && openCards.isNotEmpty()) {
                     Box(
                         contentAlignment = Alignment.Center,

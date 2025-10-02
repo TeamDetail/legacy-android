@@ -415,69 +415,19 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
                         .clip(RoundedCornerShape(12.dp))
                 )
             }
+
             currentData.ruinsImage.isBlank() -> {
                 Spacer(modifier = Modifier.matchParentSize())
             }
+
             else -> {
-                AsyncImage(
-                    model = currentData.ruinsImage,
-                    contentDescription = "유적지 이미지",
-                    modifier = Modifier
-                        .height(220.dp)
-                        .border(
-                            2.dp,
-                            color = Line_Netural,
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop,
-                    error = painterResource(R.drawable.school_img),
-                    placeholder = painterResource(R.drawable.school_img)
-                )
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(Background_Normal.copy(alpha = 0.5f))
-                        .clip(RoundedCornerShape(12.dp))
-                )
-
-                // 카테고리 (상단)
-                Column (
-                    modifier = Modifier.padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ){
-                    Text(
-                        text = currentData.card!!.nationAttributeName,
-                        modifier = Modifier
-                            .background(Primary, shape = RoundedCornerShape(24.dp))
-                            .padding(horizontal = 12.dp, vertical = 2.dp),
-                        style = AppTextStyles.Label.Bold
-                    )
-                    Text(
-                        text = currentData.card.lineAttributeName,
-                        modifier = Modifier
-                            .background(Blue_Netural, shape = RoundedCornerShape(24.dp))
-                            .padding(horizontal = 12.dp, vertical = 2.dp),
-                        style = AppTextStyles.Label.Bold
-                    )
-                    Text(
-                        text = currentData.card.regionAttributeName,
-                        modifier = Modifier
-                            .background(Red_Netural, shape = RoundedCornerShape(24.dp))
-                            .padding(horizontal = 12.dp, vertical = 2.dp),
-                        style = AppTextStyles.Label.Bold
-                    )
-                }
-
-                // 유적지 이름 (하단)
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    text = currentData.name,
-                    fontFamily = bitbit,
-                    fontSize = 16.sp,
-                    color = Label
+                RuinImage(
+                    image = currentData.ruinsImage,
+                    name = currentData.name,
+                    nationAttributeName = currentData.card!!.nationAttributeName,
+                    regionAttributeName = currentData.card.regionAttributeName,
+                    lineAttributeName = currentData.card.lineAttributeName,
+                    height = 220
                 )
             }
         }

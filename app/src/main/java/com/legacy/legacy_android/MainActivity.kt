@@ -63,6 +63,7 @@ import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.content.edit
 
 enum class ScreenNavigate {
     LOGIN,
@@ -306,12 +307,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun clearTokens() {
         getSharedPreferences("auth", Context.MODE_PRIVATE)
-            .edit()
-            .remove("access_token")
-            .remove("refresh_token")
-            .apply()
+            .edit {
+                remove("access_token").remove("refresh_token")
+            }
     }
-    
+
     private fun determineStartDestination(): String {
         val accessToken = getAccToken(this)
         val refreshToken = getRefToken(this)

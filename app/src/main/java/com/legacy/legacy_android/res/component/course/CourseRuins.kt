@@ -2,7 +2,6 @@ package com.legacy.legacy_android.res.component.course
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,29 +20,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.ruins.id.CourseRuinsResponse
+import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Alternative
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Alternative
-import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.White
-import com.legacy.legacy_android.ui.theme.bitbit
 
 @Composable
 fun CourseRuins(
@@ -163,31 +157,13 @@ fun CourseRuins(
                         .matchParentSize()
                 )
             } else {
-                AsyncImage(
-                    model = data.data.ruinsImage,
-                    contentDescription = "유적지 이미지",
-                    modifier = Modifier
-                        .matchParentSize()
-                        .border(2.dp, color = Line_Netural, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop,
-                    error = painterResource(R.drawable.school_img),
-                    placeholder = painterResource(R.drawable.school_img)
-                )
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(Background_Normal.copy(alpha = 0.5f))
-                        .clip(RoundedCornerShape(12.dp))
-                )
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    text = data.data.name,
-                    fontFamily = bitbit,
-                    fontSize = 16.sp,
-                    color = Label
+                RuinImage(
+                    image = data.data.ruinsImage,
+                    height = 180,
+                    name = data.data.name,
+                    nationAttributeName = data.data.card!!.nationAttributeName,
+                    regionAttributeName = data.data.card.regionAttributeName,
+                    lineAttributeName = data.data.card.lineAttributeName,
                 )
             }
         }

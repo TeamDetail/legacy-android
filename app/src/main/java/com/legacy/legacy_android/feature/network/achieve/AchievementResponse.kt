@@ -32,5 +32,6 @@ data class CardPack(
     val cardpackContent: String,
     val price: Int,
     val storeType: String,
-    val cardpackId: Int
+    val cardpackId: Int,
+    val storeSubType: String,
 )
