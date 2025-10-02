@@ -15,15 +15,13 @@ import com.legacy.legacy_android.ui.theme.Background_Netural
 fun RankingTable(
     modifier: Modifier,
     rankingData: List<RankingResponse>
-){
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Background_Netural, shape = RoundedCornerShape(12.dp))
-    )
-            {
-
-        Column (
+    ) {
+        Column(
             modifier = modifier.padding(vertical = 12.dp)
         ) {
             rankingData.forEachIndexed { index, item ->

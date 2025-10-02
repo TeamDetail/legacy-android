@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.feature.data.user.clearToken
+import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.ui.theme.Background_Normal
 
 @Composable
@@ -73,6 +74,7 @@ fun OptionBar(
                 modifier = iconModifier.clickable {
                     setIsTabClicked()
                     coroutineScope.launch {
+                        Nav.setNavStatus(2)
                         clearToken(context)
                         navHostController.navigate("login") {
                         }

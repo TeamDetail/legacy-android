@@ -12,6 +12,8 @@ import com.legacy.legacy_android.feature.network.user.InventoryItem
 import com.legacy.legacy_android.feature.network.user.UserData
 import com.legacy.legacy_android.feature.screen.profile.model.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -92,17 +94,14 @@ class ProfileViewModel @Inject constructor(
         println(uiState.selectedItem)
     }
 
-    fun fetchMyCollection(region: String){
+    fun fetchMyCollection() {
         viewModelScope.launch {
-            val result = cardRepository.fetchMyCard(region)
-            result.onSuccess {
-                Log.d("CardRepository", "카드 불러오기 성공: $region $it")
-                uiState = uiState.copy(
-                    myCards = it
-                )
-            }.onFailure { e ->
-                Log.e("CardRepository", "카드 불러오기 실패", e)
-            }
+            val cards = uiState.statusList.map { status ->
+                async { cardRepository.fetchMyCard(status) }
+            }.awaitAll()
+
+            val successCards = cards.mapNotNull { it.getOrNull() }
+            uiState = uiState.copy(myCards = successCards)
         }
     }
 

@@ -22,8 +22,7 @@ import com.legacy.legacy_android.ui.theme.Primary_Alternative
 
 @Composable
 fun TitleSelector(
-    count: Int,
-    max: Int,
+    percent: Int,
     onClick: (Int) -> Unit,
     id: Int,
     selectedValue: Int,
@@ -60,7 +59,7 @@ fun TitleSelector(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "$count / $max",
+                    text = "$percent %",
                     color = Label_Netural,
                     style = AppTextStyles.Caption2.Medium
                 )

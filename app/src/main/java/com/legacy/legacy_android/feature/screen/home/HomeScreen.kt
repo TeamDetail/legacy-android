@@ -383,6 +383,7 @@ fun HomeScreen(
             onMapClick = {
                 viewModel.updateSelectedId(-1)
                 viewModel.fetchRuinsDetail(-1)
+                viewModel.initRuinsDetail()
                 viewModel.updateIsCommenting(false)
             },
             properties = MapProperties(
@@ -427,6 +428,7 @@ fun HomeScreen(
                             fillColor = RUIN_FILL_COLOR,
                             clickable = true,
                             onClick = {
+                                viewModel.initRuinsDetail()
                                 viewModel.updateSelectedId(ruin.ruinsId)
                                 viewModel.fetchRuinsDetail(ruin.ruinsId)
                             }

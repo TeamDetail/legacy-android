@@ -58,6 +58,7 @@ import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Blue_Netural
+import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
@@ -77,6 +78,7 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.clearProfile()
         viewModel.fetchProfile()
+        viewModel.fetchMyCollection()
     }
 
     Box(
@@ -197,8 +199,7 @@ fun ProfileScreen(
                         StatusButton(
                             selectedValue = viewModel.uiState.profileStatus,
                             onClick = { viewModel.changeProfileStatus(index)
-                                viewModel.setSelectedItem(null)
-                                if(item == "도감"){viewModel.fetchMyCollection("경기")} },
+                                viewModel.setSelectedItem(null)},
                             text = item,
                             id = index,
                             selectedColor = Primary,
@@ -295,7 +296,7 @@ fun RecordScreen(
         }
         Statbar(
             modifier = modifier,
-            percent = profile?.record?.experience?.exp?.toFloat()?.div(13000) ?: 0f,
+            percent = (profile?.record?.experience?.exp?.toFloat()?.div(13000) ?: 0f).toInt(),
             text = "Lv. ${profile?.level}  ",
             subtext = "${profile?.record?.experience?.exp} / 13000",
             barColor = Red_Normal
@@ -327,7 +328,7 @@ fun RecordScreen(
         }
         Statbar(
             modifier = modifier,
-            percent = profile?.record?.adventure?.allBlocks?.toFloat()?.div(13000) ?: 0f,
+            percent = (profile?.record?.adventure?.allBlocks?.toFloat()?.div(13000) ?: 0f).toInt(),
             text = "총 ${profile?.record?.adventure?.allBlocks}블록 탐험",
             barColor = Blue_Netural
         )
@@ -349,7 +350,6 @@ fun DictionaryScreen(
     modifier: Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ){
-    val statusList = listOf("경기", "강원", "경북", "경남", "전북", "전남", "충북", "충남", "제주")
     Row (
         modifier = modifier.fillMaxSize()
     ){
@@ -361,12 +361,12 @@ fun DictionaryScreen(
                 modifier.fillMaxWidth(0.3f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                statusList.forEachIndexed { index, item ->
+                viewModel.uiState.statusList.forEachIndexed { index, item ->
                     TitleSelector(
-                        viewModel.uiState.myCards?.maxCount ?: 0, 42,
+                        (viewModel.uiState.myCards?.get(index)?.cards?.size ?: 0) * 100 /
+                                (viewModel.uiState.myCards?.get(index)?.maxCount ?: 1),
                         onClick = {
                             viewModel.changeTitleStatus(index)
-                            viewModel.fetchMyCollection(item)
                         },
                         id = index,
                         selectedValue = viewModel.uiState.titleStatus,
@@ -378,7 +378,25 @@ fun DictionaryScreen(
             LazyColumn (
                 modifier = modifier.fillMaxWidth(0.95f).height(1000.dp)
             ) {
-                items(viewModel.uiState.myCards?.cards?.chunked(2) ?: emptyList()) { cardPair ->
+                item {
+                    Statbar(
+                        percent = (viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.size
+                            ?: 0) * 100 /
+                                (viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.maxCount
+                                    ?: 1),
+                        modifier = modifier.height(20.dp),
+                        text = "${
+                            viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.size
+                                ?: 0
+                        }/${
+                            (viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.maxCount
+                                ?: 1)
+                        }",
+                        subtext = "",
+                        barColor = Fill_Netural,
+                    )
+                }
+                items(viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.chunked(2) ?: emptyList()) { cardPair ->
                     Row {
                         cardPair.forEach { card ->
                             DictionaryInfo(

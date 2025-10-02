@@ -102,6 +102,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun initRuinsDetail(){
+        uiState = uiState.copy(ruinsDetail = null)
+    }
+
     fun submitComment() {
         viewModelScope.launch {
             val currentRuinsDetail = uiState.ruinsDetail

@@ -7,10 +7,11 @@ import com.legacy.legacy_android.feature.network.user.InventoryItem
 data class ProfileUiState(
     val profileStatus: Int = 0,
     val titleStatus: Int = 0,
-    val myCards: MyCardResponse? = null,
+    val myCards: List<MyCardResponse>? = null,
     val myInventory: List<InventoryItem>? = null,
     val selectedItem: InventoryItem? = null,
     val cardPackOpen: Boolean = false,
     val packOpenCount: Int = 1,
-    val openCardResponse: List<Cards>? =null
+    val openCardResponse: List<Cards>? =null,
+    val statusList: List<String> = listOf("경기", "강원", "경북", "경남", "전북", "전남", "충북", "충남", "제주")
     )

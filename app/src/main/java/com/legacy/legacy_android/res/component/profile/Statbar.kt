@@ -22,7 +22,7 @@ import com.legacy.legacy_android.ui.theme.Label_Alternative
 @Composable
 fun Statbar(
     modifier: Modifier,
-    percent : Float,
+    percent: Int,
     text: String,
     subtext: String = "",
     barColor: Color
@@ -40,7 +40,7 @@ fun Statbar(
         )
         Box(
             modifier = modifier
-                .fillMaxWidth(percent)
+                .fillMaxWidth(percent.toFloat() / 100f)
                 .fillMaxHeight()
                 .background(color = barColor)
         )
