@@ -3,6 +3,7 @@ package com.legacy.legacy_android.feature.network.friend
 import com.legacy.legacy_android.feature.data.core.BaseResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -10,12 +11,16 @@ import retrofit2.http.Query
 interface FriendService {
     @GET("/friends")
     suspend fun getFriends(): BaseResponse<List<FriendResponse>>
+
     @GET("/friends/sent")
     suspend fun getSentRequests(): BaseResponse<List<FriendReqResponse>>
+
     @GET("/friends/requests")
     suspend fun getReceivedRequests(): BaseResponse<List<FriendReqResponse>>
+
     @GET("/friends/my-code")
     suspend fun getMyCode(): BaseResponse<String>
+
     @POST("/friends/request")
     suspend fun sendRequest(@Query("friendCode") friendCode: String): BaseResponse<String>
 
@@ -27,9 +32,15 @@ interface FriendService {
 
     @POST("/friends/request/{requestId}/accept")
     suspend fun acceptRequest(@Path("requestId") requestId: Long): BaseResponse<String>
+
     @DELETE("/friends/{friendId}")
     suspend fun deleteFriend(@Path("friendId") friendId: Long): BaseResponse<String>
 
     @GET("/friends/search")
     suspend fun searchFriends(@Query("nickname") nickname: String): BaseResponse<List<SearchFriendResponse>>
+
+    @POST("/friends/sync/kakao")
+    suspend fun friendKakao(
+        @Header("Authorization") accessToken: String
+    ): BaseResponse<String>
 }

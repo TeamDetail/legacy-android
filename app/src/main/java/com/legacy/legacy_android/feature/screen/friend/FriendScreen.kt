@@ -73,6 +73,7 @@ fun FriendScreen(
     viewModel: FriendViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
+    val context = LocalContext.current
     val friendList = listOf("목록", "대기 중", "추가")
     val selectedId = Nav.getNavStatus()
     LaunchedEffect(Unit) {

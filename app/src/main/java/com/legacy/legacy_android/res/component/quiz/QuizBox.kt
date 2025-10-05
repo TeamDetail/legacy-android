@@ -37,7 +37,6 @@ fun QuizBox(
 
     val (soundPool, soundId) = RememberClickSound()
     val selectedOption = remember { mutableStateOf<String?>(null) }
-    val quizNum = remember { mutableIntStateOf(0) }
     val showCollection = remember { mutableStateOf(false) }
 
     when (quizStatus) {
@@ -65,7 +64,7 @@ fun QuizBox(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            color = if (quizNum.intValue == index) Primary else Label,
+                                            color = if (viewModel.uiState.quizNum.value == index) Primary else Label,
                                             shape = RoundedCornerShape(100.dp),
                                         )
                                         .size(8.dp)
@@ -78,9 +77,9 @@ fun QuizBox(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "Q${quizNum.intValue + 1}", style = AppTextStyles.Title2.bold)
+                        Text(text = "Q${viewModel.uiState.quizNum.value + 1}", style = AppTextStyles.Title2.bold)
                         Text(
-                            text = data[quizNum.intValue].ruinsName,
+                            text = data[viewModel.uiState.quizNum.value].ruinsName,
                             color = Label_Alternative,
                             style = AppTextStyles.Body1.medium,
                             textAlign = TextAlign.Center,
@@ -89,7 +88,7 @@ fun QuizBox(
                     }
 
                     Text(
-                        text = data[quizNum.intValue].quizProblem,
+                        text = data[viewModel.uiState.quizNum.value].quizProblem,
                         style = AppTextStyles.Title3.bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -100,7 +99,7 @@ fun QuizBox(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            data[quizNum.intValue].optionValue.forEach { option ->
+                            data[viewModel.uiState.quizNum.value].optionValue.forEach { option ->
                                 Box(
                                     modifier = Modifier
                                         .border(
@@ -138,11 +137,12 @@ fun QuizBox(
                             Box(modifier = Modifier.padding(4.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     CustomButton(
                                         onClick = {
-                                            quizNum.intValue = 0
+                                            viewModel.uiState.quizNum.value = 0
                                             selectedOption.value = null
                                             viewModel.clearQuizAnswers()
                                             viewModel.updateQuizStatus(QuizStatus.NONE)
@@ -163,11 +163,15 @@ fun QuizBox(
                                     Spacer(modifier = Modifier.width(8.dp))
 
                                     CustomButton(
-                                        onClick = { viewModel.updateHintStatus(HintStatus.CREDIT) },
-                                        text = "300크레딧으로 힌트 확인",
+                                        onClick = {
+                                            if (viewModel.uiState.hintData == null) viewModel.updateHintStatus(
+                                                HintStatus.CREDIT
+                                            )
+                                        },
+                                        text = if (viewModel.uiState.hintData == null) "300크레딧으로 힌트 확인" else "힌트: ${viewModel.uiState.hintData}",
                                         modifier = Modifier.weight(3f),
-                                        borderColor = Blue_Netural,
-                                        textColor = Blue_Netural,
+                                        borderColor = if (viewModel.uiState.hintData == null) Blue_Netural else Line_Normal,
+                                        textColor = if (viewModel.uiState.hintData == null) Blue_Netural else Line_Normal,
                                         backgroundColor = Fill_Normal,
                                         contentPadding = PaddingValues(
                                             vertical = 12.dp,
@@ -182,15 +186,15 @@ fun QuizBox(
                                         onClick = {
                                             selectedOption.value?.let { selected ->
                                                 viewModel.addQuizAnswer(
-                                                    data[quizNum.intValue].quizId,
+                                                    data[viewModel.uiState.quizNum.value].quizId,
                                                     selected
                                                 )
                                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
-                                                if (quizNum.intValue == 2) {
+                                                if (viewModel.uiState.quizNum.value == 2) {
                                                     viewModel.submitQuizAnswers()
                                                     selectedOption.value = null
                                                 } else {
-                                                    quizNum.intValue++
+                                                    viewModel.uiState.quizNum.value++
                                                     selectedOption.value = null
                                                 }
                                             }
@@ -231,7 +235,7 @@ fun QuizBox(
                 selectedOption = selectedOption,
                 showCollection = showCollection,
                 viewModel = viewModel,
-                quizNum = quizNum
+                quizNum = viewModel.uiState.quizNum
             )
         }
 

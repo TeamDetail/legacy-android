@@ -37,6 +37,7 @@ import com.legacy.legacy_android.feature.network.market.MarketService
 import com.legacy.legacy_android.feature.network.quiz.QuizService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
+import com.legacy.legacy_android.feature.usecase.DataStoreManager
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -56,6 +57,17 @@ abstract class AuthModule {
     abstract fun bindTokenRepository(
         tokenRepositoryImpl: TokenRepositoryImpl
     ): TokenRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DataStoreModule {
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
+        return DataStoreManager(context)
+    }
 }
 
 @Module

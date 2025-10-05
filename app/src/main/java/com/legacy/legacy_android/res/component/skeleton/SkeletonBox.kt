@@ -18,11 +18,15 @@ fun SkeletonBox(
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "skeleton")
+
     val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.8f,
+        initialValue = 0.4f,
+        targetValue = 1.0f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000),
+            animation = tween(
+                durationMillis = 600,
+                easing = androidx.compose.animation.core.FastOutSlowInEasing
+            ),
             repeatMode = RepeatMode.Reverse
         ),
         label = "skeleton_alpha"

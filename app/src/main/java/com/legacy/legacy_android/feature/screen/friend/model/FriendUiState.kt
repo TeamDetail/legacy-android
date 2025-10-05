@@ -17,5 +17,6 @@ data class FriendUiState (
     val searchFriend: MutableState<String> = mutableStateOf(""),
     val requestError: Boolean? = null,
     val setDeleteFriend: Boolean = false,
-    val currentFriend: FriendResponse? = null
+    val currentFriend: FriendResponse? = null,
+    val kakaoToken: String = ""
 )

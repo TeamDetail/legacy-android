@@ -63,6 +63,7 @@ import com.legacy.legacy_android.ui.theme.Red_Netural
 import com.legacy.legacy_android.ui.theme.White
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 val RUIN_STROKE_COLOR = Primary
@@ -99,7 +100,7 @@ fun HomeScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     val mapLoaded = viewModel.isMapLoaded
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
@@ -212,14 +213,12 @@ fun HomeScreen(
 
                     if (distance < 0.001) {
                         overlapping.add(Pair(ruin1.ruinsId, ruin2.ruinsId))
-                        println("겹침 발견: ${ruin1.ruinsId} <-> ${ruin2.ruinsId}, 거리: ${(distance * 111000).toInt()}m")
                     }
                 }
             }
         }
 
         if (overlapping.isNotEmpty()) {
-            println("총 ${overlapping.size}개의 겹침 발견")
         }
     }
 
@@ -316,12 +315,11 @@ fun HomeScreen(
                 )
                 if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
                     CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {
-                        viewModel.loadHint(quizId = viewModel.uiState.quizData!![0].quizId)
+                        viewModel.loadHint(quizId = viewModel.uiState.quizData!![viewModel.uiState.quizNum.value].quizId)
                     }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
                 } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(
-                        title = "",
-                        hint = "힌트",
+                        hint = viewModel.uiState.hintData,
                         onConfirm = { viewModel.updateHintStatus(HintStatus.NO) }
                     )
                 }
@@ -331,12 +329,15 @@ fun HomeScreen(
         IconButton(
             onClick = {
                 currentLocation?.let {
-                    cameraPositionState.move(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(it.latitude, it.longitude),
-                            18f
+                    coroutineScope.launch {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(it.latitude, it.longitude),
+                                18f
+                            ),
+                            durationMs = 500
                         )
-                    )
+                    }
                 }
             },
             modifier = Modifier

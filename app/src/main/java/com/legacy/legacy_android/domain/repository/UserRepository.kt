@@ -2,11 +2,7 @@ package com.legacy.legacy_android.domain.repository
 
 import android.util.Log
 import com.legacy.legacy_android.feature.network.ruins.id.Cards
-import com.legacy.legacy_android.feature.network.user.CardOpenRequest
-import com.legacy.legacy_android.feature.network.user.GetMeService
-import com.legacy.legacy_android.feature.network.user.InventoryItem
-import com.legacy.legacy_android.feature.network.user.Title
-import com.legacy.legacy_android.feature.network.user.UserData
+import com.legacy.legacy_android.feature.network.user.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,7 +33,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getInventory(): Result<List<InventoryItem>?>{
+    suspend fun getInventory(): Result<List<InventoryItem>?> {
         return try {
             val response = getMeService.getInventory()
             Result.success(response.data)
@@ -47,11 +43,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun openCardPack(id: Int, count:Int): Result<List<Cards>?>{
-        return try{
+    suspend fun openCardPack(id: Int, count: Int): Result<List<Cards>?> {
+        return try {
             val response = getMeService.cardOpen(CardOpenRequest(id, count))
             Result.success(response.data)
-        }catch (error: Exception){
+        } catch (error: Exception) {
             Log.e("UserRepository", "카드 오픈 실패", error)
             Result.failure(error)
         }
@@ -62,12 +58,42 @@ class UserRepository @Inject constructor(
         _profile.value = null
         hasLoaded = false
     }
-    suspend fun getTitles(): Result<List<Title>?>{
+
+    suspend fun getTitles(): Result<List<Title>?> {
         return try {
             val response = getMeService.getTitles()
             Result.success(response.data)
         } catch (error: Exception) {
             Log.e("UserRepository", "타이틀 로드 실패", error)
+            Result.failure(error)
+        }
+    }
+    suspend fun patchTitle(styleId: Int): Result<String?> {
+        return try {
+            val response = getMeService.patchTitle(TitleRequest(styleId))
+            Result.success(response.data)
+        } catch (error: Exception) {
+            Log.e("UserRepository", "타이틀 패치 실패", error)
+            Result.failure(error)
+        }
+    }
+
+    suspend fun patchImage(profileImageUrl: String): Result<UserData?> {
+        return try {
+            val response = getMeService.patchImage(ImageRequest(profileImageUrl))
+            Result.success(response.data)
+        } catch (error: Exception) {
+            Log.e("UserRepository", "이미지 패치 실패", error)
+            Result.failure(error)
+        }
+    }
+
+    suspend fun patchDescription(description: String): Result<String?> {
+        return try {
+            val response = getMeService.patchDescription(DescriptionRequest(description))
+            Result.success(response.data)
+        } catch (error: Exception) {
+            Log.e("UserRepository", "설명 패치 실패", error)
             Result.failure(error)
         }
     }

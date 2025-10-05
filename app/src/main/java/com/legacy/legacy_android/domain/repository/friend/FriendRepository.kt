@@ -133,4 +133,14 @@ class FriendRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun friendKakao(accessToken: String): Result<Unit> {
+        return try {
+            friendService.friendKakao(accessToken)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("FriendRepository", "카카오 친구 추가 실패: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
 }

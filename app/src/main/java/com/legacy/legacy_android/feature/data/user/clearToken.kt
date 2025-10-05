@@ -1,15 +1,18 @@
 package com.legacy.legacy_android.feature.data.user
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
+import android.util.Log
+import androidx.core.content.edit
 
-suspend fun clearToken(context: Context) {
-    context.dataStore.edit { preferences ->
-        preferences.remove(ACC_TOKEN)
-        preferences.remove(REF_TOKEN)
-    }
+fun clearToken(context: Context) {
+    Log.e("TOKEN_CLEAR", "===== clearToken 호출됨 =====")
+    Log.e("TOKEN_CLEAR", "호출 위치:", Exception("Stack trace"))
+
+    context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+        .edit {
+            remove("access_token")
+                .remove("refresh_token")
+        }
+
+    Log.e("TOKEN_CLEAR", "토큰 삭제 완료")
 }
-
-
-
-

@@ -3,7 +3,6 @@ package com.legacy.legacy_android.res.component.adventure
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -21,12 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
-import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
@@ -44,13 +40,14 @@ fun AdventureInfo(
     data: List<RuinsIdResponse>?,
     viewModel: HomeViewModel,
 ) {
+    val isLoading = data == null
+
     val scrollStates = remember(data?.size) {
-        List(data?.size ?: 0) { ScrollState(0) }
+        List(data?.size ?: 1) { ScrollState(0) }
     }
     val scaffoldState = rememberBottomSheetScaffoldState()
-    val pagerState = rememberPagerState(pageCount = { data?.size ?: 0 })
+    val pagerState = rememberPagerState(pageCount = { data?.size ?: 1 })
     val interactionSource = remember { MutableInteractionSource() }
-
 
     LaunchedEffect(data?.firstOrNull()?.ruinsId) {
         data?.firstOrNull()?.let {
@@ -60,10 +57,12 @@ fun AdventureInfo(
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        delay(100)
-        data?.getOrNull(pagerState.currentPage)?.let { currentRuin ->
-            viewModel.loadCommentById(currentRuin.ruinsId)
-            viewModel.setSelectedRuinsDetail(currentRuin)
+        if (data != null) {
+            delay(100)
+            data.getOrNull(pagerState.currentPage)?.let { currentRuin ->
+                viewModel.loadCommentById(currentRuin.ruinsId)
+                viewModel.setSelectedRuinsDetail(currentRuin)
+            }
         }
     }
 
@@ -74,7 +73,9 @@ fun AdventureInfo(
                 indication = null,
                 interactionSource = interactionSource
             ) {
-                viewModel.updateSelectedId(emptyList())
+                if (!isLoading) {
+                    viewModel.updateSelectedId(emptyList())
+                }
             },
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -101,25 +102,35 @@ fun AdventureInfo(
                     PagerIndicator(data, pagerState)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.weight(1f)
-                    ) { page ->
-                        val currentData = data?.getOrNull(page)
-                        val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
-
-                        val pageOffset =
-                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                        val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
-                        val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
-
+                    if (isLoading) {
                         RuinsDetailPage(
-                            currentData = currentData,
+                            currentData = null,
                             viewModel = viewModel,
-                            scrollState = scrollState,
-                            scale = scale,
-                            alpha = alpha
+                            scrollState = rememberScrollState(),
+                            scale = 1f,
+                            alpha = 1f
                         )
+                    } else {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.weight(1f)
+                        ) { page ->
+                            val currentData = data.getOrNull(page)
+                            val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
+
+                            val pageOffset =
+                                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                            val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+                            val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+
+                            RuinsDetailPage(
+                                currentData = currentData,
+                                viewModel = viewModel,
+                                scrollState = scrollState,
+                                scale = scale,
+                                alpha = alpha
+                            )
+                        }
                     }
                 }
             }
@@ -127,11 +138,13 @@ fun AdventureInfo(
 
         CustomButton(
             onClick = {
-                data?.getOrNull(pagerState.currentPage)?.ruinsId?.let {
-                    viewModel.loadQuiz(it)
+                if (!isLoading) {
+                    data.getOrNull(pagerState.currentPage)?.ruinsId?.let {
+                        viewModel.loadQuiz(it)
+                    }
                 }
             },
-            text = "퀴즈 풀고 탐험하기!",
+            text = if (isLoading) "로딩 중..." else "퀴즈 풀고 탐험하기!",
             modifier = Modifier.fillMaxWidth(),
             borderColor = Blue_Netural,
             textColor = Blue_Netural,
@@ -408,11 +421,14 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
     ) {
         when {
             currentData == null -> {
-                SkeletonBox(
-                    modifier = Modifier
-                        .height(220.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
+                RuinImage(
+                    image = null,
+                    name = null,
+                    nationAttributeName = null,
+                    regionAttributeName = null,
+                    lineAttributeName = null,
+                    height = 220,
+                    isLoading = true
                 )
             }
 
@@ -420,14 +436,29 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
                 Spacer(modifier = Modifier.matchParentSize())
             }
 
-            else -> {
+            currentData.card == null -> {
+                // card가 null일 때 처리
                 RuinImage(
                     image = currentData.ruinsImage,
                     name = currentData.name,
-                    nationAttributeName = currentData.card!!.nationAttributeName,
+                    nationAttributeName = null,
+                    regionAttributeName = null,
+                    lineAttributeName = null,
+                    height = 220,
+                    isLoading = true
+                )
+            }
+
+            else -> {
+                // card가 있을 때만 실행
+                RuinImage(
+                    image = currentData.ruinsImage,
+                    name = currentData.name,
+                    nationAttributeName = currentData.card.nationAttributeName,
                     regionAttributeName = currentData.card.regionAttributeName,
                     lineAttributeName = currentData.card.lineAttributeName,
-                    height = 220
+                    height = 220,
+                    isLoading = false  // 정상 데이터는 false
                 )
             }
         }

@@ -27,21 +27,11 @@ class RequestInterceptor @Inject constructor(
 
             val request = chain.request()
             val context = LegacyApplication.getContext()
-            val skipPaths = listOf(
-                "/kakao/code",
-                "/kakao/accessToken",
-                "/auth/refresh"
-            )
-            val path = request.url.encodedPath
 
-            val shouldSkipHeader = skipPaths.any { path.startsWith(it) }
-            val newRequest = if (shouldSkipHeader) {
-                request.newBuilder().build()
-            } else {
-                request.newBuilder()
-                    .addHeader("Authorization", "Bearer ${getAccToken(context)}")
-                    .build()
-            }
+            val newRequest = request.newBuilder()
+                .removeHeader("Authorization")
+                .header("Authorization", "Bearer ${getAccToken(context)}")
+                .build()
 
             return try {
                 chain.proceed(newRequest)

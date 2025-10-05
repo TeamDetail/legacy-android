@@ -63,7 +63,6 @@ import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.core.content.edit
 
 enum class ScreenNavigate {
     LOGIN,
@@ -134,10 +133,9 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
 
-        // startDestination 결정
-        val startDestination = determineStartDestination()
+        val navigateTo = intent.getStringExtra("navigate_to")
+        val startDestination = navigateTo ?: determineStartDestination()
 
-        // Compose Navigation 설정
         setContent {
             val navController = rememberNavController()
             navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -305,13 +303,6 @@ class MainActivity : AppCompatActivity() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleObserver)
     }
 
-    private fun clearTokens() {
-        getSharedPreferences("auth", Context.MODE_PRIVATE)
-            .edit {
-                remove("access_token").remove("refresh_token")
-            }
-    }
-
     private fun determineStartDestination(): String {
         val accessToken = getAccToken(this)
         val refreshToken = getRefToken(this)
@@ -329,7 +320,6 @@ class MainActivity : AppCompatActivity() {
 
             else -> {
                 Log.d("MainActivity", "유효한 토큰 없음 - 로그인 필요")
-                clearTokens()
                 ScreenNavigate.LOGIN.name
             }
         }

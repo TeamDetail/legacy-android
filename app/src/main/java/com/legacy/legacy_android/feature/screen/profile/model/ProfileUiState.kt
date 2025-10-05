@@ -15,5 +15,6 @@ data class ProfileUiState(
     val packOpenCount: Int = 1,
     val openCardResponse: List<Cards>? =null,
     val statusList: List<String> = listOf("경기", "강원", "경북", "경남", "전북", "전남", "충북", "충남", "제주"),
-    val titleList: List<Title>? = emptyList()
+    val titleList: List<Title>? = emptyList(),
+    val changeStatus: String = ""
     )

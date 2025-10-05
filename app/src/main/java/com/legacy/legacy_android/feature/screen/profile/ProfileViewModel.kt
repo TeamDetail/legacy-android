@@ -14,6 +14,7 @@ import com.legacy.legacy_android.feature.screen.profile.model.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -121,6 +122,35 @@ class ProfileViewModel @Inject constructor(
             }.onFailure {
                 e-> Log.e("UserRepository", "카드팩 열기 실패", e)
             }
+        }
+    }
+
+    fun patchImage(profileImageUrl: String){
+        viewModelScope.launch {
+            val result = userRepository.patchImage(profileImageUrl)
+            result.onSuccess {
+                uiState = uiState.copy(changeStatus = "OK")
+            }
+            result.onFailure { e ->
+                Log.e("UserRepository", "설명 수정 실패", e)
+                uiState = uiState.copy(changeStatus = "NO")
+            }
+            delay(3000)
+            uiState = uiState.copy(changeStatus = "")
+        }
+    }
+
+    fun patchDescription(description: String){
+        viewModelScope.launch {
+            val result = userRepository.patchDescription(description)
+            result.onSuccess {
+                uiState = uiState.copy(changeStatus = "OK")
+            }
+            result.onFailure { e-> Log.e("UserRepository", "설명 수정 실패", e)
+                uiState = uiState.copy(changeStatus = "NO")
+            }
+            delay(3000)
+            uiState = uiState.copy(changeStatus = "")
         }
     }
 

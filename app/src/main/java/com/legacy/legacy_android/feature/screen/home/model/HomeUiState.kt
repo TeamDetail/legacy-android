@@ -1,6 +1,7 @@
 package com.legacy.legacy_android.feature.screen.home.model
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.legacy.legacy_android.feature.network.block.get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.quiz.GetQuizResponse
@@ -40,5 +41,6 @@ data class HomeUiState(
     val isCommentModalOpen: Boolean = false,
     val commentRate: Int = 0,
     val isMailOpen: Boolean = false,
-    val hintData: String? = "",
+    val hintData: String? = null,
+    val quizNum: MutableState<Int> = mutableIntStateOf(0),
 )

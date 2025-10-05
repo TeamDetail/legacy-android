@@ -80,7 +80,7 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                 .clip(RoundedCornerShape(12.dp))
         ) {
             Column(
-                modifier = Modifier.padding(start = 12.dp).fillMaxHeight(),
+                modifier = Modifier.padding(start = 12.dp).fillMaxHeight().clip(RoundedCornerShape(12.dp)),
                 verticalArrangement = Arrangement.Center
             ) {
                 Column(modifier = Modifier.fillMaxWidth(0.7f)) {

@@ -251,14 +251,18 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadQuiz(ruinsId: Int?) {
+        uiState = uiState.copy(quizData = null)
+        uiState = uiState.copy(hintData = null)
         if (ruinsId == null) return
-
         loadQuizJob?.cancel()
         loadQuizJob = viewModelScope.launch {
             quizRepository.getQuizById(ruinsId)
                 .onSuccess { quiz ->
                     uiState = uiState.copy(quizData = quiz)
                     updateQuizStatus(QuizStatus.WORKING)
+                }
+                .onFailure {
+                    println("퀴즈 실패")
                 }
         }
     }

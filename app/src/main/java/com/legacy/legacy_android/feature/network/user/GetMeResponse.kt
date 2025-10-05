@@ -46,3 +46,13 @@ data class Title(
     val styleId: Int,
     val grade: Int
 )
+
+data class DescriptionRequest(
+    val description: String
+)
+data class TitleRequest(
+    val styleId: Int
+)
+data class ImageRequest(
+    val profileImageUrl: String
+)

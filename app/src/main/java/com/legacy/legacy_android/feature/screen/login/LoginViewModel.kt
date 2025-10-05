@@ -35,9 +35,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 loadingState.value = true
-
                 val result = loginUseCase.execute(context)
-
                 if (result.isSuccess) {
                     navigateToHome(navHostController)
                 } else {
@@ -56,17 +54,13 @@ class LoginViewModel @Inject constructor(
         withContext(Dispatchers.Main) {
             try {
                 delay(100)
-                if (navHostController.currentBackStackEntry != null) {
-                    navHostController.navigate(ScreenNavigate.HOME.name) {
-                        popUpTo(ScreenNavigate.LOGIN.name) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
+                navHostController.navigate(ScreenNavigate.HOME.name) {
+                    popUpTo(ScreenNavigate.LOGIN.name) {
+                        inclusive = true
+                        saveState = true
                     }
-                } else {
-                    println("로그인 안됨")
+                    launchSingleTop = true
+                    restoreState = true
                 }
             } catch (navError: Exception) {
                 Log.e(TAG, "로그인 화면 전환 중 오류", navError)
