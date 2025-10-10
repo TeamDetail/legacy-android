@@ -153,7 +153,7 @@ fun InfoBar(
                         modifier = Modifier
                             .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                             .fillMaxWidth(0.7f)
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp, horizontal = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">legacy</string>
-<!--    <string name="msg_token_token_fmt">FCM registration token: %s</string>-->
+    <string name="default_web_client_id">919022966133-i8853a52dpihqmeelov8hb85j9jq4noa.apps.googleusercontent.com</string>
+    <!--    <string name="msg_token_token_fmt">FCM registration token: %s</string>-->
 </resources>

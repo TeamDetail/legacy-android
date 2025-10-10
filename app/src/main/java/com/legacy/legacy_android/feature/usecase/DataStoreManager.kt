@@ -16,15 +16,17 @@ class DataStoreManager(private val context: Context) {
 
     private val KAKAO_TOKEN = stringPreferencesKey("kakao_token")
 
+    private val GOOGLE_TOKEN = stringPreferencesKey("google_token")
+
     suspend fun saveKakaoToken(token: String) {
         context.dataStore.edit { prefs ->
             prefs[KAKAO_TOKEN] = token
         }
     }
 
-    fun getKakaoToken(): Flow<String?> {
-        return context.dataStore.data.map { prefs ->
-            prefs[KAKAO_TOKEN]
+    suspend fun saveGoogleIdToken(token: String) {
+        context.dataStore.edit {
+            prefs-> prefs[GOOGLE_TOKEN] = token
         }
     }
 }

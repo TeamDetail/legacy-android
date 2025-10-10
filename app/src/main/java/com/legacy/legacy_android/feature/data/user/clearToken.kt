@@ -14,5 +14,7 @@ fun clearToken(context: Context) {
                 .remove("refresh_token")
         }
 
+    val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+    Log.e("TOKEN_CLEAR", "after clear: access_token=${prefs.getString("access_token", "null")}")
     Log.e("TOKEN_CLEAR", "토큰 삭제 완료")
 }

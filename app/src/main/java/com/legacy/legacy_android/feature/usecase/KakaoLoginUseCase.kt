@@ -5,18 +5,16 @@ import android.util.Log
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.friend.FriendRepository
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
-import com.legacy.legacy_android.feature.network.login.LoginRequest
+import com.legacy.legacy_android.feature.network.login.KakaoLoginRequest
 import com.legacy.legacy_android.feature.network.login.LoginService
 import javax.inject.Inject
-
-private const val TAG = "LoginUseCase"
 
 data class LoginResult(
     val isSuccess: Boolean,
     val error: Throwable? = null
 )
 
-class LoginUseCase @Inject constructor(
+class KakaoLoginUseCase @Inject constructor(
     private val kakaoLoginManager: KakaoLoginManager,
     private val loginService: LoginService,
     private val tokenRepository: TokenRepository,
@@ -33,7 +31,7 @@ class LoginUseCase @Inject constructor(
             val kakaoLogin = kakaoResult.getOrThrow()
             dataStoreManager.saveKakaoToken(kakaoLogin.accessToken)
 
-            val request = LoginRequest(
+            val request = KakaoLoginRequest(
                 accessToken = kakaoLogin.accessToken,
                 refreshToken = kakaoLogin.refreshToken
             )

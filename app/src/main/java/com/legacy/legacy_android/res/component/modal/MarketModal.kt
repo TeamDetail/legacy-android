@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -70,6 +71,7 @@ fun MarketModal(
                 Text(
                     text = "정말 구매하시겠습니까?",
                     style = AppTextStyles.Heading1.bold,
+                    textAlign = TextAlign.Center,
                     color = Label
                 )
                 Text(
@@ -81,6 +83,7 @@ fun MarketModal(
                             append("을 소모합니다.")
                         }
                     },
+                    textAlign = TextAlign.Center,
                     style = AppTextStyles.Body2.medium
                 )
             }

@@ -5,5 +5,14 @@ import retrofit2.http.POST
 
 interface LoginService {
     @POST("/kakao/accessToken")
-    suspend fun login(@Body code: LoginRequest) : LoginResponse
+    suspend fun login(@Body code: KakaoLoginRequest) : LoginResponse
+
+    @POST("/apple/code")
+    suspend fun appleLogin(@Body code: AppleLoginRequest) : LoginResponse
+
+    @POST("/apple/accessToken")
+    suspend fun appleAccessToken(@Body code: AppleAccessTokenRequest) : LoginResponse
+
+    @POST("/google/android")
+    suspend fun googleLogin(@Body code: GoogleLoginRequest) : LoginResponse
 }

@@ -15,11 +15,18 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 import android.content.Context
+import androidx.credentials.CredentialManager  // Changed: AndroidX import
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.legacy.legacy_android.BuildConfig
+import com.legacy.legacy_android.domain.repository.GoogleSignInRepository
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
 import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.market.MarketRepository
 import com.legacy.legacy_android.feature.network.achieve.AchievementService
+import com.legacy.legacy_android.feature.network.auth.GoogleSignInDataSource
+import com.legacy.legacy_android.feature.network.auth.GoogleSignInDataSourceImpl
+import com.legacy.legacy_android.feature.network.auth.GoogleSignInRepositoryImpl
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
 import com.legacy.legacy_android.feature.network.card.CardService
@@ -38,6 +45,7 @@ import com.legacy.legacy_android.feature.network.quiz.QuizService
 import com.legacy.legacy_android.feature.network.rank.RankingService
 import com.legacy.legacy_android.feature.network.ruins.search.RuinsSearchService
 import com.legacy.legacy_android.feature.usecase.DataStoreManager
+import com.legacy.legacy_android.feature.usecase.GoogleLoginUseCase
 import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -57,6 +65,66 @@ abstract class AuthModule {
     abstract fun bindTokenRepository(
         tokenRepositoryImpl: TokenRepositoryImpl
     ): TokenRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object UseCaseModule {
+    @Provides
+    @Singleton
+    fun provideGoogleLoginUseCase(
+        googleSignInRepository: GoogleSignInRepository,
+        loginService: LoginService,
+        tokenRepository: TokenRepository,
+        dataStoreManager: DataStoreManager
+    ): GoogleLoginUseCase = GoogleLoginUseCase(
+        googleSignInRepository = googleSignInRepository,
+        loginService = loginService,
+        tokenRepository = tokenRepository,
+        dataStoreManager = dataStoreManager
+    )
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindsGoogleSignInRepository(
+        googleSignInRepositoryImpl: GoogleSignInRepositoryImpl
+    ): GoogleSignInRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
+    @Binds
+    @Singleton
+    abstract fun bindGoogleSignInDataSource(
+        googleSignInDataSourceImpl: GoogleSignInDataSourceImpl
+    ): GoogleSignInDataSource
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object GoogleAuthModule {
+    @Provides
+    @Singleton
+    fun provideGoogleIdOptions(): GetGoogleIdOption {
+        return GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setAutoSelectEnabled(false)
+            .setServerClientId(BuildConfig.ANDROID_WEBCLIENT_KEY)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCredentialManager(
+        @ApplicationContext context: Context
+    ): CredentialManager {
+        return CredentialManager.create(context)
+    }
 }
 
 @Module

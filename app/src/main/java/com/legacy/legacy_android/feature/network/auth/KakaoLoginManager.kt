@@ -6,24 +6,21 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.legacy.legacy_android.feature.network.login.LoginResponse
+import com.legacy.legacy_android.feature.network.login.TokenData
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
 private const val TAG = "KakaoLoginManager"
 
-data class KakaoLoginResult(
-    val accessToken: String,
-    val refreshToken: String
-)
-
 interface KakaoLoginManager {
-    suspend fun login(context: Context): Result<KakaoLoginResult>
+    suspend fun login(context: Context): Result<TokenData>
 }
 
 class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
 
-    override suspend fun login(context: Context): Result<KakaoLoginResult> {
+    override suspend fun login(context: Context): Result<TokenData> {
         return try {
             val token = when {
                 UserApiClient.instance.isKakaoTalkLoginAvailable(context) -> {
@@ -34,7 +31,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
 
             token?.let {
                 ensureEmailPermission(context)
-                Result.success(KakaoLoginResult(it.accessToken, it.refreshToken))
+                Result.success(TokenData(it.accessToken, it.refreshToken))
             } ?: Result.failure(Exception("로그인 토큰을 받지 못했습니다"))
 
         } catch (e: Exception) {

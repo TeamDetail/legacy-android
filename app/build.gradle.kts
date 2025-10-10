@@ -10,7 +10,10 @@ plugins {
 }
 
 android {
+    namespace = "com.legacy.legacy_android"
+    compileSdk = 35
 
+    // local.properties 로드
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
@@ -20,9 +23,14 @@ android {
     val MAPS_API_KEY = localProperties.getProperty("MAPS_API_KEY") ?: ""
     val KAKAO_API_KEY = localProperties.getProperty("KAKAO_API_KEY") ?: ""
     val SERVER_API_KEY = localProperties.getProperty("SERVER_API_KEY") ?: ""
+    val ANDROID_WEBCLIENT_KEY = localProperties.getProperty("ANDROID_WEBCLIENT_KEY") ?: ""
+    val auth0Domain = localProperties.getProperty("AUTH0_DOMAIN") ?: ""
+    val auth0Scheme = localProperties.getProperty("AUTH0_SCHEME") ?: ""
+    val appleClientId = localProperties.getProperty("APPLE_CLIENT_ID") ?: ""
+    val appleKeyId = localProperties.getProperty("APPLE_KEY_ID") ?: ""
+    val appleTeamId = localProperties.getProperty("APPLE_TEAM_ID") ?: ""
+    val appleRedirectUrl = localProperties.getProperty("APPLE_REDIRECT_URL") ?: ""
 
-    namespace = "com.legacy.legacy_android"
-    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.legacy.legacy_android"
@@ -30,18 +38,31 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // BuildConfigField
         buildConfigField("String", "MAPS_API_KEY", "\"$MAPS_API_KEY\"")
         buildConfigField("String", "KAKAO_API_KEY", "\"$KAKAO_API_KEY\"")
         buildConfigField("String", "SERVER_API_KEY", "\"$SERVER_API_KEY\"")
+        buildConfigField("String", "ANDROID_WEBCLIENT_KEY", "\"$ANDROID_WEBCLIENT_KEY\"")
+        buildConfigField ("String", "APPLE_CLIENT_ID", "\"${localProperties.getProperty("APPLE_CLIENT_ID")}\"")
+        buildConfigField ("String", "APPLE_KEY_ID", "\"${localProperties.getProperty("APPLE_KEY_ID")}\"")
+        buildConfigField ("String", "APPLE_TEAM_ID", "\"${localProperties.getProperty("APPLE_TEAM_ID")}\"")
+        buildConfigField ("String", "APPLE_REDIRECT_URL", "\"${localProperties.getProperty("APPLE_REDIRECT_URL")}\"")
 
-        // Manifest Placeholders
-        manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
-        manifestPlaceholders["KAKAO_API_KEY"] = KAKAO_API_KEY
-        manifestPlaceholders["SERVER_API_KEY"] = SERVER_API_KEY
+        // Manifest placeholders
+        manifestPlaceholders += mapOf(
+            "MAPS_API_KEY" to MAPS_API_KEY,
+            "KAKAO_API_KEY" to KAKAO_API_KEY,
+            "SERVER_API_KEY" to SERVER_API_KEY,
+            "ANDROID_WEBCLIENT_KEY" to ANDROID_WEBCLIENT_KEY,
+            "auth0Domain" to auth0Domain,
+            "auth0Scheme" to auth0Scheme,
+            "appleClientId" to appleClientId,
+            "appleKeyId" to appleKeyId,
+            "appleTeamId" to appleTeamId,
+            "appleRedirectUrl" to appleRedirectUrl
+        )
     }
 
     buildTypes {
@@ -58,6 +79,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += listOf(
@@ -74,12 +96,15 @@ android {
     }
 }
 
+
 dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
 
+    // Kotlin Immutable Collections
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
@@ -96,14 +121,8 @@ dependencies {
     // Room
     implementation("androidx.room:room-runtime:$room_version")
 
-    // Kakao SDK
+    // Kakao SDK (v2-all만 사용)
     implementation("com.kakao.sdk:v2-all:2.20.1")
-    implementation("com.kakao.sdk:v2-user:2.20.1")
-    implementation("com.kakao.sdk:v2-share:2.20.1")
-    implementation("com.kakao.sdk:v2-talk:2.20.1")
-    implementation("com.kakao.sdk:v2-friend:2.20.1")
-    implementation("com.kakao.sdk:v2-navi:2.20.1")
-    implementation("com.kakao.sdk:v2-cert:2.20.1")
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -118,20 +137,28 @@ dependencies {
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.30.0")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager:0.36.0")
 
     // Glide / Coil
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
 
-    // Navigation
+    // Navigation Compose
     implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     // Coroutines + Play Services
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
-    // Maps
+    // Credentials & Google Identity
+    implementation("com.auth0.android:auth0:2.1.0")
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.material3:material3:1.3.0")
+
+    // Maps & Location
     implementation("com.google.maps.android:maps-compose:4.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
@@ -139,7 +166,7 @@ dependencies {
     // Security
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
-    // Compose
+    // Compose (BOM 사용)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -147,10 +174,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation("androidx.compose.material3:material3:1.3.0")
-    implementation("com.google.accompanist:accompanist-pager:0.36.0")
 
-    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

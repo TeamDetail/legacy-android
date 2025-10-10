@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
         // Retrofit 초기화
         RetrofitClient.init(this)
-        
+
         // FCM & 위치, 초기 설정
         refreshAccessTokenIfNeeded()
 
@@ -313,9 +313,9 @@ class MainActivity : AppCompatActivity() {
                 ScreenNavigate.HOME.name
             }
 
-            isTokenValid(refreshToken) -> {
-                Log.d("MainActivity", "refreshToken으로 토큰 갱신 필요")
-                ScreenNavigate.HOME.name
+            !refreshToken.isNullOrEmpty() -> {
+                Log.d("MainActivity", "refreshToken 존재하지만 accessToken 없음 -> 로그인 필요")
+                ScreenNavigate.LOGIN.name
             }
 
             else -> {
@@ -324,6 +324,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun handleDestinationChange(route: String?) {
         val targetBgm = when (route) {
             ScreenNavigate.LOGIN.name -> BgmType.LOGIN

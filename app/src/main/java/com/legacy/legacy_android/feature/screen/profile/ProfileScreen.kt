@@ -42,11 +42,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
 import com.legacy.legacy_android.res.component.modal.ItemModal
 import com.legacy.legacy_android.res.component.modal.OpenCardModal
-import com.legacy.legacy_android.res.component.profile.DictionaryInfo
 import com.legacy.legacy_android.res.component.profile.InventoryInfo
 import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.StatTable
@@ -418,15 +418,29 @@ fun DictionaryScreen(
                     )
                 }
                 items(
-                    viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.chunked(
-                        2
-                    ) ?: emptyList()
+                    viewModel.uiState.myCards?.get(viewModel.uiState.titleStatus)?.cards?.chunked(2)
+                        ?: emptyList()
                 ) { cardPair ->
-                    Row {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         cardPair.forEach { card ->
-                            DictionaryInfo(
-                                item = card
-                            )
+                            Box(modifier = Modifier.weight(1f)) {
+                                RuinImage(
+                                    image = card.cardImageUrl,
+                                    name = card.cardName,
+                                    nationAttributeName = card.nationAttributeName,
+                                    regionAttributeName = card.regionAttributeName,
+                                    lineAttributeName = card.lineAttributeName,
+                                    height = 160
+                                )
+                            }
+                        }
+
+                        // cardPair가 1개만 있을 때 남은 공간 채우기
+                        if (cardPair.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }

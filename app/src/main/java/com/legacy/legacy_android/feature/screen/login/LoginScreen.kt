@@ -1,34 +1,27 @@
 package com.legacy.legacy_android.feature.screen.login
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.R
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,7 +32,6 @@ import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Netural80
 import com.legacy.legacy_android.ui.theme.White
 
 @Composable
@@ -48,8 +40,11 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    BackHandler (enabled = true) {}
+
     val context = LocalContext.current
+    val activity = context as? android.app.Activity
+
+    BackHandler(enabled = true) {}
     Box(modifier = modifier.fillMaxSize()) {
         Image(
             modifier = modifier.fillMaxSize(),
@@ -111,13 +106,25 @@ fun LoginScreen(
                 LoginButton(
                     onClick = {
                         if (!viewModel.loadingState.value) {
-                            viewModel.loginWithKakao(
-                                context = context,
-                                navHostController = navHostController,
-                                onFailure = { error ->
-                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
-                                }
-                            )
+                            activity?.let {
+                                viewModel.loginWithGoogle(
+                                    activity = it,
+                                    navHostController = navHostController,
+                                    onFailure = { error ->
+                                        Toast.makeText(
+                                            context,
+                                            "Google 로그인 실패: ${error.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                )
+                            } ?: run {
+                                Toast.makeText(
+                                    context,
+                                    "Activity를 찾을 수 없습니다",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     },
                     icon = painterResource(R.drawable.google),
@@ -128,15 +135,13 @@ fun LoginScreen(
                 )
                 LoginButton(
                     onClick = {
-                        if (!viewModel.loadingState.value) {
-                            viewModel.loginWithKakao(
-                                context = context,
-                                navHostController = navHostController,
-                                onFailure = { error ->
-                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
-                                }
-                            )
-                        }
+                        activity?.let {
+                            viewModel.startAppleLogin(it)
+                        } ?: Toast.makeText(
+                            context,
+                            "Activity를 찾을 수 없습니다",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     },
                     icon = painterResource(R.drawable.apple),
                     name = "Apple",
@@ -147,8 +152,10 @@ fun LoginScreen(
             }
         }
     }
-    Column (modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = modifier
                 .padding(bottom = 48.dp)
