@@ -3,7 +3,6 @@ package com.legacy.legacy_android
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.SoundPool
@@ -85,13 +84,12 @@ enum class ScreenNavigate {
 
 enum class BgmType(val resourceId: Int, val volume: Float) {
     MAIN(R.raw.mainbgm, 0.6f),
-    LOGIN(R.raw.loginbgm, 0.6f)
+    LOGIN(R.raw.loginbgm, 0.6f),
+    MARKET(R.raw.marketbgm, 0.6f)
 }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    private val loginViewModel: LoginViewModel by viewModels()
 
     @Inject
     lateinit var fcmService: FcmService
@@ -331,6 +329,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleDestinationChange(route: String?) {
         val targetBgm = when (route) {
             ScreenNavigate.LOGIN.name -> BgmType.LOGIN
+            ScreenNavigate.MARKET.name -> BgmType.MARKET
             else -> BgmType.MAIN
         }
         if (currentBgm != targetBgm) switchBgm(targetBgm)
@@ -375,10 +374,5 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("MainActivity", "리소스 해제 중 오류 발생: ${e.message}")
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        loginViewModel.handleAppleRedirect(intent)
     }
 }

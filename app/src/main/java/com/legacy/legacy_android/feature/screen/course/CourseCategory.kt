@@ -67,7 +67,12 @@ fun CourseCategory(
         }
 
         CustomButton(
-            onClick = { navHostController.navigate("COURSE") },
+            onClick = {
+                navHostController.navigate("COURSE")
+                viewModel.setSelectedStatusList("전체")
+                viewModel.setSelectedNewList("최신")
+                viewModel.setSelectedEventList("전체")
+            },
             text = "목록으로 보기",
             modifier = Modifier.fillMaxWidth(),
             borderColor = Line_Alternative,

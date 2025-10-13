@@ -2,6 +2,7 @@
 
 package com.legacy.legacy_android.res.component.modal
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,15 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
     val openCards = viewModel.uiState.openCardResponse ?: emptyList()
     val selectedItemName = viewModel.uiState.selectedItem?.itemName ?: ""
     val pagerState = rememberPagerState()
+
+    val flippedStates = remember(openCards) {
+        mutableStateListOf<Boolean>().apply {
+            repeat(openCards.size) { add(false) }
+        }
+    }
+
+    BackHandler(enabled = true) {
+    }
 
     Box(
         modifier = Modifier
@@ -91,7 +101,8 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                 ) { page ->
                     val card = openCards[page]
 
-                    var isFlipped by remember { mutableStateOf(false) }
+
+                    val isFlipped = flippedStates[page]
 
                     val rotation by animateFloatAsState(
                         targetValue = if (isFlipped) 180f else 0f,
@@ -109,7 +120,7 @@ fun OpenCardModal(viewModel: ProfileViewModel = hiltViewModel()) {
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
                                 if (!isFlipped) {
-                                    isFlipped = true
+                                    flippedStates[page] = true
                                     soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                                 }
                             }

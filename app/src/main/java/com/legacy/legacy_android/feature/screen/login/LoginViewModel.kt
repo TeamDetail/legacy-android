@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.ScreenNavigate
+import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.feature.usecase.GoogleLoginUseCase
 import com.legacy.legacy_android.feature.usecase.KakaoLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,6 +87,7 @@ class LoginViewModel @Inject constructor(
         withContext(Dispatchers.Main) {
             try {
                 delay(100)
+                Nav.setNavStatus(2)
                 navHostController.navigate(ScreenNavigate.HOME.name) {
                     popUpTo(ScreenNavigate.LOGIN.name) {
                         inclusive = true

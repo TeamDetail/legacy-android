@@ -57,7 +57,9 @@ fun CourseScreen(
                     .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                     .fillMaxWidth()
                     .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                    .clickable { navHostController.navigate("course_category") }
+                    .clickable {
+                        navHostController.navigate("course_category")
+                    }
             ) {
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),

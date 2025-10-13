@@ -53,7 +53,8 @@ import com.legacy.legacy_android.ui.theme.Yellow_Netural
 @Composable
 fun SmallCourseWrap(
     modifier: Modifier = Modifier,
-    type: String, data: List<SearchCourseResponse>?,
+    type: String,
+    data: List<SearchCourseResponse>?,
     viewModel: CourseViewModel,
     navHostController: NavHostController
 ) {
@@ -243,6 +244,12 @@ fun SmallCourseWrap(
             }
             Column(
                 modifier = modifier
+                    .clickable {
+                        navHostController.navigate("COURSE")
+                        viewModel.setSelectedStatusList("전체")
+                        viewModel.setSelectedNewList(if (type == "popular") "인기" else "최신")
+                        viewModel.setSelectedEventList(if (type=="event") "이벤트" else "전체")
+                    }
                     .fillMaxHeight()
                     .width(80.dp)
                     .background(
