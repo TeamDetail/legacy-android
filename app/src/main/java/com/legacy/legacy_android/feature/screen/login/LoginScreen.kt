@@ -29,8 +29,6 @@ import androidx.navigation.NavHostController
 import com.legacy.legacy_android.res.component.button.LoginButton
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
 import com.legacy.legacy_android.ui.theme.White
 
@@ -108,8 +106,7 @@ fun LoginScreen(
                         if (!viewModel.loadingState.value) {
                             activity?.let {
                                 viewModel.loginWithGoogle(
-                                    activity = it,
-                                    navHostController = navHostController,
+                                    activity = it, navHostController = navHostController,
                                     onFailure = { error ->
                                         Toast.makeText(
                                             context,
@@ -131,22 +128,6 @@ fun LoginScreen(
                     name = "Google",
                     bgColor = White,
                     color = Black,
-                    viewModel = viewModel
-                )
-                LoginButton(
-                    onClick = {
-                        activity?.let {
-                            viewModel.startAppleLogin(it)
-                        } ?: Toast.makeText(
-                            context,
-                            "Activity를 찾을 수 없습니다",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    icon = painterResource(R.drawable.apple),
-                    name = "Apple",
-                    bgColor = Fill_Normal,
-                    color = Label,
                     viewModel = viewModel
                 )
             }

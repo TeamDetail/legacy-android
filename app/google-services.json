@@ -12,7 +12,20 @@
           "package_name": "com.legacy.legacy_android"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "993497268214-5s7ld2sqehgsonvorer4ftpiuno66gau.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.legacy.legacy_android",
+            "certificate_hash": "edb9db9f8e262febd9de3808eb48ef2497cce827"
+          }
+        },
+        {
+          "client_id": "993497268214-enauq96tm4jgg2jl7vfd0pkbuutimruu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAG0GpgvA1agVfTV3-JxCFoi2XkgTlfXJc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993497268214-enauq96tm4jgg2jl7vfd0pkbuutimruu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "993497268214-6t47u1envaj53uk6trthm22a6lccv4ib.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.detail.LegacyApp"
+              }
+            }
+          ]
         }
       }
     }

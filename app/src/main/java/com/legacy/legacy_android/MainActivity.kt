@@ -3,6 +3,7 @@ package com.legacy.legacy_android
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.SoundPool
@@ -89,6 +90,8 @@ enum class BgmType(val resourceId: Int, val volume: Float) {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     @Inject
     lateinit var fcmService: FcmService
@@ -372,5 +375,10 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("MainActivity", "리소스 해제 중 오류 발생: ${e.message}")
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        loginViewModel.handleAppleRedirect(intent)
     }
 }

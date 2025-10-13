@@ -5,16 +5,6 @@ data class KakaoLoginRequest(
     val refreshToken: String
 )
 
-data class AppleLoginRequest(
-    val code: String,
-    val name: String
-)
-
-data class AppleAccessTokenRequest(
-    val idToken: String,
-    val name: String,
-)
-
 data class GoogleLoginRequest(
     val idToken: String
 )
