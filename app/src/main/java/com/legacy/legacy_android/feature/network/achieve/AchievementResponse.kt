@@ -1,6 +1,6 @@
 package com.legacy.legacy_android.feature.network.achieve
 
-import com.google.gson.annotations.SerializedName
+import com.legacy.legacy_android.feature.network.user.InventoryItem
 
 data class AchievementResponse(
     val achievementId: Int,
@@ -11,22 +11,10 @@ data class AchievementResponse(
     val currentRate: Int,
     val goalRate: Int,
     val achievementGrade: String,
-    val achievementAward: List<AchievementAward>,
+    val achievementAward: List<InventoryItem>,
     val receive: Boolean
 )
 
-data class AchievementAward(
-    @SerializedName("itemId")
-    val itemId: Int,
-    @SerializedName("itemType")
-    val itemType: String,
-    @SerializedName("itemName")
-    val itemName: String,
-    @SerializedName("itemDescription")
-    val itemDescription: String,
-    @SerializedName("itemCount")
-    val itemCount: Int
-)
 data class CardPack(
     val cardpackName: String,
     val cardpackContent: String,

@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.legacy.legacy_android.domain.repository.MailRepository
-import com.legacy.legacy_android.feature.network.mail.ItemData
 import com.legacy.legacy_android.feature.network.mail.MailResponse
+import com.legacy.legacy_android.feature.network.user.InventoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class MailViewModel @Inject constructor(
     var mails by mutableStateOf<List<MailResponse>>(emptyList())
         private set
 
-    var items by mutableStateOf<List<ItemData>>(emptyList())
+    var items by mutableStateOf<List<InventoryItem>>(emptyList())
 
     var isLoading by mutableStateOf(false)
         private set

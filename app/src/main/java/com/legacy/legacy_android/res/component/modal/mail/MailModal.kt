@@ -142,7 +142,7 @@ private fun RewardView(items: List<ItemData>) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(max = 300.dp) // 최대 높이 제한
+            .heightIn(max = 300.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

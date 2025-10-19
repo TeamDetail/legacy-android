@@ -15,9 +15,6 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 import android.content.Context
-import androidx.credentials.CredentialManager  // Changed: AndroidX import
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.legacy.legacy_android.BuildConfig
 import com.legacy.legacy_android.domain.repository.GoogleSignInRepository
 import com.legacy.legacy_android.domain.repository.TokenRepository
 import com.legacy.legacy_android.domain.repository.TokenRepositoryImpl
@@ -30,6 +27,7 @@ import com.legacy.legacy_android.feature.network.auth.GoogleSignInRepositoryImpl
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManager
 import com.legacy.legacy_android.feature.network.auth.KakaoLoginManagerImpl
 import com.legacy.legacy_android.feature.network.card.CardService
+import com.legacy.legacy_android.feature.network.check.CheckService
 import com.legacy.legacy_android.feature.network.course.all.AllCourseService
 import com.legacy.legacy_android.feature.network.course.all.CourseByIdService
 import com.legacy.legacy_android.feature.network.course.all.CreateCourseService
@@ -105,27 +103,6 @@ abstract class DataSourceModule {
     ): GoogleSignInDataSource
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-object GoogleAuthModule {
-    @Provides
-    @Singleton
-    fun provideGoogleIdOptions(): GetGoogleIdOption {
-        return GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setAutoSelectEnabled(false)
-            .setServerClientId(BuildConfig.ANDROID_WEBCLIENT_KEY)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideCredentialManager(
-        @ApplicationContext context: Context
-    ): CredentialManager {
-        return CredentialManager.create(context)
-    }
-}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -170,6 +147,13 @@ object NetworkModule {
     fun provideTokenService(retrofit: Retrofit): TokenService {
         return retrofit.create(TokenService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideCheckService(retrofit: Retrofit): CheckService {
+        return retrofit.create(CheckService::class.java)
+    }
+
 
     @Provides
     @Singleton
