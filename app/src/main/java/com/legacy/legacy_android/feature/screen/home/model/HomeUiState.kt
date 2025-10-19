@@ -10,7 +10,7 @@ import com.legacy.legacy_android.feature.network.ruins.id.RuinsCommentResponse
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 
 enum class HintStatus { NO, CREDIT, HINT }
-enum class QuizStatus { NONE, WORKING, LOADING, SUCCESS, RETRY }
+enum class QuizStatus { NONE, WORKING, LOADING, SUCCESS, RETRY, SHARE }
 data class MapBounds(
     val minLat: Double = 0.0,
     val maxLat: Double = 0.0,

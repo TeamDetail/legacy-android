@@ -1,17 +1,27 @@
+@file:Suppress("DEPRECATION")
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.legacy.legacy_android.res.component.quiz
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import com.legacy.legacy_android.ui.theme.*
@@ -26,6 +36,10 @@ import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.service.RememberClickSound
 import kotlinx.coroutines.delay
+import dev.shreyaspatil.capturable.capturable
+import dev.shreyaspatil.capturable.controller.CaptureController
+import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.asAndroidBitmap
 
 @Composable
 fun QuizBox(
@@ -34,7 +48,6 @@ fun QuizBox(
     viewModel: HomeViewModel,
     ruin: RuinsIdResponse?
 ) {
-
     val (soundPool, soundId) = RememberClickSound()
     val selectedOption = remember { mutableStateOf<String?>(null) }
     val showCollection = remember { mutableStateOf(false) }
@@ -77,7 +90,10 @@ fun QuizBox(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "Q${viewModel.uiState.quizNum.value + 1}", style = AppTextStyles.Title2.bold)
+                        Text(
+                            text = "Q${viewModel.uiState.quizNum.value + 1}",
+                            style = AppTextStyles.Title2.bold
+                        )
                         Text(
                             text = data[viewModel.uiState.quizNum.value].ruinsName,
                             color = Label_Alternative,
@@ -243,6 +259,10 @@ fun QuizBox(
             LoadingView()
         }
 
+        QuizStatus.SHARE -> {
+            ShareView(viewModel, ruin)
+        }
+
         else -> {}
     }
 }
@@ -320,9 +340,8 @@ fun CollectionView(
     data: RuinsIdResponse?,
 ) {
     LaunchedEffect(Unit) {
-        delay(5000)
-        viewModel.clearQuizAnswers()
-        viewModel.updateQuizStatus(QuizStatus.NONE)
+        delay(1000)
+        viewModel.updateQuizStatus(QuizStatus.SHARE)
     }
 
     Column(
@@ -428,4 +447,156 @@ fun WrongView(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeApi::class)
+@Composable
+fun ShareView(
+    viewModel: HomeViewModel,
+    data: RuinsIdResponse?
+) {
+    val context = LocalContext.current
+    val captureController = remember { CaptureController() }
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(52.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .background(Background_Normal, shape = RoundedCornerShape(20.dp))
+            .fillMaxWidth(0.9f)
+            .fillMaxHeight(0.8f)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(vertical = 27.dp, horizontal = 37.dp)
+        ) {
+            // 캡처할 카드 영역 (배경 이미지 포함)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .fillMaxHeight(0.4f)
+                    .capturable(captureController)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(12.dp))
+                ) {
+                    // 배경 이미지
+                    Image(
+                        painter = painterResource(R.drawable.cardbg),
+                        contentDescription = "card background",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    // 카드 이미지
+                    RuinImage(
+                        image = data!!.ruinsImage,
+                        name = data.name,
+                        nationAttributeName = data.card!!.nationAttributeName,
+                        regionAttributeName = data.card.regionAttributeName,
+                        lineAttributeName = data.card.lineAttributeName,
+                        height = 400,
+                    )
+                }
+            }
+
+            Text(
+                text = "카드를 획득했어요!",
+                style = AppTextStyles.Title2.bold
+            )
+        }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.padding(horizontal = 37.dp)
+    ) {
+        CustomButton(
+            onClick = {
+                coroutineScope.launch {
+                    val imageBitmap = captureController.captureAsync().await()
+                    val androidBitmap = imageBitmap.asAndroidBitmap()
+                    val imageUri = saveBitmapToCache(context, androidBitmap)
+
+                    imageUri?.let { uri ->
+                        shareToInstagramStory(context, uri)
+                    }
+                }
+            },
+            text = "스토리 업로드",
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.9f),
+            borderColor = Blue_Netural,
+            textColor = Blue_Netural,
+            backgroundColor = Fill_Normal,
+            contentPadding = PaddingValues(
+                vertical = 12.dp,
+                horizontal = 10.dp
+            ),
+            fontSize = AppTextStyles.Caption1.Bold.fontSize
+        )
+
+        CustomButton(
+            onClick = {
+                viewModel.clearQuizAnswers()
+                viewModel.updateQuizStatus(QuizStatus.NONE)
+            },
+            text = "나가기",
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.9f),
+            borderColor = Line_Netural,
+            textColor = Label_Alternative,
+            backgroundColor = Fill_Normal,
+            contentPadding = PaddingValues(
+                vertical = 12.dp,
+                horizontal = 10.dp
+            ),
+            fontSize = AppTextStyles.Caption1.Bold.fontSize
+        )
+    }
+}
+
+private fun saveBitmapToCache(context: Context, bitmap: android.graphics.Bitmap): Uri? {
+    return try {
+        val cachePath = java.io.File(context.cacheDir, "images")
+        cachePath.mkdirs()
+        val file = java.io.File(cachePath, "shared_card_${System.currentTimeMillis()}.png")
+        val stream = java.io.FileOutputStream(file)
+        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream)
+        stream.close()
+
+        androidx.core.content.FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+private fun shareToInstagramStory(context: Context, imageUri: Uri) {
+    val instaIntent = Intent("com.instagram.share.ADD_TO_STORY").apply {
+        setDataAndType(imageUri, "image/*")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        putExtra("interactive_asset_uri", imageUri)
+    }
+
+    if (instaIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(instaIntent)
+    } else {
+        redirectToPlayStoreForInstagram(context)
+    }
+}
+
+private fun redirectToPlayStoreForInstagram(context: Context) {
+    val appStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"))
+    appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(appStoreIntent)
 }

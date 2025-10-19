@@ -1,5 +1,6 @@
 package com.legacy.legacy_android.res.component.adventure
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -458,7 +459,7 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
                     regionAttributeName = currentData.card.regionAttributeName,
                     lineAttributeName = currentData.card.lineAttributeName,
                     height = 220,
-                    isLoading = false  // 정상 데이터는 false
+                    isLoading = false
                 )
             }
         }

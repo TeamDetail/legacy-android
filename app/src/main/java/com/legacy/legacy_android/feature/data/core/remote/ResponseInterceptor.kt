@@ -51,12 +51,10 @@ class ResponseInterceptor : Interceptor {
 
             // 토큰 갱신 동기화
             synchronized(refreshLock) {
-                // 다른 스레드가 이미 갱신 중이면 대기
                 if (isRefreshing) {
-                    // 갱신 완료를 기다림 (최대 5초)
                     try {
-                        (refreshLock as Object).wait(5000)
-                    } catch (e: InterruptedException) {
+                        refreshLock.wait(5000)
+                    } catch (_: InterruptedException) {
                         Thread.currentThread().interrupt()
                     }
 
@@ -89,7 +87,7 @@ class ResponseInterceptor : Interceptor {
                 } finally {
                     synchronized(refreshLock) {
                         isRefreshing = false
-                        (refreshLock as Object).notifyAll() // 대기 중인 스레드 깨우기
+                        refreshLock.notifyAll()
                     }
                 }
             }

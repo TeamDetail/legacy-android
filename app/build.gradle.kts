@@ -36,7 +36,7 @@ android {
         applicationId = "com.legacy.legacy_android"
         minSdk = 28
         targetSdk = 35
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -83,6 +83,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += listOf(
+            "-opt-in=kotlin.RequiresOptIn"
+        )
+        freeCompilerArgs += listOf(
             "-P",
             "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_metrics",
             "-P",
@@ -98,6 +101,7 @@ android {
 
 
 dependencies {
+    implementation(libs.androidx.compose.ui.util)
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
 
@@ -165,6 +169,9 @@ dependencies {
 
     // Security
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Captureable
+    implementation("dev.shreyaspatil:capturable:2.1.0")
 
     // Compose (BOM 사용)
     implementation(platform(libs.androidx.compose.bom))
