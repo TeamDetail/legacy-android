@@ -53,6 +53,7 @@ data class DescriptionRequest(
 data class TitleRequest(
     val styleId: Int
 )
+
 data class ImageRequest(
     val profileImageUrl: String
 )

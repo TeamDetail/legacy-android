@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.legacy.legacy_android.feature.network.user.Title
+import com.legacy.legacy_android.feature.screen.profile.ProfileViewModel
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -35,12 +36,14 @@ import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label_Netural
+import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Purple_Normal
 
 @Composable
 fun TitleBox(
     title: Title,
-    modifier: Modifier
+    modifier: Modifier,
+    viewModel: ProfileViewModel
 ) {
     var isClicked by remember { mutableStateOf(false) }
 
@@ -78,11 +81,11 @@ fun TitleBox(
                 .padding(bottom = 12.dp, start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-//            Text(
-//                text = title.grade,
-//                style = AppTextStyles.Body2.bold,
-//                color = Primary
-//            )
+            Text(
+                text = title.name,
+                style = AppTextStyles.Body2.bold,
+                color = Primary
+            )
             Text(
                 text = title.content,
                 style = AppTextStyles.Caption1.Medium,
@@ -96,10 +99,11 @@ fun TitleBox(
             exit = fadeOut(animationSpec = tween(300)) +
                     shrinkVertically(animationSpec = tween(300))
         ) {
-            if (isClicked) {
+            if (isClicked && viewModel.profile!!.title.styleId != title.styleId) {
                 CustomButton(
-                    text = "장착",
-                    onClick = { isClicked = false },
+                    text =  "장착",
+                    onClick = { viewModel.patchTitle(title.styleId)
+                              viewModel.fetchProfile()},
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp),

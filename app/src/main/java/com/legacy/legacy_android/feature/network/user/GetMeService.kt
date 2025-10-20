@@ -20,7 +20,7 @@ interface GetMeService {
     suspend fun getTitles(): BaseResponse<List<Title>>
     @PATCH("/user/title")
     suspend fun patchTitle(@Body styleId: TitleRequest): BaseResponse<String>
-    @PATCH("/user/title")
+    @PATCH("/user/image")
     suspend fun patchImage(@Body profileImageUrl: ImageRequest): BaseResponse<UserData>
     @PATCH("/user/description")
     suspend fun patchDescription(@Body description: DescriptionRequest): BaseResponse<String>

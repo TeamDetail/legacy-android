@@ -97,7 +97,7 @@ fun AchieveBox(
                                 fontFamily = AppTextStyles.Caption1.ExtraBold.fontFamily
                             )
                         ) {
-                            append("5블록 탐험")
+                            append("${item.goalRate}블록 탐험")
                         }
                     },
                     style = AppTextStyles.Caption1.regular,

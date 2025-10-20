@@ -154,6 +154,19 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun patchTitle(id: Int) {
+        viewModelScope.launch {
+            fetchProfile()
+            val result = userRepository.patchTitle(id)
+            result.onSuccess {
+                uiState = uiState.copy(changeStatus = "OK")
+            }
+            result.onFailure { e ->
+                Log.e("UserRepository", "타이틀 수정 실패", e)
+            }
+        }
+    }
+
     fun getTitles(){
         viewModelScope.launch {
             val result = userRepository.getTitles()

@@ -65,7 +65,6 @@ import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
@@ -195,7 +194,7 @@ fun ProfileScreen(
                             style = AppTextStyles.Body1.bold
                         )
                         profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
-                            TitleBar(title = it, modifier = Modifier.height(20.dp), styleId = 3)
+                            TitleBar(title = it, modifier = Modifier.height(20.dp), profile!!.title.styleId)
                         }
                     }
                 }
@@ -367,11 +366,16 @@ fun TitleScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             maxItemsInEachRow = 2
         ) {
-            viewModel.uiState.titleList?.forEach { it ->
+            viewModel.uiState.titleList?.forEach { title ->
                 TitleBox(
-                    title = it,
-                    modifier = modifier.weight(1f)
+                    title = title,
+                    modifier = modifier.weight(1f),
+                    viewModel
                 )
+            }
+
+            if ((viewModel.uiState.titleList?.size ?: 0) % 2 != 0) {
+                Spacer(modifier = modifier.weight(1f))
             }
         }
     }

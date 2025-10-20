@@ -68,6 +68,7 @@ class UserRepository @Inject constructor(
             Result.failure(error)
         }
     }
+
     suspend fun patchTitle(styleId: Int): Result<String?> {
         return try {
             val response = getMeService.patchTitle(TitleRequest(styleId))
