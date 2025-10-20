@@ -74,7 +74,7 @@ fun SearchFriendBar(viewModel: FriendViewModel, data: SearchFriendResponse) {
                     style = AppTextStyles.Label.Medium,
                     color = Label_Alternative
                 )
-                TitleBar(title = "ㅇㅇ", modifier = Modifier.height(20.dp))
+                TitleBar(title = "ㅇㅇ", modifier = Modifier.height(20.dp), styleId = 4)
             }
         }
         Column (

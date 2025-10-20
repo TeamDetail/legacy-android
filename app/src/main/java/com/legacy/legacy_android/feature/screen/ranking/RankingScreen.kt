@@ -21,6 +21,7 @@ import com.legacy.legacy_android.res.component.ranking.RankingTable
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
+import com.legacy.legacy_android.ui.theme.Red_Netural
 
 @Composable
 fun RankingScreen(
@@ -28,7 +29,8 @@ fun RankingScreen(
     viewModel: RankingViewModel = hiltViewModel(),
     navHostController: NavHostController,
 ) {
-    val statusList = listOf("친구", "전체")
+    val statusList = listOf("탐험", "숙련")
+    val friendList = listOf("전체", "친구")
 
     LaunchedEffect(Unit) {
         viewModel.fetchRanking()
@@ -44,6 +46,8 @@ fun RankingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
             ) {
@@ -61,48 +65,68 @@ fun RankingScreen(
                         )
                     }
                 }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    friendList.forEachIndexed { index, item ->
+                        StatusButton(
+                            selectedValue = viewModel.uiState.friendStatus,
+                            onClick = { viewModel.changeFriendStatus(index) },
+                            text = item,
+                            id = index,
+                            selectedColor = Red_Netural,
+                            nonSelectedColor = Line_Netural
+                        )
+                    }
+                }
             }
             // 여기서부터 랭킹바 Wrapper
             Row(
                 horizontalArrangement = Arrangement.spacedBy((-6).dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val rank1 = viewModel.uiState.rankingData?.getOrNull(0)
+                val rank2 = viewModel.uiState.rankingData?.getOrNull(1)
+                val rank3 = viewModel.uiState.rankingData?.getOrNull(2)
+
                 Box(
-                    modifier = modifier
-                        .offset(0.dp, 40.dp)
+                    modifier = modifier.offset(0.dp, 40.dp)
                 ) {
                     RankingBar(
                         rank = 2,
-                        blocks = viewModel.uiState.rankingData?.get(1)?.allBlocks ?: 0,
-                        name = viewModel.uiState.rankingData?.get(1)?.nickname ?: "이름 없음",
-                        title = viewModel.uiState.rankingData?.get(1)?.title?.name ?: " ",
+                        blocks = rank2?.allBlocks ?: 0,
+                        name = rank2?.nickname ?: "이름 없음",
+                        title = rank2?.title?.name ?: " ",
                         zIndex = 2f,
-                        img = viewModel.uiState.rankingData?.get(1)?.imageUrl
+                        img = rank2?.imageUrl,
+                        viewModel = viewModel
                     )
                 }
                 RankingBar(
                     rank = 1,
-                    blocks = viewModel.uiState.rankingData?.get(0)?.allBlocks ?: 0,
-                    name = viewModel.uiState.rankingData?.get(0)?.nickname ?: "이름 없음",
-                    title = viewModel.uiState.rankingData?.get(0)?.title?.name ?: " ",
+                    blocks = rank1?.allBlocks ?: 0,
+                    name = rank1?.nickname ?: "이름 없음",
+                    title = rank1?.title?.name ?: " ",
                     zIndex = 3f,
-                    img = viewModel.uiState.rankingData?.get(0)?.imageUrl
+                    img = rank1?.imageUrl,
+                    viewModel = viewModel
                 )
+
                 Box(
-                    modifier = modifier
-                        .offset(0.dp, 50.dp)
+                    modifier = modifier.offset(0.dp, 50.dp)
                 ) {
                     RankingBar(
                         rank = 3,
-                        blocks = viewModel.uiState.rankingData?.get(2)?.allBlocks ?: 0,
-                        name = viewModel.uiState.rankingData?.get(2)?.nickname ?: "이름 없음",
-                        title = viewModel.uiState.rankingData?.get(2)?.title?.name ?: " ",
+                        blocks = rank3?.allBlocks ?: 0,
+                        name = rank3?.nickname ?: "이름 없음",
+                        title = rank3?.title?.name ?: " ",
                         zIndex = 1f,
-                        img = viewModel.uiState.rankingData?.get(2)?.imageUrl
+                        img = rank3?.imageUrl,
+                        viewModel = viewModel
                     )
                 }
             }
-            Column(modifier.offset(0.dp, (-120).dp)){
+            Column(modifier.offset(0.dp, (-120).dp)) {
                 RankingTable(
                     modifier,
                     rankingData = viewModel.uiState.rankingData ?: emptyList()

@@ -4,5 +4,6 @@ import com.legacy.legacy_android.feature.network.rank.RankingResponse
 
 data class RankingUiState(
     val rankingData: List<RankingResponse>? = null,
-    val rankingStatus: Int = 0
+    val rankingStatus: Int = 0,
+    val friendStatus: Int = 0
 )

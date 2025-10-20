@@ -26,7 +26,9 @@ import com.legacy.legacy_android.ui.theme.bitbit
 import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.SmallTitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
@@ -39,7 +41,8 @@ fun RankingRowBar(
     name: String?,
     title: String?,
     level: Int?,
-    img: String?
+    img: String?,
+    viewModel: RankingViewModel = hiltViewModel()
 ) {
     val normalized = blocks?.let { it % 1000 }
     Row(
@@ -142,7 +145,7 @@ fun RankingRowBar(
                 )
             } else {
                 Text(
-                    text = "${blocks}블록",
+                    text = "${blocks}${if(viewModel.uiState.rankingStatus == 0) "블록" else "레벨"}",
                     fontFamily = bitbit,
                     fontSize = 16.sp,
                     color = if (blocks > 2000) Color(0xFFA05AE8) else when (normalized) {

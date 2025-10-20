@@ -21,7 +21,12 @@ class RankingViewModel @Inject constructor(
 
     fun fetchRanking() {
         viewModelScope.launch {
-            val result = rankingRepository.fetchRanking()
+            val result = if (uiState.rankingStatus == 0) {
+                rankingRepository.fetchExploreRanking(if (uiState.friendStatus == 0) "ALL" else "FRIEND")
+            } else {
+                rankingRepository.fetchLevelRanking(if (uiState.friendStatus == 0) "ALL" else "FRIEND")
+            }
+
             result.onSuccess { data ->
                 if (data != null) {
                     uiState = uiState.copy(rankingData = data)
@@ -29,7 +34,15 @@ class RankingViewModel @Inject constructor(
             }
         }
     }
-    fun changeRankingStatus(status: Int){
+
+    fun changeRankingStatus(status: Int) {
         uiState = uiState.copy(rankingStatus = status)
+        fetchRanking()
     }
+
+    fun changeFriendStatus(status: Int) {
+        uiState = uiState.copy(friendStatus = status)
+        fetchRanking()
+    }
+
 }

@@ -33,7 +33,9 @@ import com.legacy.legacy_android.ui.theme.pretendard
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 
 @Composable
 fun RankingBar(
@@ -42,7 +44,8 @@ fun RankingBar(
     name: String?,
     title: String?,
     zIndex: Float,
-    img: String?
+    img: String?,
+    viewModel: RankingViewModel = hiltViewModel()
 ) {
     Box(
         modifier = Modifier
@@ -111,7 +114,7 @@ fun RankingBar(
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = "${blocks}블록",
+                                text = "${blocks}${if(viewModel.uiState.rankingStatus == 0) "블록" else "레벨"}",
                                 color = Yellow_Netural,
                                 fontFamily = pretendard,
                                 fontWeight = FontWeight.Bold,

@@ -9,9 +9,19 @@ import javax.inject.Singleton
 class RankingRepository @Inject constructor(
     private val rankingService: RankingService
 ){
-    suspend fun fetchRanking(): Result<List<RankingResponse>?> {
+    suspend fun fetchExploreRanking(type: String): Result<List<RankingResponse>?> {
         return try{
-            val response = rankingService.rank()
+            val response = rankingService.exploreRank(type = type)
+            Result.success(if(!response.data.isNullOrEmpty())response.data else null)
+        }catch(e: Exception){
+            println("실패")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun fetchLevelRanking(type: String): Result<List<RankingResponse>?> {
+        return try{
+            val response = rankingService.levelRank(type = type)
             Result.success(if(!response.data.isNullOrEmpty())response.data else null)
         }catch(e: Exception){
             println("실패")

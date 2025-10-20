@@ -8,31 +8,37 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.feature.network.rank.RankingResponse
+import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.ui.theme.Background_Netural
 
 @Composable
 fun RankingTable(
-    modifier: Modifier,
-    rankingData: List<RankingResponse>
+    modifier: Modifier = Modifier,
+    viewModel: RankingViewModel = hiltViewModel(),
+    rankingData: List<RankingResponse> = emptyList()
 ) {
+    if (rankingData.isEmpty()) return
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Background_Netural, shape = RoundedCornerShape(12.dp))
     ) {
         Column(
-            modifier = modifier.padding(vertical = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp)
         ) {
             rankingData.forEachIndexed { index, item ->
                 if (index > 2) {
                     RankingRowBar(
-                        rank = index,
+                        rank = index + 1,
                         blocks = item.allBlocks,
                         level = item.level,
-                        name = item.nickname,
+                        name = item.nickname.ifEmpty { "이름 없음" },
                         title = item.title.name,
-                        img = item.imageUrl
+                        img = item.imageUrl,
+                        viewModel = viewModel
                     )
                 }
             }

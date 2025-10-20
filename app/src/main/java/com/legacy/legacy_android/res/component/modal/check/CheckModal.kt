@@ -4,16 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,11 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -34,33 +21,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.feature.network.check.DailyResponse
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.res.component.button.StatusButton
-import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Background_Normal
-import com.legacy.legacy_android.ui.theme.Fill_Netural
-import com.legacy.legacy_android.ui.theme.Fill_Normal
-import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Label_Assitive
-import com.legacy.legacy_android.ui.theme.Line_Alternative
-import com.legacy.legacy_android.ui.theme.Line_Netural
-import com.legacy.legacy_android.ui.theme.Primary
-import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.*
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CheckModal(
     onCheckClick: (Boolean) -> Unit,
 ) {
-    val today = LocalDate.now()
-    val currentMonth by remember { mutableIntStateOf(today.monthValue) }
-    val days = remember { (1..today.lengthOfMonth()).toList() }
-    val checkList = remember { listOf("${currentMonth}월", "론칭") }
     val viewModel: CheckViewModel = hiltViewModel()
+    val today = LocalDate.now()
+    val checkList = remember { listOf("${today.monthValue}월", "론칭") }
 
     LaunchedEffect(Unit) {
         viewModel.checkDaily()
     }
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val currentCheck = viewModel.uiState.check?.firstOrNull()
+
+    val startDate = remember(currentCheck) {
+        currentCheck?.startAt?.let {
+            try { LocalDate.parse(it, formatter) } catch (_: Exception) { null }
+        }
+    }
+
+    val totalDays = currentCheck?.awards?.size ?: 0
+    val checkCount = currentCheck?.checkCount ?: 0
 
     Box(
         contentAlignment = Alignment.Center,
@@ -84,7 +73,7 @@ fun CheckModal(
             /** 헤더 */
             Header(onCheckClick)
 
-            /** 선택 버튼 */
+            /** 상태 버튼 */
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 checkList.forEachIndexed { index, item ->
                     StatusButton(
@@ -98,71 +87,71 @@ fun CheckModal(
                 }
             }
 
-            /** 기간 */
-            Row (
+            /** 기간 표시 */
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
-            ){
-                Text(text = "기간",  style = AppTextStyles.Caption1.Medium, color = Label_Alternative)
-                Text(text = "${viewModel.uiState.check?.get(0)?.startAt} ~ ${viewModel.uiState.check?.get(0)?.endAt}", style = AppTextStyles.Caption1.Medium, color = Label_Alternative)
+            ) {
+                Text(
+                    text = "기간",
+                    style = AppTextStyles.Caption1.Medium,
+                    color = Label_Alternative
+                )
+                Text(
+                    text = "${startDate ?: "-"} ~ ${currentCheck?.endAt ?: "-"}",
+                    style = AppTextStyles.Caption1.Medium,
+                    color = Label_Alternative
+                )
             }
 
-            val chunkedDays = days.chunked(7)
+            /** 출석 달력 (awards 기준) */
+            if (totalDays > 0) {
+                val daysRange = (1..totalDays).toList()
+                val chunkedDays = daysRange.chunked(7)
 
-            chunkedDays.forEachIndexed { index, rowItems ->
-                val isLastRow = index == chunkedDays.lastIndex
-
-                val displayItems: List<Int?> = if (isLastRow) {
-                    val placeholders = List(7 - rowItems.size) { null }
-                    rowItems.map { it as Int? } + placeholders
-                } else {
-                    rowItems.map { it as Int? }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    displayItems.forEach { day ->
-                        if (day != null) {
-                            val backgroundColor = when {
-                                day < today.dayOfMonth -> Fill_Netural
-                                day == today.dayOfMonth -> Primary
-                                else -> Fill_Normal
-                            }
-                            val textColor = if (day < today.dayOfMonth) Label_Assitive else Label
+                chunkedDays.forEach { rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        rowItems.forEach { dayIndex ->
+                            val isChecked = dayIndex <= checkCount
+                            val backgroundColor = if (isChecked) Primary else Fill_Normal
+                            val textColor = if (isChecked) White else Label_Alternative
 
                             Box(
                                 modifier = Modifier
-                                    .clickable { viewModel.setSelectedItem(day)
-                                    println(day)
-                                    println(viewModel.uiState.selectedCheck)}
                                     .size(40.dp)
                                     .background(backgroundColor, RoundedCornerShape(8.dp))
-                                    .border(1.dp, Line_Alternative, RoundedCornerShape(8.dp)),
+                                    .border(1.dp, Line_Alternative, RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        viewModel.setSelectedCheck(currentCheck!!.awards[dayIndex - 1])
+                                        viewModel.setSelectedDay(dayIndex)
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = day.toString(),
+                                    text = "$dayIndex",
                                     color = textColor,
                                     style = AppTextStyles.Body2.bold
                                 )
                             }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .alpha(0f)
-                            )
+                        }
+
+                        repeat(7 - rowItems.size) {
+                            Box(Modifier.size(40.dp).alpha(0f))
                         }
                     }
                 }
             }
-            /** 선택 창*/
-            if (viewModel.uiState.selectedCheck != null) {
-                Detail(viewModel.uiState.selectedCheck)
+
+            /** 상세 보상 및 출석 버튼 */
+            if (viewModel.uiState.currentDay != null) {
+                currentCheck?.let {
+                    Detail(it, viewModel)
+                }
             }
         }
     }
@@ -187,16 +176,17 @@ private fun Header(onCheckClick: (Boolean) -> Unit) {
 
 @Composable
 private fun Detail(
-    selectedCheck: DailyResponse?,
+    check: DailyResponse,
+    viewModel: CheckViewModel = hiltViewModel()
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(8.dp))
         Spacer(
             Modifier
                 .height(1.dp)
                 .background(Line_Alternative)
         )
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(8.dp))
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
@@ -205,9 +195,39 @@ private fun Detail(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(text = "${selectedCheck?.startAt}일차 보상", style = AppTextStyles.Body2.bold)
+            Text(text = "${viewModel.uiState.currentDay}일차 보상", style = AppTextStyles.Body2.bold)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                viewModel.uiState.currentCheck?.forEach {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = it.itemName,
+                            style = AppTextStyles.Caption1.Medium,
+                            color = Label_Netural
+                        )
+                        Text(
+                            text = "${it.itemCount}개",
+                            style = AppTextStyles.Caption1.Medium,
+                            color = Label_Netural
+                        )
+                    }
+                }
             }
+        }
+        if ((viewModel.uiState.currentDay ?: 0) == check.checkCount) {
+            CustomButton(
+                text = if (check.check) "출석완료" else "출석하기",
+                onClick = { viewModel.getItem() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                borderColor = if (check.check) Line_Alternative else Primary,
+                textColor = if (check.check) Line_Alternative else Primary,
+                textStyle = AppTextStyles.Caption1.Bold
+            )
         }
     }
 }

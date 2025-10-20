@@ -7,5 +7,7 @@ data class DailyResponse(
     val name: String,
     val startAt: String,
     val endAt: String,
-    val awards: List<List<InventoryItem>>
+    val awards: List<List<InventoryItem>>,
+    val checkCount: Int,
+    val check: Boolean
 )

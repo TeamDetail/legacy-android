@@ -33,7 +33,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun InventoryInfo(
-    viewModel: ProfileViewModel = hiltViewModel()) {
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,17 +51,21 @@ fun InventoryInfo(
             Image(
                 painter = painterResource(R.drawable.cardpack),
                 contentDescription = null,
-                modifier = Modifier.size(120.dp).clip(RoundedCornerShape(8.dp))
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier
             ) {
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
-                ){
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp)
+                ) {
                     Text(
                         text = viewModel.uiState.selectedItem?.itemName ?: "이름 없음",
                         style = AppTextStyles.Heading1.bold
@@ -72,7 +77,9 @@ fun InventoryInfo(
                     )
                 }
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
                     text = viewModel.uiState.selectedItem?.itemDescription ?: "설명 없음",
                     style = AppTextStyles.Body2.medium,
                     color = Label_Netural
@@ -85,7 +92,8 @@ fun InventoryInfo(
                 .fillMaxWidth()
                 .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                 .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
-                .clickable{viewModel.updateCardPackOpen(true)
+                .clickable {
+                    viewModel.updateCardPackOpen(true)
                 }
         ) {
             Text(

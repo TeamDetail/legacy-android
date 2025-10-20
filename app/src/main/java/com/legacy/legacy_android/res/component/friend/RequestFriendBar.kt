@@ -75,7 +75,7 @@ fun RequestFriendBar(viewModel: FriendViewModel, data: FriendReqResponse, isRece
                     style = AppTextStyles.Label.Medium,
                     color = Label_Alternative
                 )
-                TitleBar(title = "ㅇㅇ", modifier = Modifier.height(20.dp))
+                TitleBar(title = "ㅇㅇ", modifier = Modifier.height(20.dp), styleId = 2)
             }
         }
         Column (

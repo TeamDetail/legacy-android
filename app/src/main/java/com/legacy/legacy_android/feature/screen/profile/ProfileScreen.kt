@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +54,7 @@ import com.legacy.legacy_android.res.component.profile.Scorebar
 import com.legacy.legacy_android.res.component.profile.StatTable
 import com.legacy.legacy_android.res.component.profile.StatTableResponse
 import com.legacy.legacy_android.res.component.profile.Statbar
+import com.legacy.legacy_android.res.component.profile.TitleBox
 import com.legacy.legacy_android.res.component.profile.TitleSelector
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.TitleBar
@@ -63,6 +65,7 @@ import com.legacy.legacy_android.ui.theme.Fill_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
@@ -192,7 +195,7 @@ fun ProfileScreen(
                             style = AppTextStyles.Body1.bold
                         )
                         profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
-                            TitleBar(title = it, modifier = Modifier.height(20.dp))
+                            TitleBar(title = it, modifier = Modifier.height(20.dp), styleId = 3)
                         }
                     }
                 }
@@ -352,14 +355,24 @@ fun RecordScreen(
 
 @Composable
 fun TitleScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     Column {
         Text(text = "보유한 칭호", color = Label_Alternative, style = AppTextStyles.Body2.bold)
         Spacer(modifier = modifier.height(8.dp))
-        viewModel.uiState.titleList?.forEach { it ->
-            Text(text = it.name, style = AppTextStyles.Body1.bold)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            maxItemsInEachRow = 2
+        ) {
+            viewModel.uiState.titleList?.forEach { it ->
+                TitleBox(
+                    title = it,
+                    modifier = modifier.weight(1f)
+                )
+            }
         }
     }
 }
