@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.res.component.achieve.Item
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -143,23 +144,7 @@ fun AchieveInfoScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 rowItems.forEach { item ->
-                                    Box(
-                                        Modifier
-                                            .size(40.dp)
-                                            .background(Fill_Normal, RoundedCornerShape(8.dp))
-                                            .border(
-                                                1.dp,
-                                                Line_Alternative,
-                                                RoundedCornerShape(8.dp)
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Image(
-                                            painter = painterResource(R.drawable.cardpack),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(120.dp).clip(RoundedCornerShape(8.dp))
-                                        )
-                                    }
+                                    Item(count = item.itemCount)
                                 }
                             }
                         }

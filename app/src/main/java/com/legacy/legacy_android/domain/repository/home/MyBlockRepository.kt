@@ -1,8 +1,8 @@
 package com.legacy.legacy_android.domain.repository.home
 
-import com.legacy.legacy_android.feature.network.block.Get.GetBlockResponse
-import com.legacy.legacy_android.feature.network.block.Post.PostBlockRequest
+import com.legacy.legacy_android.feature.network.block.get.GetBlockResponse
 import com.legacy.legacy_android.feature.network.block.get.GetBlockService
+import com.legacy.legacy_android.feature.network.block.post.PostBlockRequest
 import com.legacy.legacy_android.feature.network.block.post.PostBlockService
 import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import javax.inject.Inject

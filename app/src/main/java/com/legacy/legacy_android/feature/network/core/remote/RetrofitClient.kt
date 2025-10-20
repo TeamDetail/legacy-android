@@ -18,7 +18,10 @@ object RetrofitClient {
     private var retrofit: Retrofit? = null
 
     fun init(context: Context) {
-        val gson = GsonBuilder().setLenient().create()
+        val gson = GsonBuilder()
+            .setLenient()
+            .serializeNulls()
+            .create()
 
         val client = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)

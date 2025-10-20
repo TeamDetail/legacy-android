@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
-import com.legacy.legacy_android.feature.network.mail.ItemData
 import com.legacy.legacy_android.feature.network.mail.MailResponse
+import com.legacy.legacy_android.feature.network.user.InventoryItem
 import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.ui.theme.*
 
@@ -136,7 +136,7 @@ private fun EmptyView() {
 }
 
 @Composable
-private fun RewardView(items: List<ItemData>) {
+private fun RewardView(items: List<InventoryItem>) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -202,7 +202,7 @@ private fun MailListView(
 }
 
 @Composable
-private fun ItemGrid(items: List<ItemData>) {
+private fun ItemGrid(items: List<InventoryItem>) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         items.chunked(4).forEach { rowItems ->
             Row(

@@ -101,35 +101,35 @@ fun LoginScreen(
                     color = Black,
                     viewModel = viewModel
                 )
-//                LoginButton(
-//                    onClick = {
-//                        if (!viewModel.loadingState.value) {
-//                            activity?.let {
-//                                viewModel.loginWithGoogle(
-//                                    activity = it, navHostController = navHostController,
-//                                    onFailure = { error ->
-//                                        Toast.makeText(
-//                                            context,
-//                                            "Google 로그인 실패: ${error.message}",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                    }
-//                                )
-//                            } ?: run {
-//                                Toast.makeText(
-//                                    context,
-//                                    "Activity를 찾을 수 없습니다",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        }
-//                    },
-//                    icon = painterResource(R.drawable.google),
-//                    name = "Google",
-//                    bgColor = White,
-//                    color = Black,
-//                    viewModel = viewModel
-//                )
+                LoginButton(
+                    onClick = {
+                        if (!viewModel.loadingState.value) {
+                            activity?.let {
+                                viewModel.loginWithGoogle(
+                                    activity = it, navHostController = navHostController,
+                                    onFailure = { error ->
+                                        Toast.makeText(
+                                            context,
+                                            "Google 로그인 실패: ${error.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                )
+                            } ?: run {
+                                Toast.makeText(
+                                    context,
+                                    "Activity를 찾을 수 없습니다",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
+                    icon = painterResource(R.drawable.google),
+                    name = "Google",
+                    bgColor = White,
+                    color = Black,
+                    viewModel = viewModel
+                )
             }
         }
     }

@@ -25,25 +25,33 @@ class CheckViewModel @Inject constructor(
         uiState = uiState.copy(checkStatus = status)
     }
 
-    fun checkDaily(){
+    fun checkDaily() {
         viewModelScope.launch {
-            isLoading = true
-            try {
-                checkRepository.checkDaily()
-            } catch (e: Exception) {
-                Log.e("CheckViewModel",  " 출첵 수신 실패", e)
+            val result = checkRepository.checkDaily()
+            result.onSuccess {
+                uiState = uiState.copy(check = it)
+            }.onFailure {
+                Log.e("CheckViewModel", "출첵 수신 실패", it)
             }
-            isLoading = false
         }
     }
 
-    fun getItems() {
+    fun setSelectedItem(id: Int) {
+        val currentCheck = uiState.check?.get(id)
+        uiState = uiState.copy(selectedCheck = currentCheck)
+    }
+
+    fun getItem(){
         viewModelScope.launch {
-            try {
-                val result = checkRepository.getItems()
-                if (result.isSuccess) uiState = uiState.copy(getItems = result)
-            } catch (e: Exception) {
-                Log.e("MailViewModel", "아이템 수령 실패", e)
+            try{
+                val response = checkRepository.getItem(uiState.selectedCheck!!.id)
+                if(response.isSuccess){
+                    uiState = uiState.copy(getItems = response.getOrNull())
+                }else{
+                    Log.e("CheckViewModel",  " 아이템 수령 실패", response.exceptionOrNull())
+                }
+            } catch (e: Exception){
+                Log.e("CheckViewModel",  " 아이템 수령 실패", e)
             }
         }
     }

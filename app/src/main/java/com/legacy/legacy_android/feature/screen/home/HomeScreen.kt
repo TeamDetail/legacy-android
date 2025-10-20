@@ -53,6 +53,7 @@ import com.legacy.legacy_android.res.component.modal.mail.MailModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.res.component.modal.RateModal
 import com.legacy.legacy_android.res.component.modal.RuinSearchModal
+import com.legacy.legacy_android.res.component.modal.check.CheckModal
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Black
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -228,6 +229,9 @@ fun HomeScreen(
         if (viewModel.uiState.isMailOpen) {
             MailModal(onMailClick = { show -> viewModel.updateIsMailOpen(false) })
         }
+        if (viewModel.uiState.isCheckOpen){
+            CheckModal(onCheckClick = { show -> viewModel.updateIsCheckOpen(false)})
+        }
         if (viewModel.uiState.isCommentModalOpen) {
             RateModal(viewModel)
         }
@@ -242,7 +246,9 @@ fun HomeScreen(
         ) {
             InfoBar(
                 navHostController,
-                onMailClick = { show -> viewModel.updateIsMailOpen(true) })
+                onMailClick = { show -> viewModel.updateIsMailOpen(true) },
+                onCheckClick = {show -> viewModel.updateIsCheckOpen(true)}
+            )
         }
 
         if (!mapLoaded) {

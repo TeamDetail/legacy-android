@@ -10,3 +10,18 @@ data class AchievementAwardResponse(
     @SerializedName("achievementAward")
     val achievementAward: List<AchievementAward>
 )
+
+data class AchievementAward(
+    @SerializedName("itemId")
+    val itemId: Int,
+    @SerializedName("itemType")
+    val itemType: String,
+    @SerializedName("itemName")
+    val itemName: String,
+    @SerializedName("itemDescription")
+    val itemDescription: String,
+    @SerializedName("itemCount")
+    val itemCount: Int,
+    @SerializedName("styledId")
+    val itemImage: Int
+)

@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.ScreenNavigate
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.feature.usecase.GoogleLoginUseCase
 import com.legacy.legacy_android.feature.usecase.KakaoLoginUseCase
@@ -28,12 +29,20 @@ class LoginViewModel @Inject constructor(
     application: Application,
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
+    private val userRepository: UserRepository
 ) : AndroidViewModel(application) {
 
     var loadingState = mutableStateOf(false)
         private set
 
     val context: Context = application.applicationContext
+
+    fun fetchProfile(){
+        viewModelScope.launch {
+            userRepository.clearProfile()
+            userRepository.fetchProfile()
+        }
+    }
 
     fun loginWithGoogle(
         activity: Activity,
@@ -45,6 +54,7 @@ class LoginViewModel @Inject constructor(
                 loadingState.value = true
                 val result = googleLoginUseCase.execute(activity)
                 if (result.isSuccess) {
+                    fetchProfile()
                     Log.d(TAG, "Google 로그인 성공")
                     navigateToHome(navHostController)
                 } else {
@@ -70,6 +80,7 @@ class LoginViewModel @Inject constructor(
                 loadingState.value = true
                 val result = kakaoLoginUseCase.execute(context)
                 if (result.isSuccess) {
+                    fetchProfile()
                     navigateToHome(navHostController)
                 } else {
                     result.error?.let { onFailure(it) }

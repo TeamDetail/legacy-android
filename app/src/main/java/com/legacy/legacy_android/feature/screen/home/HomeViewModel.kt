@@ -52,6 +52,10 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(isMailOpen = isOpen)
     }
 
+    fun updateIsCheckOpen(isOpen: Boolean){
+        uiState = uiState.copy(isCheckOpen = isOpen)
+    }
+
     fun updateSelectedId(ids: List<Int>) {
         uiState = uiState.copy(selectedId = ids)
     }

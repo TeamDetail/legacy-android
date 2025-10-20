@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.legacy.legacy_android.R
+import com.legacy.legacy_android.res.component.achieve.Item
 import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
@@ -485,13 +486,7 @@ fun InventoryScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     if (index < inventory.size) {
-                        Image(
-                            painter = painterResource(R.drawable.cardpack),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(8.dp))
-                        )
+                        Item(count = viewModel.uiState.myInventory!![index].itemCount)
                     }
                 }
             }
