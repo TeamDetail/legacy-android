@@ -47,7 +47,7 @@ fun TitleBox(
     viewModel: ProfileViewModel
 ) {
     var isClicked by remember { mutableStateOf(false) }
-    val isEquipped = viewModel.profile?.title?.styleId == title.styleId
+    val isEquipped = viewModel.profile?.title?.titleId == title.titleId
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
