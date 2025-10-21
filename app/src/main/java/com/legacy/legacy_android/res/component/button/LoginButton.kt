@@ -64,7 +64,7 @@ fun LoginButton(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = "$name 로그인",
-                    style = AppTextStyles.Body2.bold.merge(
+                    style = AppTextStyles.Body2.medium.merge(
                         TextStyle(
                             color = color,
                             textAlign = TextAlign.Center,
@@ -76,7 +76,7 @@ fun LoginButton(
             }
         }else{
             Text("로그인 중입니다...",
-                style = AppTextStyles.Body2.bold.merge(
+                style = AppTextStyles.Body2.medium.merge(
                     TextStyle(
                         color = color,
                         textAlign = TextAlign.Center,

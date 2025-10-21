@@ -22,7 +22,6 @@ import com.legacy.legacy_android.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.legacy.legacy_android.res.component.title.SmallTitleBar
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Label
@@ -35,14 +34,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.feature.network.user.Title
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
+import com.legacy.legacy_android.res.component.title.TitleBar
 
 @Composable
 fun RankingBar(
     rank: Int?,
     blocks: Int?,
     name: String?,
-    title: String?,
+    title: Title?,
     zIndex: Float,
     img: String?,
     viewModel: RankingViewModel = hiltViewModel()
@@ -130,8 +131,8 @@ fun RankingBar(
                             )
                         }
 
-                        if (title.isNotEmpty()) {
-                            SmallTitleBar(title = title)
+                        if (title.name.isNotEmpty()) {
+                            TitleBar(title = title.name, styleId = title.styleId)
                         }
                     }
                 }

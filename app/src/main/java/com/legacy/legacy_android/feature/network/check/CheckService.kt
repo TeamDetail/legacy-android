@@ -10,8 +10,8 @@ interface CheckService {
     @GET("/daily")
     suspend fun checkDaily(): BaseResponse<List<DailyResponse>>
 
-    @POST("/daily/{id}")
+    @POST("/daily/{dailyId}")
     suspend fun getItem(
-        @Path("id") id: Int
+        @Path("dailyId") dailyId: Int
     ): BaseResponse<List<InventoryItem>>
 }

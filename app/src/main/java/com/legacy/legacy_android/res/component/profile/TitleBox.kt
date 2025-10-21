@@ -35,6 +35,7 @@ import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Alternative
 import com.legacy.legacy_android.ui.theme.Background_Netural
 import com.legacy.legacy_android.ui.theme.Fill_Normal
+import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Purple_Normal
@@ -46,6 +47,7 @@ fun TitleBox(
     viewModel: ProfileViewModel
 ) {
     var isClicked by remember { mutableStateOf(false) }
+    val isEquipped = viewModel.profile!!.title.styleId == title.styleId
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -84,7 +86,7 @@ fun TitleBox(
             Text(
                 text = title.name,
                 style = AppTextStyles.Body2.bold,
-                color = Primary
+                color = if (isEquipped) Primary else Label
             )
             Text(
                 text = title.content,
@@ -99,11 +101,13 @@ fun TitleBox(
             exit = fadeOut(animationSpec = tween(300)) +
                     shrinkVertically(animationSpec = tween(300))
         ) {
-            if (isClicked && viewModel.profile!!.title.styleId != title.styleId) {
+            if (isClicked && !isEquipped) {
                 CustomButton(
-                    text =  "장착",
-                    onClick = { viewModel.patchTitle(title.styleId)
-                              viewModel.fetchProfile()},
+                    text = "장착",
+                    onClick = {
+                        viewModel.patchTitle(title.styleId)
+                        viewModel.updateProfileTitle(title)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp),
@@ -111,6 +115,7 @@ fun TitleBox(
                     textColor = Purple_Normal,
                     textStyle = AppTextStyles.Caption1.Bold,
                 )
+
             }
         }
     }

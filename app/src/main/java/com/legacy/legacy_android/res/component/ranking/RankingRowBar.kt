@@ -28,9 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.legacy.legacy_android.feature.network.user.Title
 import com.legacy.legacy_android.feature.screen.ranking.RankingViewModel
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
-import com.legacy.legacy_android.res.component.title.SmallTitleBar
+import com.legacy.legacy_android.res.component.title.TitleBar
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Netural
 
@@ -39,7 +40,7 @@ fun RankingRowBar(
     rank: Int?,
     blocks: Int?,
     name: String?,
-    title: String?,
+    title: Title?,
     level: Int?,
     img: String?,
     viewModel: RankingViewModel = hiltViewModel()
@@ -126,8 +127,8 @@ fun RankingRowBar(
                         color = Label,
                         style = AppTextStyles.Headline.bold
                     )
-                    if (title.isNotEmpty()) {
-                        SmallTitleBar(title = title)
+                    if (title.name.isNotEmpty()) {
+                        TitleBar(title = title.name, styleId = title.styleId)
                     }
                 }
             }

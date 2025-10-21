@@ -23,5 +23,5 @@ data class AchievementAward(
     @SerializedName("itemCount")
     val itemCount: Int,
     @SerializedName("styledId")
-    val itemImage: Int
+    val styleId: Int
 )

@@ -15,10 +15,14 @@ class UserRepository @Inject constructor(
 ) {
 
     private val _profile = MutableStateFlow<UserData?>(null)
-
-    val profile: StateFlow<UserData?> = _profile.asStateFlow()
+    val profile = _profile.asStateFlow()
 
     private var hasLoaded = false
+
+    fun updateLocalProfileTitle(title: Title) {
+        _profile.value = _profile.value?.copy(title = title)
+    }
+
 
     suspend fun fetchProfile(force: Boolean = false) {
         if (hasLoaded && !force) return

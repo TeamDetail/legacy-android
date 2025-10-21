@@ -414,7 +414,8 @@ fun DictionaryScreen(
             LazyColumn(
                 modifier = modifier
                     .fillMaxWidth(0.95f)
-                    .height(1000.dp)
+                    .height(1000.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item {
                     Statbar(

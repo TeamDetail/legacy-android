@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.home.HomeViewModel
@@ -53,6 +54,7 @@ fun CommentModal(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .zIndex(51f)
             .wrapContentHeight()
             .background(Background_Netural, shape = RoundedCornerShape(20.dp))
             .padding(12.dp)

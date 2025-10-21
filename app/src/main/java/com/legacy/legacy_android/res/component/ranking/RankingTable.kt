@@ -33,10 +33,10 @@ fun RankingTable(
                 if (index > 2) {
                     RankingRowBar(
                         rank = index + 1,
-                        blocks = item.allBlocks,
+                        blocks = if(viewModel.uiState.rankingStatus == 0) item.allBlocks else item.level,
                         level = item.level,
                         name = item.nickname.ifEmpty { "이름 없음" },
-                        title = item.title.name,
+                        title = item.title,
                         img = item.imageUrl,
                         viewModel = viewModel
                     )

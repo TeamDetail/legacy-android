@@ -68,8 +68,30 @@ fun AchieveBox(
         "TITLE" -> R.drawable.sequence_present
         "LEVEL" -> R.drawable.level
         "FRIEND" -> R.drawable.friend
-        else -> R.drawable.legacylogo
+        else -> null
     }
+
+    fun achieveTypeNameMapper(type: String): String {
+        return when (type) {
+            "CARD" -> "카드"
+            "SHINING_CARD" -> "찬란한 카드"
+            "CARD_PACK" -> "카드팩"
+            "STATED_CARD" -> "상태 카드"
+            "RUINS" -> "유적지"
+            "BLOCKS" -> "블록"
+            "CLEAR_COURSE" -> "코스 완료"
+            "MAKE_COURSE" -> "코스 제작"
+            "STATE_COURSE" -> "상태 코스"
+            "SOLVE_QUIZ" -> "퀴즈 정답"
+            "WRONG_QUIZ" -> "퀴즈 오답"
+            "BUY_ITEM" -> "아이템 구매"
+            "TITLE" -> "칭호"
+            "LEVEL" -> "레벨"
+            "FRIEND" -> "친구"
+            else -> "기타"
+        }
+    }
+
 
     Row(
         modifier = modifier
@@ -91,11 +113,13 @@ fun AchieveBox(
                 modifier = Modifier.fillMaxSize()
             )
 
-            Image(
-                painter = painterResource(id = itemImageRes),
-                contentDescription = item.achievementType,
-                modifier = Modifier.size(48.dp)
-            )
+            itemImageRes?.let {
+                Image(
+                    painter = painterResource(id = itemImageRes),
+                    contentDescription = item.achievementType,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
         }
 
         Spacer(modifier.width(12.dp))
@@ -112,7 +136,7 @@ fun AchieveBox(
                             fontFamily = AppTextStyles.Caption1.Medium.fontFamily
                         )
                     ) {
-                        append("#${item.achievementType}")
+                        append("#${achieveTypeNameMapper(item.achievementType)}")
                     }
                 },
                 style = AppTextStyles.Label.Bold

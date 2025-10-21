@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.card.CardRepository
 import com.legacy.legacy_android.feature.network.user.InventoryItem
+import com.legacy.legacy_android.feature.network.user.Title
 import com.legacy.legacy_android.feature.network.user.UserData
 import com.legacy.legacy_android.feature.screen.profile.model.ProfileUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,10 @@ class ProfileViewModel @Inject constructor(
 
     fun updateCardPackOpen(status: Boolean){
         uiState = uiState.copy(cardPackOpen = status)
+    }
+
+    fun updateProfileTitle(title: Title) {
+        userRepository.updateLocalProfileTitle(title)
     }
 
     fun decreasePackOpenCount(count: Int){

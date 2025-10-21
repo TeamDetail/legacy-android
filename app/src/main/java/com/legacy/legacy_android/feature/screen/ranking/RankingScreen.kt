@@ -94,9 +94,9 @@ fun RankingScreen(
                 ) {
                     RankingBar(
                         rank = 2,
-                        blocks = rank2?.allBlocks ?: 0,
+                        blocks = if(viewModel.uiState.rankingStatus == 0) rank2?.allBlocks ?: 0 else rank2?.level,
                         name = rank2?.nickname ?: "이름 없음",
-                        title = rank2?.title?.name ?: " ",
+                        title = rank2?.title,
                         zIndex = 2f,
                         img = rank2?.imageUrl,
                         viewModel = viewModel
@@ -104,9 +104,9 @@ fun RankingScreen(
                 }
                 RankingBar(
                     rank = 1,
-                    blocks = rank1?.allBlocks ?: 0,
+                    blocks = if(viewModel.uiState.rankingStatus == 0) rank1?.allBlocks ?: 0 else rank1?.level,
                     name = rank1?.nickname ?: "이름 없음",
-                    title = rank1?.title?.name ?: " ",
+                    title = rank1?.title,
                     zIndex = 3f,
                     img = rank1?.imageUrl,
                     viewModel = viewModel
@@ -117,10 +117,10 @@ fun RankingScreen(
                 ) {
                     RankingBar(
                         rank = 3,
-                        blocks = rank3?.allBlocks ?: 0,
+                        blocks = if(viewModel.uiState.rankingStatus == 0) rank3?.allBlocks ?: 0 else rank3?.level,
                         name = rank3?.nickname ?: "이름 없음",
-                        title = rank3?.title?.name ?: " ",
                         zIndex = 1f,
+                        title = rank3?.title,
                         img = rank3?.imageUrl,
                         viewModel = viewModel
                     )

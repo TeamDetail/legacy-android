@@ -48,8 +48,20 @@ fun CheckModal(
         }
     }
 
+
+
+
     val totalDays = currentCheck?.awards?.size ?: 0
     val checkCount = currentCheck?.checkCount ?: 0
+
+    LaunchedEffect(currentCheck) {
+        println("ㅇㅕㄱㅣ")
+        if (currentCheck != null && currentCheck.checkCount > 0) {
+            val todayIndex = currentCheck.checkCount.coerceIn(1, currentCheck.awards.size)
+            viewModel.setSelectedCheck(currentCheck.awards[todayIndex - 1])
+            viewModel.setSelectedDay(todayIndex)
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,

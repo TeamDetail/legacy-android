@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +50,10 @@ fun AchieveInfoScreen(
     val isLoading = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(Unit) {
+        println(item)
+    }
+
     val bgImageRes = when (item?.achievementGrade) {
         "LEGENDARY" -> R.drawable.legendary
         "EPIC" -> R.drawable.epic
@@ -74,7 +79,7 @@ fun AchieveInfoScreen(
         "TITLE" -> R.drawable.sequence_present
         "LEVEL" -> R.drawable.level
         "FRIEND" -> R.drawable.friend
-        else -> R.drawable.legacylogo
+        else -> null
     }
 
     Box(
@@ -122,7 +127,7 @@ fun AchieveInfoScreen(
                 Spacer(modifier.height(24.dp))
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = modifier.size(64.dp)
+                    modifier = modifier.size(100.dp)
                 ) {
                     Image(
                         painter = painterResource(id = bgImageRes),
@@ -130,14 +135,14 @@ fun AchieveInfoScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    Image(
-                        painter = painterResource(id = itemImageRes),
-                        contentDescription = item?.achievementType,
-                        modifier = Modifier.size(48.dp)
-                    )
+                    itemImageRes?.let {
+                        Image(
+                            painter = painterResource(id = itemImageRes),
+                            contentDescription = item?.achievementType,
+                            modifier = Modifier.size(84.dp)
+                        )
+                    }
                 }
-                Spacer(modifier.height(24.dp))
-
                 // 도전과제 이름/설명
                 Column(
                     modifier = modifier.fillMaxWidth(),
@@ -161,7 +166,8 @@ fun AchieveInfoScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val goalText = item?.let { achieveGoalMapper(it.achievementType, it.goalRate) } ?: "-"
+                    val goalText =
+                        item?.let { achieveGoalMapper(it.achievementType, it.goalRate) } ?: "-"
                     val progressText = item?.let {
                         when {
                             it.receive -> "수령 완료"
@@ -175,7 +181,11 @@ fun AchieveInfoScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "목표", style = AppTextStyles.Body1.regular, color = Label_Netural)
+                        Text(
+                            text = "목표",
+                            style = AppTextStyles.Body1.regular,
+                            color = Label_Netural
+                        )
                         Text(text = goalText, style = AppTextStyles.Body1.bold)
                     }
 
@@ -184,11 +194,15 @@ fun AchieveInfoScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "상태", style = AppTextStyles.Body1.regular, color = Label_Netural)
+                        Text(
+                            text = "상태",
+                            style = AppTextStyles.Body1.regular,
+                            color = Label_Netural
+                        )
                         Text(
                             text = progressText,
                             style = AppTextStyles.Body1.bold,
-                            color = if(item?.receive == true) Red_Netural else Label_Netural
+                            color = if (item?.receive == true) Red_Netural else Label_Netural
                         )
                     }
 
@@ -197,8 +211,15 @@ fun AchieveInfoScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "달성자 비율", style = AppTextStyles.Body1.regular, color = Label_Netural)
-                        Text(text = "${item?.achieveUserPercent ?: 0}%", style = AppTextStyles.Body1.bold)
+                        Text(
+                            text = "달성자 비율",
+                            style = AppTextStyles.Body1.regular,
+                            color = Label_Netural
+                        )
+                        Text(
+                            text = "${item?.achieveUserPercent ?: 0}%",
+                            style = AppTextStyles.Body1.bold
+                        )
                     }
                 }
 
