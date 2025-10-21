@@ -36,34 +36,6 @@ object AchievementMapper {
         }
     }
 
-    fun getAchievementValueGrade(grade: String?): String {
-        return when(grade) {
-            "EXPLORE" -> "탐험"
-            "LEVEL" -> "숙련"
-            else -> "히든"
-        }
-    }
-
-    fun getAchievementTypeName(type: String?): String {
-        return when(type) {
-            "CARD" -> "카드"
-            "SHINING_CARD" -> "찬란한 카드"
-            "CARD_PACK" -> "카드팩"
-            "STATED_CARD" -> "상태 카드"
-            "RUINS" -> "유적지"
-            "BLOCKS" -> "블록"
-            "CLEAR_COURSE" -> "코스 완료"
-            "MAKE_COURSE" -> "코스 제작"
-            "STATE_COURSE" -> "상태 코스"
-            "SOLVE_QUIZ" -> "퀴즈 정답"
-            "WRONG_QUIZ" -> "퀴즈 오답"
-            "BUY_ITEM" -> "아이템 구매"
-            "TITLE" -> "칭호"
-            "LEVEL" -> "레벨"
-            "FRIEND" -> "친구"
-            else -> "기타"
-        }
-    }
 
     fun getReward(grade: String?): Pair<Int, Int> {
         return when(grade) {

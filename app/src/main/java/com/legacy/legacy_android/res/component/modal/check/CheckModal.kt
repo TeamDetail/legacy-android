@@ -35,9 +35,6 @@ fun CheckModal(
     val today = LocalDate.now()
     val checkList = remember { listOf("${today.monthValue}월", "론칭") }
 
-    LaunchedEffect(Unit) {
-        viewModel.checkDaily()
-    }
 
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val currentCheck = viewModel.uiState.check?.firstOrNull()
@@ -52,13 +49,16 @@ fun CheckModal(
     val checkCount = currentCheck?.checkCount ?: 0
 
     LaunchedEffect(currentCheck) {
-        println("ㅇㅕㄱㅣ")
-        println(checkCount)
         if (currentCheck != null && currentCheck.checkCount > 0) {
             val todayIndex = currentCheck.checkCount.coerceIn(1, currentCheck.awards.size)
             viewModel.setSelectedCheck(currentCheck.awards[todayIndex - 1])
             viewModel.setSelectedDay(todayIndex)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.checkDaily()
+        viewModel.setSelectedDay(currentCheck?.checkCount ?: 0)
     }
 
     Box(

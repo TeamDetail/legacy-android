@@ -44,18 +44,18 @@ fun MarketScreen(
         ) {
             TitleBox(title = "상점", image = R.drawable.shop)
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                packList.forEachIndexed { index, item ->
-                    StatusButton(
-                        selectedValue = viewModel.uiState.packStatus,
-                        onClick = { viewModel.changePackStatus(index) },
-                        text = item,
-                        id = index,
-                        selectedColor = Primary,
-                        nonSelectedColor = Line_Netural
-                    )
-                }
-            }
+//            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+//                packList.forEachIndexed { index, item ->
+//                    StatusButton(
+//                        selectedValue = viewModel.uiState.packStatus,
+//                        onClick = { viewModel.changePackStatus(index) },
+//                        text = item,
+//                        id = index,
+//                        selectedColor = Primary,
+//                        nonSelectedColor = Line_Netural
+//                    )
+//                }
+//            }
 
 //            MarketInfo(
 //                quantity = 4,

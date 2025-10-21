@@ -105,7 +105,7 @@ fun TitleBox(
                 CustomButton(
                     text = "장착",
                     onClick = {
-                        viewModel.patchTitle(title.styleId)
+                        viewModel.patchTitle(title.titleId)
                         viewModel.updateProfileTitle(title)
                     },
                     modifier = Modifier
