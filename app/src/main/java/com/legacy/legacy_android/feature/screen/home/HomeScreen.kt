@@ -325,7 +325,7 @@ fun HomeScreen(
                     }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
                 } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
                     QuizModal(
-                        hint = viewModel.uiState.hintData,
+                        hint = viewModel.uiState.hintData[viewModel.uiState.quizNum.value],
                         onConfirm = { viewModel.updateHintStatus(HintStatus.NO) }
                     )
                 }

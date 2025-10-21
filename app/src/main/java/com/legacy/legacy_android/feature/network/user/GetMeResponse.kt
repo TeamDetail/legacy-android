@@ -44,7 +44,7 @@ data class Title(
     val name: String,
     val content: String,
     val styleId: Int,
-    val grade: Int
+    val titleId: Int
 )
 
 data class DescriptionRequest(

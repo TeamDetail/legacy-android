@@ -256,7 +256,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadQuiz(ruinsId: Int?) {
         uiState = uiState.copy(quizData = null)
-        uiState = uiState.copy(hintData = null)
+        uiState = uiState.copy(hintData = MutableList(3) { null })
         if (ruinsId == null) return
         loadQuizJob?.cancel()
         loadQuizJob = viewModelScope.launch {
@@ -275,7 +275,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             quizRepository.getQuiz(quizId)
                 .onSuccess { hint ->
-                    uiState = uiState.copy(hintData = hint)
+                    val newHintData = uiState.hintData.toMutableList()
+                    newHintData[uiState.quizNum.value] = hint
+
+                    uiState = uiState.copy(hintData = newHintData)
                     updateHintStatus(HintStatus.HINT)
                 }
         }

@@ -7,7 +7,9 @@ data class FriendResponse(
     val friendCode: String,
     val isKakaoFriend: Boolean,
     val isMutualFriend: Boolean,
-    val level: Int
+    val level: Int,
+    val styleName: String,
+    val styleId: Int
 )
 
 data class SearchFriendResponse(
@@ -16,5 +18,7 @@ data class SearchFriendResponse(
     val profileImage: String,
     val level: Int,
     val friendCode: String,
-    val isAlreadyFriend: Boolean
+    val isAlreadyFriend: Boolean,
+    val styleName: String,
+    val styleId: Int
 )

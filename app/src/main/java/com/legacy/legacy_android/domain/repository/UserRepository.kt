@@ -78,6 +78,7 @@ class UserRepository @Inject constructor(
             val response = getMeService.patchTitle(TitleRequest(styleId))
             Result.success(response.data)
         } catch (error: Exception) {
+            println(styleId)
             Log.e("UserRepository", "타이틀 패치 실패", error)
             Result.failure(error)
         }

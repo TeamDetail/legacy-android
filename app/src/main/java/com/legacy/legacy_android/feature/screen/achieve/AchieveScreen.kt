@@ -32,7 +32,7 @@ fun AchieveScreen(
     viewModel: AchieveViewModel = hiltViewModel(),
     navHostController: NavHostController){
 
-    val statusList = listOf("전체", "탐험", "숙련", "히든")
+    val statusList = listOf("탐험", "숙련", "히든")
     LaunchedEffect(Unit) {
         viewModel.fetchAllAchieveList()
         viewModel.updateCurrentAchieve(null)
@@ -64,12 +64,9 @@ fun AchieveScreen(
                                 viewModel.changeAchieveStatus(index)
                                 when (index) {
                                     0 -> {
-                                        viewModel.fetchAllAchieveList()
-                                    }
-                                    1 -> {
                                         viewModel.fetchAchieveListByType("EXPLORE")
                                     }
-                                    2 -> {
+                                    1 -> {
                                         viewModel.fetchAchieveListByType("LEVEL")
                                     }
                                     else -> {

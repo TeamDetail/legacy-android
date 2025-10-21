@@ -12,29 +12,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.achieve.AchievementResponse
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
 import com.legacy.legacy_android.ui.theme.AppTextStyles
+import com.legacy.legacy_android.ui.theme.Blue_Netural
 import com.legacy.legacy_android.ui.theme.Label
 import com.legacy.legacy_android.ui.theme.Label_Alternative
+import com.legacy.legacy_android.ui.theme.Label_Disable
 import com.legacy.legacy_android.ui.theme.Label_Netural
 import com.legacy.legacy_android.ui.theme.Red_Normal
 import com.legacy.legacy_android.ui.theme.Yellow_Netural
+import com.legacy.legacy_android.utils.AchievementMapper
 
 @Composable
 fun AchieveBox(
@@ -43,55 +41,15 @@ fun AchieveBox(
     viewModel: AchieveViewModel,
     navHostController: NavHostController
 ){
-    val bgImageRes = when (item.achievementGrade) {
-        "LEGENDARY" -> R.drawable.legendary
-        "EPIC" -> R.drawable.epic
-        "UNIQUE" -> R.drawable.unique
-        "CHALLENGE" -> R.drawable.challenge
-        "COMMON" -> R.drawable.common
-        else -> R.drawable.legacylogo
-    }
 
-    val itemImageRes = when (item.achievementType) {
-        "CARD" -> R.drawable.card
-        "SHINING_CARD" -> R.drawable.shining_card
-        "CARD_PACK" -> R.drawable.card_pack
-        "STATED_CARD" -> R.drawable.shining_card
-        "RUINS" -> R.drawable.ruins
-        "BLOCKS" -> R.drawable.blocks
-        "CLEAR_COURSE" -> R.drawable.clear_course
-        "MAKE_COURSE" -> R.drawable.make_course
-        "STATE_COURSE" -> R.drawable.make_course
-        "SOLVE_QUIZ" -> R.drawable.solve_quiz
-        "WRONG_QUIZ" -> R.drawable.wrong_quiz
-        "BUY_ITEM" -> R.drawable.buy_item
-        "TITLE" -> R.drawable.sequence_present
-        "LEVEL" -> R.drawable.level
-        "FRIEND" -> R.drawable.friend
-        else -> null
+    val bgImageRes = AchievementMapper.getBackgroundRes(item.achievementGrade)
+    val itemImageRes = AchievementMapper.getItemRes(item.achievementType)
+    val achievementValueGrade = when (viewModel.uiState.achieveStatus) {
+        0 -> "탐험"
+        1 -> "숙련"
+        2 -> "히든"
+        else -> "기타"
     }
-
-    fun achieveTypeNameMapper(type: String): String {
-        return when (type) {
-            "CARD" -> "카드"
-            "SHINING_CARD" -> "찬란한 카드"
-            "CARD_PACK" -> "카드팩"
-            "STATED_CARD" -> "상태 카드"
-            "RUINS" -> "유적지"
-            "BLOCKS" -> "블록"
-            "CLEAR_COURSE" -> "코스 완료"
-            "MAKE_COURSE" -> "코스 제작"
-            "STATE_COURSE" -> "상태 코스"
-            "SOLVE_QUIZ" -> "퀴즈 정답"
-            "WRONG_QUIZ" -> "퀴즈 오답"
-            "BUY_ITEM" -> "아이템 구매"
-            "TITLE" -> "칭호"
-            "LEVEL" -> "레벨"
-            "FRIEND" -> "친구"
-            else -> "기타"
-        }
-    }
-
 
     Row(
         modifier = modifier
@@ -124,23 +82,27 @@ fun AchieveBox(
 
         Spacer(modifier.width(12.dp))
         Column {
-            // 제목 + 타입 표시
             Text(
                 text = buildAnnotatedString {
-                    append("${item.achievementName} ")
+                    append(item.achievementName)
                     withStyle(
                         style = SpanStyle(
-                            color = Yellow_Netural,
+                            color = when (achievementValueGrade) {
+                                "탐험" -> Blue_Netural
+                                "숙련" -> Yellow_Netural
+                                else -> Label_Disable
+                            },
                             fontSize = AppTextStyles.Caption1.Medium.fontSize,
                             fontWeight = AppTextStyles.Caption1.Medium.fontWeight,
                             fontFamily = AppTextStyles.Caption1.Medium.fontFamily
                         )
                     ) {
-                        append("#${achieveTypeNameMapper(item.achievementType)}")
+                        append(" #${achievementValueGrade}")
                     }
                 },
                 style = AppTextStyles.Label.Bold
             )
+
 
             // 내용
             Text(
@@ -153,14 +115,10 @@ fun AchieveBox(
 
             // 목표 및 진행률
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val goalText = achieveGoalMapper(
-                    type = item.achievementType,
-                    value = item.goalRate,
-                )
 
                 val progressText = when {
                     item.receive -> "수령 완료"
-                    item.currentRate >= item.goalRate -> "미완료"
+                    item.currentRate >= item.goalRate -> "미수령"
                     else -> "${item.currentRate} / ${item.goalRate}"
                 }
 
@@ -176,7 +134,7 @@ fun AchieveBox(
                                 fontFamily = AppTextStyles.Caption1.ExtraBold.fontFamily
                             )
                         ) {
-                            append(goalText)
+                            append(item.achievementGradeText)
                         }
                     },
                     style = AppTextStyles.Caption1.regular,
@@ -193,32 +151,5 @@ fun AchieveBox(
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun achieveGoalMapper(
-    type: String,
-    value: Int,
-    stateItem: String? = null
-): String {
-    return when (type) {
-        "CARD" -> "카드 ${value}개 획득"
-        "SHINING_CARD" -> "찬란한 카드 ${value}개 획득"
-        "CARD_PACK" -> "카드팩 ${value}회 개봉"
-        "STATED_CARD" -> "[${stateItem}] 카드 획득"
-        "RUINS" -> "유적지 ${value}개 탐험"
-        "BLOCKS" -> "블록 ${value}개 탐험"
-        "CLEAR_COURSE" -> "코스 ${value}개 완료"
-        "MAKE_COURSE" -> "코스 ${value}개 제작"
-        "STATE_COURSE" -> "[${stateItem}] 코스 완료"
-        "SOLVE_QUIZ" -> "퀴즈 ${value}개 정답"
-        "WRONG_QUIZ" -> "퀴즈 ${value}개 오답"
-        "BUY_ITEM" -> "아이템 ${value}개 구매"
-        "TITLE" -> "칭호 ${value}개 소지"
-        "LEVEL" -> "${value}레벨 달성"
-        "FRIEND" -> "친구 ${value}명 달성"
-        else -> ""
     }
 }

@@ -27,6 +27,8 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.screen.achieve.AchieveViewModel
+import com.legacy.legacy_android.res.component.achieve.Item
+import com.legacy.legacy_android.res.component.button.CustomButton
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Background_Normal
 import com.legacy.legacy_android.ui.theme.Black
@@ -119,29 +121,22 @@ fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel()) {
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(item.itemName, style = AppTextStyles.Caption2.regular)
+                                        Item(count = item.itemCount)
                                     }
                                 }
                             }
                         }
                     }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .weight(0.8f)
-                            .background(Fill_Normal, shape = RoundedCornerShape(8.dp))
-                            .border(1.dp, Label_Assitive, RoundedCornerShape(8.dp))
-                            .clickable {
-                                viewModel.initAward()
-                            }
-                            .padding(vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = "닫기",
-                            color = Label_Assitive,
-                            style = AppTextStyles.Caption1.Bold
-                        )
-                    }
+                    CustomButton(
+                        text = "닫기",
+                        onClick = {
+                            viewModel.initAward()
+                        },
+                        modifier = Modifier.weight(0.8f),
+                        borderColor = Label_Assitive,
+                        textStyle = AppTextStyles.Caption1.Bold,
+                        textColor = Label_Assitive
+                    )
                 }
             }
         }

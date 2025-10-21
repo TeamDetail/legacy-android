@@ -167,7 +167,7 @@ fun InfoBar(
                             text = NumberFormat.getNumberInstance(Locale.US)
                                 .format(profile?.credit ?: 0),
                             color = Yellow,
-                            style = TextStyle(fontSize = 12.sp, fontFamily = bitbit)
+                            style = TextStyle(fontSize = 10.sp, fontFamily = bitbit)
                         )
                     }
                 }

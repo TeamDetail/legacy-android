@@ -21,8 +21,7 @@ import javax.inject.Inject
 class CourseViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val ruinsRepository: RuinsRepository,
-
-    ) : ViewModel() {
+) : ViewModel() {
 
     var uiState by mutableStateOf(CourseUiState())
         private set
@@ -51,9 +50,7 @@ class CourseViewModel @Inject constructor(
     }
 
     fun getFilteredCourses(): List<SearchCourseResponse> {
-        val courses = uiState.searchCourse.ifEmpty {
-            uiState.allCourse
-        }
+        val courses = uiState.searchCourse.ifEmpty { uiState.allCourse }
         return courses
             .filter { course ->
                 when (uiState.selectedEvent) {
@@ -66,16 +63,16 @@ class CourseViewModel @Inject constructor(
             .filter { course ->
                 when (uiState.selectedStatus) {
                     "전체" -> true
-                    "클리어" -> course.clear
-                    "미클리어" -> !course.clear
+                    "완료" -> course.clear
+                    "미완료" -> !course.clear
                     else -> true
                 }
             }
             .let { filteredList ->
                 when (uiState.selectedNew) {
                     "최신" -> filteredList
-                    "인기순" -> filteredList.sortedByDescending { it.heartCount }
-                    "클리어순" -> filteredList.sortedByDescending { it.clearCount }
+                    "인기" -> filteredList.sortedByDescending { it.heartCount }
+                    "클리어 인원" -> filteredList.sortedByDescending { it.clearCount }
                     else -> filteredList
                 }
             }
@@ -88,62 +85,78 @@ class CourseViewModel @Inject constructor(
         )
     }
 
-    fun loadAllCourses() {
+    private inline fun launchWithLoading(
+        crossinline block: suspend () -> Unit
+    ) {
         viewModelScope.launch {
-            courseRepository.getAllCourse()
-                .onSuccess { course -> uiState = uiState.copy(allCourse = course) }
+            uiState = uiState.copy(isLoading = true)
+            try {
+                block()
+            } finally {
+                uiState = uiState.copy(isLoading = false)
+            }
         }
     }
 
-    fun loadPopularCourses() {
-        viewModelScope.launch {
-            courseRepository.getPopularCourse()
-                .onSuccess { course -> uiState = uiState.copy(popularCourse = course) }
-        }
+    fun loadAllCourses() = launchWithLoading {
+        courseRepository.getAllCourse()
+            .onSuccess { courses ->
+                uiState = uiState.copy(allCourse = courses)
+            }
+            .onFailure { e ->
+                println("모든 코스 불러오기 실패: ${e.message}")
+            }
     }
 
-
-    fun searchCourses(name: String) {
-        viewModelScope.launch {
-            courseRepository.getSearchCourse(name)
-                .onSuccess { course -> uiState = uiState.copy(searchCourse = course) }
-        }
+    fun loadPopularCourses() = launchWithLoading {
+        courseRepository.getPopularCourse()
+            .onSuccess { courses ->
+                uiState = uiState.copy(popularCourse = courses)
+            }
+            .onFailure { e ->
+                println("인기 코스 불러오기 실패: ${e.message}")
+            }
     }
 
-    fun onNavigated() {
-        navigateBack = false
+    fun loadRecentCourses() = launchWithLoading {
+        courseRepository.getRecentCourse()
+            .onSuccess { courses ->
+                uiState = uiState.copy(recentCourse = courses)
+            }
+            .onFailure { e ->
+                println("최신 코스 불러오기 실패: ${e.message}")
+            }
     }
 
-    fun searchRuins(name: String) {
-        viewModelScope.launch {
-            uiState = uiState.copy(isCreateLoading = true)
-            uiState = uiState.copy(createSearchRuins = null)
-            ruinsRepository.getSearchRuins(name)
-                .onSuccess { ruins ->
-                    uiState = uiState.copy(createSearchRuins = ruins)
-                }
-            uiState = uiState.copy(isCreateLoading = false)
-        }
+    fun loadEventCourses() = launchWithLoading {
+        courseRepository.getEventCourse()
+            .onSuccess { courses ->
+                uiState = uiState.copy(eventCourse = courses)
+            }
+            .onFailure { e ->
+                println("이벤트 코스 불러오기 실패: ${e.message}")
+            }
     }
 
-    fun loadRecentCourses() {
-        viewModelScope.launch {
-            courseRepository.getRecentCourse()
-                .onSuccess { course -> uiState = uiState.copy(recentCourse = course) }
-        }
-    }
-
-    fun loadEventCourses() {
-        viewModelScope.launch {
-            courseRepository.getEventCourse()
-                .onSuccess { course -> uiState = uiState.copy(eventCourse = course) }
-        }
+    fun searchCourses(name: String) = launchWithLoading {
+        courseRepository.getSearchCourse(name)
+            .onSuccess { courses ->
+                uiState = uiState.copy(searchCourse = courses)
+            }
+            .onFailure { e ->
+                println("코스 검색 실패: ${e.message}")
+            }
     }
 
     fun setCurrentCourse(course: SearchCourseResponse) {
         viewModelScope.launch {
             courseRepository.getCourseById(course.courseId)
-                .onSuccess { course -> uiState = uiState.copy(currentCourse = course) }
+                .onSuccess { detail ->
+                    uiState = uiState.copy(currentCourse = detail)
+                }
+                .onFailure { e ->
+                    println("코스 상세 불러오기 실패: ${e.message}")
+                }
         }
     }
 
@@ -153,7 +166,6 @@ class CourseViewModel @Inject constructor(
             courseRepository.patchHeart(request)
                 .onSuccess {
                     delay(200L)
-
                     uiState.currentCourse?.let { course ->
                         val isHearted = !course.heart
                         val newHeartCount =
@@ -172,7 +184,20 @@ class CourseViewModel @Inject constructor(
         }
     }
 
-    // 여기가 createCourse
+    fun searchRuins(name: String) {
+        viewModelScope.launch {
+            uiState = uiState.copy(isCreateLoading = true, createSearchRuins = null)
+            ruinsRepository.getSearchRuins(name)
+                .onSuccess { ruins ->
+                    uiState = uiState.copy(createSearchRuins = ruins)
+                }
+                .onFailure { e ->
+                    println("유적 검색 실패: ${e.message}")
+                }
+            uiState = uiState.copy(isCreateLoading = false)
+        }
+    }
+
     fun initCreateCourse() {
         uiState = uiState.copy(
             createRuinsName = "",
@@ -220,11 +245,11 @@ class CourseViewModel @Inject constructor(
         val description = uiState.createCourseDescription
 
         if (name.isBlank() || tags.isEmpty() || ruins.isNullOrEmpty()) {
-            println("덜채움")
+            println("Course 생성 실패: 필수 항목 누락")
             return
         }
 
-        viewModelScope.launch {
+        launchWithLoading {
             val data = CreateCourseRequest(
                 name = name,
                 tag = tags,
@@ -235,13 +260,17 @@ class CourseViewModel @Inject constructor(
             courseRepository.createCourse(data)
                 .onSuccess {
                     navigateBack = true
-                    println("Course 만들기 성공")
+                    println("Course 생성 성공")
                     initCreateCourse()
                     loadAllCourses()
                 }
                 .onFailure { e ->
-                    println("Course 만들기 실패: ${e.message}")
+                    println("Course 생성 실패: ${e.message}")
                 }
         }
+    }
+
+    fun onNavigated() {
+        navigateBack = false
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import com.legacy.legacy_android.res.component.bars.CustomSearchBar
 import com.legacy.legacy_android.res.component.button.CustomDropdown
 import com.legacy.legacy_android.res.component.course.CourseBox
 import com.legacy.legacy_android.res.component.layout.CourseScreenLayout
+import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
 import com.legacy.legacy_android.res.component.title.TitleBox
 import com.legacy.legacy_android.ui.theme.AppTextStyles
 import com.legacy.legacy_android.ui.theme.Fill_Normal
@@ -41,8 +43,8 @@ fun CourseScreen(
         viewModel.loadAllCourses()
     }
 
-
     val displayedCourses = viewModel.uiState.displayedCourses
+    val isLoading = viewModel.uiState.isLoading
     val query = remember { mutableStateOf("") }
 
     CourseScreenLayout(
@@ -51,6 +53,8 @@ fun CourseScreen(
     ) {
         TitleBox(title = "코스", image = R.drawable.course)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+            // 추천 페이지 이동 버튼
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -69,6 +73,7 @@ fun CourseScreen(
                 )
             }
 
+            // 검색 바
             CustomSearchBar(
                 query = query,
                 placeholder = "코스 이름으로 검색",
@@ -76,6 +81,7 @@ fun CourseScreen(
                 modifier = modifier
             )
 
+            // 드롭다운 필터
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -99,26 +105,42 @@ fun CourseScreen(
                 }
             }
 
-            if (displayedCourses.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "검색 결과가 없습니다",
-                        style = AppTextStyles.Body1.medium,
-                        color = Label
-                    )
+            when {
+                isLoading -> {
+                    repeat(5) {
+                        SkeletonBox(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+                                .height(80.dp)
+                        )
+                    }
                 }
-            } else {
-                displayedCourses.forEach { course ->
-                    CourseBox(
-                        course = course,
-                        viewModel = viewModel,
-                        navHostController = navHostController
-                    )
+
+                displayedCourses.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "검색 결과가 없습니다",
+                            style = AppTextStyles.Body1.medium,
+                            color = Label
+                        )
+                    }
+                }
+
+                else -> {
+                    displayedCourses.forEach { course ->
+                        CourseBox(
+                            course = course,
+                            viewModel = viewModel,
+                            navHostController = navHostController
+                        )
+                    }
                 }
             }
         }

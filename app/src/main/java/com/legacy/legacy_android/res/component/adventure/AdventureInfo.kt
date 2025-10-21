@@ -1,6 +1,5 @@
 package com.legacy.legacy_android.res.component.adventure
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background

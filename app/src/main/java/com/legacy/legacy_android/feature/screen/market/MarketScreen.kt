@@ -34,9 +34,9 @@ fun MarketScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchMarketData()
     }
-    val packList = remember { listOf("카드 팩", "크레딧 충전") }
-
-    Box(modifier = Modifier.fillMaxSize()) {
+//    val packList = remember { listOf("카드 팩", "크레딧 충전") }
+    val packList = remember { listOf("카드 팩",)}
+        Box(modifier = Modifier.fillMaxSize()) {
         MarketLayout(
             modifier = modifier,
             navHostController = navHostController,
@@ -57,11 +57,11 @@ fun MarketScreen(
                 }
             }
 
-            MarketInfo(
-                quantity = 4,
-                magnification = 1.75,
-                time = viewModel.timeUntilMidnight
-            )
+//            MarketInfo(
+//                quantity = 4,
+//                magnification = 1.75,
+//                time = viewModel.timeUntilMidnight
+//            )
 
             PackWrap(
                 newList = viewModel.uiState.packs,

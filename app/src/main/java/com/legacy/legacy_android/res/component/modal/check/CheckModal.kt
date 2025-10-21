@@ -48,14 +48,12 @@ fun CheckModal(
         }
     }
 
-
-
-
     val totalDays = currentCheck?.awards?.size ?: 0
     val checkCount = currentCheck?.checkCount ?: 0
 
     LaunchedEffect(currentCheck) {
         println("ㅇㅕㄱㅣ")
+        println(checkCount)
         if (currentCheck != null && currentCheck.checkCount > 0) {
             val todayIndex = currentCheck.checkCount.coerceIn(1, currentCheck.awards.size)
             viewModel.setSelectedCheck(currentCheck.awards[todayIndex - 1])
@@ -130,8 +128,17 @@ fun CheckModal(
                     ) {
                         rowItems.forEach { dayIndex ->
                             val isChecked = dayIndex <= checkCount
-                            val backgroundColor = if (isChecked) Primary else Fill_Normal
-                            val textColor = if (isChecked) White else Label_Alternative
+                            val isPastDay = dayIndex < checkCount
+                            val backgroundColor = when {
+                                isPastDay -> Fill_Netural
+                                isChecked -> Primary
+                                else -> Fill_Normal
+                            }
+                            val textColor = when {
+                                isPastDay -> Label_Assitive
+                                isChecked -> White
+                                else -> Label_Alternative
+                            }
 
                             Box(
                                 modifier = Modifier
@@ -229,7 +236,7 @@ private fun Detail(
                 }
             }
         }
-        if ((viewModel.uiState.currentDay ?: 0) == check.checkCount) {
+        if ((viewModel.uiState.currentDay ?: 0) == if (check.check) check.checkCount else check.checkCount + 1) {
             CustomButton(
                 text = if (check.check) "출석완료" else "출석하기",
                 onClick = { viewModel.getItem() },

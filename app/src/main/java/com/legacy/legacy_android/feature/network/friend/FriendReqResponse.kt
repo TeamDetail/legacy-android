@@ -12,4 +12,8 @@ data class FriendReqResponse(
     val receiverLevel: Int,
     val status: String,
     val createdAt: String,
+    val senderStyleId: Int,
+    val senderStyleName: String,
+    val receiverStyleId: Int,
+    val receiverStyleName: String
 )

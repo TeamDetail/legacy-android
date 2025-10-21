@@ -42,6 +42,6 @@ data class HomeUiState(
     val commentRate: Int = 0,
     val isMailOpen: Boolean = false,
     val isCheckOpen: Boolean = false,
-    val hintData: String? = null,
+    val hintData: MutableList<String?> = MutableList(3) { null },
     val quizNum: MutableState<Int> = mutableIntStateOf(0),
 )

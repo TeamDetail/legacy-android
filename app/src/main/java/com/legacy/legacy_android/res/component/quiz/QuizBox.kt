@@ -180,14 +180,14 @@ fun QuizBox(
 
                                     CustomButton(
                                         onClick = {
-                                            if (viewModel.uiState.hintData == null) viewModel.updateHintStatus(
+                                            if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) viewModel.updateHintStatus(
                                                 HintStatus.CREDIT
                                             )
                                         },
-                                        text = if (viewModel.uiState.hintData == null) "300크레딧으로 힌트 확인" else "힌트: ${viewModel.uiState.hintData}",
+                                        text = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) "300크레딧으로 힌트 확인" else "힌트: ${viewModel.uiState.hintData[viewModel.uiState.quizNum.value]}",
                                         modifier = Modifier.weight(3f),
-                                        borderColor = if (viewModel.uiState.hintData == null) Blue_Netural else Line_Normal,
-                                        textColor = if (viewModel.uiState.hintData == null) Blue_Netural else Line_Normal,
+                                        borderColor = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) Blue_Netural else Line_Normal,
+                                        textColor = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) Blue_Netural else Line_Normal,
                                         backgroundColor = Fill_Normal,
                                         contentPadding = PaddingValues(
                                             vertical = 12.dp,

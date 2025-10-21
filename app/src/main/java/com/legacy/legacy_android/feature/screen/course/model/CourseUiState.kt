@@ -29,7 +29,8 @@ data class CourseUiState(
     val createSearchRuins: List<RuinsIdResponse>? = emptyList(),
     val createSelectedRuins: List<RuinsIdResponse>? = emptyList(),
     val createCourseDescription: String = "",
-    val isCreateLoading: Boolean = false
+    val isCreateLoading: Boolean = false,
+    val isLoading: Boolean = false
 ) {
     val displayedCourses: List<SearchCourseResponse>
         get() {

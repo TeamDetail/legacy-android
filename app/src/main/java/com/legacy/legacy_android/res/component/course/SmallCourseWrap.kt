@@ -4,18 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -39,16 +28,7 @@ import com.legacy.legacy_android.R
 import com.legacy.legacy_android.feature.network.course.search.SearchCourseResponse
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.res.component.skeleton.SkeletonBox
-import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Background_Normal
-import com.legacy.legacy_android.ui.theme.Blue_Netural
-import com.legacy.legacy_android.ui.theme.Green_Netural
-import com.legacy.legacy_android.ui.theme.Label
-import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.Label_Assitive
-import com.legacy.legacy_android.ui.theme.Label_Netural
-import com.legacy.legacy_android.ui.theme.Red_Netural
-import com.legacy.legacy_android.ui.theme.Yellow_Netural
+import com.legacy.legacy_android.ui.theme.*
 
 @Composable
 fun SmallCourseWrap(
@@ -59,6 +39,7 @@ fun SmallCourseWrap(
     navHostController: NavHostController
 ) {
     Column(modifier = modifier) {
+        // 제목
         Text(
             text = buildAnnotatedString {
                 append(
@@ -106,30 +87,40 @@ fun SmallCourseWrap(
                 .height(220.dp)
                 .horizontalScroll(rememberScrollState())
         ) {
-            data?.forEach { course ->
-                Box(
-                    modifier = Modifier
-                        .width(144.dp)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(5.dp)
-                        .clickable {
-                            viewModel.setCurrentCourse(course)
-                            navHostController.navigate("course_info")
-                        }
-                ) {
-                    if (course.thumbnail.isBlank()) {
-                        SkeletonBox(modifier = Modifier.matchParentSize())
-                    } else {
+            // 데이터 자체가 없을 때(로딩 또는 아직 세팅 전) 스켈레톤 보여주기
+            if (data == null) {
+                // 데이터 자체가 아직 없을 때
+                repeat(3) {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .width(144.dp)
+                            .height(220.dp)
+                            .padding(5.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                }
+            } else {
+                data.forEach { course ->
+                    Box(
+                        modifier = Modifier
+                            .width(144.dp)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(12.dp))
+                            .padding(5.dp)
+                            .clickable {
+                                viewModel.setCurrentCourse(course)
+                                navHostController.navigate("course_info")
+                            }
+                    ) {
                         AsyncImage(
-                            model = course.thumbnail,
-                            contentDescription = "유적지 이미지",
+                            model = course.thumbnail.ifBlank { R.drawable.school_img },
+                            contentDescription = "코스 이미지",
+                            placeholder = painterResource(R.drawable.school_img),
+                            error = painterResource(R.drawable.school_img),
                             modifier = Modifier
                                 .matchParentSize()
                                 .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Crop,
-                            error = painterResource(R.drawable.school_img),
-                            placeholder = painterResource(R.drawable.school_img)
+                            contentScale = ContentScale.Crop
                         )
 
                         Box(
@@ -148,55 +139,56 @@ fun SmallCourseWrap(
                                 .clip(RoundedCornerShape(12.dp))
                         )
 
+                        // 텍스트 영역 (이벤트이면 조금 더 위에 표시)
                         Column(
                             modifier = Modifier.padding(
                                 if (course.eventId > 0) {
-                                    PaddingValues(top = 124.dp, start = 4.dp)
+                                    PaddingValues(top = 124.dp, start = 8.dp, end = 8.dp)
                                 } else {
-                                    PaddingValues(top = 150.dp, start = 4.dp)
+                                    PaddingValues(top = 150.dp, start = 8.dp, end = 8.dp)
                                 }
                             )
-
                         ) {
                             if (course.eventId > 0) {
                                 Text(
                                     text = "이벤트 중!",
                                     style = AppTextStyles.Caption2.Medium,
                                     fontSize = 8.sp,
-                                    modifier = modifier
-                                        .padding(horizontal = 0.dp, vertical = 4.dp)
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
                                         .background(Red_Netural, RoundedCornerShape(999.dp))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    color = Label_Netural
                                 )
                             }
+
                             Text(
-                                text = course.courseName,
+                                text = course.courseName.ifBlank { "이름 없는 코스" },
                                 style = AppTextStyles.Body2.bold,
                                 color = Label,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
                             Text(
-                                text = course.creator,
+                                text = course.creator.ifBlank { "익명" },
                                 style = AppTextStyles.Caption2.Medium,
                                 color = Label_Alternative
                             )
+
                             Spacer(modifier = Modifier.height(4.dp))
+
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+                                // 하트
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Image(
                                         painter = painterResource(
-                                            if (!course.heart) {
-                                                R.drawable.heart
-                                            } else {
-                                                R.drawable.p_heart
-                                            }
+                                            if (course.heart) R.drawable.p_heart else R.drawable.heart
                                         ),
                                         contentDescription = "하트 아이콘",
                                         modifier = Modifier.size(16.dp)
@@ -204,25 +196,18 @@ fun SmallCourseWrap(
                                     Text(
                                         text = if (course.heartCount > 999) "999+" else course.heartCount.toString(),
                                         style = AppTextStyles.Caption2.Medium,
-                                        color = if (course.heart) {
-                                            Red_Netural
-                                        } else {
-                                            Label_Assitive
-                                        }
+                                        color = if (course.heart) Red_Netural else Label_Assitive
                                     )
                                 }
 
+                                // 클리어 수
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Image(
                                         painter = painterResource(
-                                            if (course.clear) {
-                                                R.drawable.p_green_flag
-                                            } else {
-                                                R.drawable.green_flag
-                                            }
+                                            if (course.clear) R.drawable.p_green_flag else R.drawable.green_flag
                                         ),
                                         contentDescription = "깃발 아이콘",
                                         modifier = Modifier.size(16.dp)
@@ -230,11 +215,7 @@ fun SmallCourseWrap(
                                     Text(
                                         text = course.clearCount.toString(),
                                         style = AppTextStyles.Caption2.Medium,
-                                        color = if (course.clear) {
-                                            Blue_Netural
-                                        } else {
-                                            Label_Assitive
-                                        }
+                                        color = if (course.clear) Blue_Netural else Label_Assitive
                                     )
                                 }
                             }
@@ -242,18 +223,20 @@ fun SmallCourseWrap(
                     }
                 }
             }
+
             Column(
                 modifier = modifier
+                    .padding(5.dp)
                     .clickable {
                         navHostController.navigate("COURSE")
                         viewModel.setSelectedStatusList("전체")
                         viewModel.setSelectedNewList(if (type == "popular") "인기" else "최신")
-                        viewModel.setSelectedEventList(if (type=="event") "이벤트" else "전체")
+                        viewModel.setSelectedEventList(if (type == "event") "이벤트" else "전체")
                     }
                     .fillMaxHeight()
                     .width(80.dp)
+                    .clip(RoundedCornerShape(16.dp))
                     .background(
-                        shape = RoundedCornerShape(16.dp),
                         brush = Brush.horizontalGradient(
                             colors = listOf(
                                 Background_Normal.copy(alpha = 1f),
