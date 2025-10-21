@@ -93,7 +93,12 @@ fun InventoryInfo(
                 .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
                 .border(1.dp, color = Line_Alternative, shape = RoundedCornerShape(12.dp))
                 .clickable {
-                    viewModel.updateCardPackOpen(true)
+                    if (viewModel.uiState.selectedItem?.itemType == "CARD_PACK") {
+                        viewModel.updateCardPackOpen(true)
+                    } else {
+                        println("ㅇㅇ")
+                        viewModel.updateCreditPackOpen(true)
+                    }
                 }
         ) {
             Text(

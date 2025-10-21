@@ -43,3 +43,8 @@ data class Cards(
     val lineAttributeName: String,
     val regionAttributeName: String
 )
+
+data class CreditPack(
+    val addedCredit: Int,
+    val userTotalCredit: Int
+)

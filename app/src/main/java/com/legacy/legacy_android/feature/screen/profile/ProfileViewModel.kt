@@ -33,39 +33,43 @@ class ProfileViewModel @Inject constructor(
     var uiState by mutableStateOf(ProfileUiState())
         private set
 
-    fun updateCardPackOpen(status: Boolean){
+    fun updateCardPackOpen(status: Boolean) {
         uiState = uiState.copy(cardPackOpen = status)
+    }
+
+    fun updateCreditPackOpen(status: Boolean) {
+        uiState = uiState.copy(creditPackOpen = status)
     }
 
     fun updateProfileTitle(title: Title) {
         userRepository.updateLocalProfileTitle(title)
     }
 
-    fun decreasePackOpenCount(count: Int){
-        uiState = if (uiState.packOpenCount < 2){
+    fun decreasePackOpenCount(count: Int) {
+        uiState = if (uiState.packOpenCount < 2) {
             uiState.copy(packOpenCount = uiState.selectedItem!!.itemCount)
-        }else {
+        } else {
             uiState.copy(packOpenCount = uiState.packOpenCount - count)
         }
     }
 
-    fun increasePackOpenCount(count: Int){
-        uiState = if (uiState.packOpenCount + count > uiState.selectedItem!!.itemCount){
+    fun increasePackOpenCount(count: Int) {
+        uiState = if (uiState.packOpenCount + count > uiState.selectedItem!!.itemCount) {
             uiState.copy(packOpenCount = uiState.selectedItem!!.itemCount)
-        }else{
+        } else {
             uiState.copy(packOpenCount = uiState.packOpenCount + count)
         }
     }
 
-    fun initCardPackOpenCount(){
+    fun initCardPackOpenCount() {
         uiState = uiState.copy(packOpenCount = 1)
     }
 
-    fun changeProfileStatus(status: Int){
+    fun changeProfileStatus(status: Int) {
         uiState = uiState.copy(profileStatus = status)
     }
 
-    fun changeTitleStatus(status: Int){
+    fun changeTitleStatus(status: Int) {
         uiState = uiState.copy(titleStatus = status)
     }
 
@@ -83,7 +87,7 @@ class ProfileViewModel @Inject constructor(
         userRepository.clearProfile()
     }
 
-    fun fetchMyInventory(){
+    fun fetchMyInventory() {
         viewModelScope.launch {
             val result = userRepository.getInventory()
             result.onSuccess {
@@ -94,9 +98,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedItem(item: InventoryItem?){
+    fun initOpenCreditResponse(){
+        uiState = uiState.copy(
+            openCreditResponse = null
+        )
+    }
+
+    fun setSelectedItem(item: InventoryItem?) {
         uiState = uiState.copy(selectedItem = item)
-        println(uiState.selectedItem)
     }
 
     fun fetchMyCollection() {
@@ -104,33 +113,51 @@ class ProfileViewModel @Inject constructor(
             val cards = uiState.statusList.map { status ->
                 async { cardRepository.fetchMyCard(status) }
             }.awaitAll()
-
             val successCards = cards.mapNotNull { it.getOrNull() }
             uiState = uiState.copy(myCards = successCards)
         }
     }
 
-    fun initCardPack(){
+    fun initCardPack() {
         uiState = uiState.copy(
             openCardResponse = null
         )
     }
 
-    fun openCardPack(){
+    fun openCardPack() {
         viewModelScope.launch {
             fetchMyInventory()
-            val result = userRepository.openCardPack(id = uiState.selectedItem!!.itemId, count = uiState.packOpenCount)
+            val result = userRepository.openCardPack(
+                id = uiState.selectedItem!!.itemId,
+                count = uiState.packOpenCount
+            )
             result.onSuccess {
                 uiState = uiState.copy(
                     openCardResponse = it
                 )
-            }.onFailure {
-                e-> Log.e("UserRepository", "카드팩 열기 실패", e)
+            }.onFailure { e ->
+                Log.e("UserRepository", "카드팩 열기 실패", e)
             }
         }
     }
 
-    fun patchImage(profileImageUrl: String){
+    fun openCreditPack() {
+        viewModelScope.launch {
+            val result = userRepository.openCreditPack(
+                id = uiState.selectedItem!!.itemId,
+                count = uiState.packOpenCount
+            )
+            result.onSuccess {
+                uiState = uiState.copy(
+                    openCreditResponse = it
+                )
+            }.onFailure { e ->
+                Log.e("UserRepository", "신용카드팩 열기 실패", e)
+            }
+        }
+    }
+
+    fun patchImage(profileImageUrl: String) {
         viewModelScope.launch {
             val result = userRepository.patchImage(profileImageUrl)
             result.onSuccess {
@@ -145,13 +172,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun patchDescription(description: String){
+    fun patchDescription(description: String) {
         viewModelScope.launch {
             val result = userRepository.patchDescription(description)
             result.onSuccess {
                 uiState = uiState.copy(changeStatus = "OK")
             }
-            result.onFailure { e-> Log.e("UserRepository", "설명 수정 실패", e)
+            result.onFailure { e ->
+                Log.e("UserRepository", "설명 수정 실패", e)
                 uiState = uiState.copy(changeStatus = "NO")
             }
             delay(3000)
@@ -172,7 +200,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun getTitles(){
+    fun getTitles() {
         viewModelScope.launch {
             val result = userRepository.getTitles()
             result.onSuccess {

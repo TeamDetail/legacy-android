@@ -127,16 +127,15 @@ fun CheckModal(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         rowItems.forEach { dayIndex ->
-                            val isChecked = dayIndex <= checkCount
-                            val isPastDay = dayIndex < checkCount
+                            val isPastDay = dayIndex < checkCount + 1
                             val backgroundColor = when {
                                 isPastDay -> Fill_Netural
-                                isChecked -> Primary
+                                viewModel.uiState.currentDay == dayIndex -> Primary
                                 else -> Fill_Normal
                             }
                             val textColor = when {
                                 isPastDay -> Label_Assitive
-                                isChecked -> White
+                                viewModel.uiState.currentDay == dayIndex -> White
                                 else -> Label_Alternative
                             }
 

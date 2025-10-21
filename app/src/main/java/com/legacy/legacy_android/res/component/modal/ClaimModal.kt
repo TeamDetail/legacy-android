@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -66,30 +68,31 @@ fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel()) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (viewModel.uiState.awardLoading){
+                if (viewModel.uiState.awardLoading) {
                     Text(text = "로딩 중입니다...", style = AppTextStyles.Caption1.Bold)
-                }else if (viewModel.uiState.awardAchieve == null){
-                    Column (
+                } else if (viewModel.uiState.awardAchieve?.achievementAward.isNullOrEmpty()) {
+                    Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(R.drawable.sad),
                             contentDescription = "sad",
                             modifier = Modifier.size(100.dp)
                         )
+                        Spacer(Modifier.height(20.dp))
                         Text(text = "수령할 보상이 없어요...", style = AppTextStyles.Headline.bold)
                     }
                     LaunchedEffect(Unit) {
                         kotlinx.coroutines.delay(1500)
                         viewModel.updateClaimModalOpen(false)
                     }
-                }else{
-                    Column (
+                } else {
+                    Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             text = "보상 수령 완료!",
                             style = AppTextStyles.Heading2.bold,
@@ -104,28 +107,28 @@ fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel()) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         viewModel.uiState.awardAchieve?.achievementAward
                             ?.chunked(5)
-                            ?.forEach{  rowItems ->
-                        Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                rowItems.forEach { item ->
-                                    Box(
-                                        Modifier
-                                            .size(40.dp)
-                                            .background(Fill_Normal, RoundedCornerShape(8.dp))
-                                            .border(
-                                                1.dp,
-                                                Line_Alternative,
-                                                RoundedCornerShape(8.dp)
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Item(count = item.itemCount)
+                            ?.forEach { rowItems ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    rowItems.forEach { item ->
+                                        Box(
+                                            Modifier
+                                                .size(40.dp)
+                                                .background(Fill_Normal, RoundedCornerShape(8.dp))
+                                                .border(
+                                                    1.dp,
+                                                    Line_Alternative,
+                                                    RoundedCornerShape(8.dp)
+                                                ),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Item(count = item.itemCount)
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
                     CustomButton(
                         text = "닫기",

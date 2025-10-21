@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -47,6 +48,7 @@ import com.legacy.legacy_android.res.component.achieve.Item
 import com.legacy.legacy_android.res.component.adventure.RuinImage
 import com.legacy.legacy_android.res.component.button.BackButton
 import com.legacy.legacy_android.res.component.button.StatusButton
+import com.legacy.legacy_android.res.component.modal.AlertModal
 import com.legacy.legacy_android.res.component.modal.ItemModal
 import com.legacy.legacy_android.res.component.modal.OpenCardModal
 import com.legacy.legacy_android.res.component.profile.InventoryInfo
@@ -69,6 +71,7 @@ import com.legacy.legacy_android.ui.theme.Line_Alternative
 import com.legacy.legacy_android.ui.theme.Line_Netural
 import com.legacy.legacy_android.ui.theme.Primary
 import com.legacy.legacy_android.ui.theme.Red_Normal
+import kotlinx.coroutines.delay
 
 @Composable
 fun ProfileScreen(
@@ -97,7 +100,28 @@ fun ProfileScreen(
         if (viewModel.uiState.openCardResponse != null) {
             OpenCardModal(viewModel)
         }
-        if (viewModel.uiState.cardPackOpen) {
+        if (viewModel.uiState.openCreditResponse != null) {
+            LaunchedEffect(viewModel.uiState.openCreditResponse) {
+                delay(3000)
+                viewModel.updateCreditPackOpen(false)
+                viewModel.setSelectedItem(null)
+                viewModel.initCardPack()
+                viewModel.fetchMyInventory()
+                viewModel.fetchProfile()
+                viewModel.initOpenCreditResponse()
+            }
+            AlertModal(
+                isCorrect = true,
+                correctMessage = "${viewModel.uiState.openCreditResponse!!.addedCredit} 크레딧 획득!!",
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .imePadding()
+                    .padding(bottom = 120.dp),
+                incorrectMessage = "없음"
+            )
+        }
+
+        if (viewModel.uiState.cardPackOpen || viewModel.uiState.creditPackOpen)  {
             ItemModal(viewModel)
         }
         Box(
@@ -194,7 +218,11 @@ fun ProfileScreen(
                             style = AppTextStyles.Body1.bold
                         )
                         profile?.title?.name?.takeIf { it.isNotBlank() }?.let {
-                            TitleBar(title = it, modifier = Modifier.height(20.dp), profile!!.title.styleId)
+                            TitleBar(
+                                title = it,
+                                modifier = Modifier.height(20.dp),
+                                profile!!.title.styleId
+                            )
                         }
                     }
                 }

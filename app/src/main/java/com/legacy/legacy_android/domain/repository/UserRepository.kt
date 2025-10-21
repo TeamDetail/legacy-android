@@ -2,6 +2,7 @@ package com.legacy.legacy_android.domain.repository
 
 import android.util.Log
 import com.legacy.legacy_android.feature.network.ruins.id.Cards
+import com.legacy.legacy_android.feature.network.ruins.id.CreditPack
 import com.legacy.legacy_android.feature.network.user.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +54,16 @@ class UserRepository @Inject constructor(
             Result.success(response.data)
         } catch (error: Exception) {
             Log.e("UserRepository", "카드 오픈 실패", error)
+            Result.failure(error)
+        }
+    }
+
+    suspend fun openCreditPack(id: Int, count: Int): Result<CreditPack?> {
+        return try {
+            val response = getMeService.useCreditPack(CreditOpenRequest(id, count))
+            Result.success(response.data)
+        } catch (error: Exception) {
+            Log.e("UserRepository", "크레딧 오픈 실패", error)
             Result.failure(error)
         }
     }

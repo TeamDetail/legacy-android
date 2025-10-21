@@ -39,7 +39,7 @@ import com.legacy.legacy_android.ui.theme.Purple_Normal
 @Composable
 fun ItemModal(
     viewModel: ProfileViewModel = hiltViewModel(),
-){
+) {
     val (soundPool, soundId) = RememberClickSound()
     LaunchedEffect(Unit) {
         viewModel.initCardPackOpenCount()
@@ -51,7 +51,7 @@ fun ItemModal(
             .zIndex(1500f)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }){},
+                interactionSource = remember { MutableInteractionSource() }) {},
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -68,22 +68,30 @@ fun ItemModal(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "사용할 개수 선택", style = AppTextStyles.Heading1.bold)
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Box(
-                        modifier = Modifier.background(color = Fill_Normal, shape = RoundedCornerShape(12.dp))
+                        modifier = Modifier.background(
+                            color = Fill_Normal,
+                            shape = RoundedCornerShape(12.dp)
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
                             contentDescription = "down",
                             tint = Label,
-                            modifier = Modifier.clickable{viewModel.decreasePackOpenCount(1)}.size(40.dp)
+                            modifier = Modifier
+                                .clickable { viewModel.decreasePackOpenCount(1) }
+                                .size(40.dp)
                         )
                     }
                     Box(
-                        modifier = Modifier.background(color = Fill_Normal, shape = RoundedCornerShape(12.dp))
+                        modifier = Modifier.background(
+                            color = Fill_Normal,
+                            shape = RoundedCornerShape(12.dp)
+                        )
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp),
@@ -92,18 +100,25 @@ fun ItemModal(
                         )
                     }
                     Box(
-                        modifier = Modifier.background(color = Fill_Normal, shape = RoundedCornerShape(12.dp))
+                        modifier = Modifier.background(
+                            color = Fill_Normal,
+                            shape = RoundedCornerShape(12.dp)
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowUp,
                             contentDescription = "up",
                             tint = Label,
-                            modifier = Modifier.clickable{viewModel.increasePackOpenCount(1)}.size(40.dp)
+                            modifier = Modifier
+                                .clickable { viewModel.increasePackOpenCount(1) }
+                                .size(40.dp)
                         )
                     }
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -115,6 +130,7 @@ fun ItemModal(
                             .border(1.dp, Label_Assitive, RoundedCornerShape(8.dp))
                             .clickable {
                                 viewModel.updateCardPackOpen(false)
+                                viewModel.updateCreditPackOpen(false)
                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                             }
                             .padding(vertical = 12.dp)
@@ -134,7 +150,12 @@ fun ItemModal(
                             .border(1.dp, Purple_Normal, RoundedCornerShape(8.dp))
                             .clickable {
                                 viewModel.updateCardPackOpen(false)
-                                viewModel.openCardPack()
+                                viewModel.updateCreditPackOpen(false)
+                                if (viewModel.uiState.selectedItem?.itemType == "CARD_PACK") {
+                                    viewModel.openCardPack()
+                                } else {
+                                    viewModel.openCreditPack()
+                                }
                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
                             }
                             .padding(vertical = 12.dp)

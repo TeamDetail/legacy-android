@@ -2,6 +2,7 @@ package com.legacy.legacy_android.feature.network.user
 
 import com.legacy.legacy_android.feature.data.core.BaseResponse
 import com.legacy.legacy_android.feature.network.ruins.id.Cards
+import com.legacy.legacy_android.feature.network.ruins.id.CreditPack
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -16,6 +17,8 @@ interface GetMeService {
 
     @POST("/inventory/cardpack")
     suspend fun cardOpen(@Body request: CardOpenRequest): BaseResponse<List<Cards>>
+    @POST("/inventory/credit-pack/use")
+    suspend fun useCreditPack(@Body request: CreditOpenRequest): BaseResponse<CreditPack>
     @GET("/user/titles")
     suspend fun getTitles(): BaseResponse<List<Title>>
     @PATCH("/user/title")
