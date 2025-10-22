@@ -42,7 +42,7 @@ fun InventoryInfo(
             .fillMaxWidth()
             .height(220.dp)
             .background(Background_Netural, shape = RoundedCornerShape(20.dp))
-            .padding(12.dp)
+            .padding(8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -64,7 +64,7 @@ fun InventoryInfo(
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
+                        .padding(horizontal = 8.dp)
                 ) {
                     Text(
                         text = viewModel.uiState.selectedItem?.itemName ?: "이름 없음",
@@ -79,7 +79,7 @@ fun InventoryInfo(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
+                        .padding(horizontal = 8.dp),
                     text = viewModel.uiState.selectedItem?.itemDescription ?: "설명 없음",
                     style = AppTextStyles.Body2.medium,
                     color = Label_Netural

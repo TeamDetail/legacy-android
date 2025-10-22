@@ -90,7 +90,7 @@ fun ClaimModal(viewModel: AchieveViewModel = hiltViewModel()) {
                     }
                 } else {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(

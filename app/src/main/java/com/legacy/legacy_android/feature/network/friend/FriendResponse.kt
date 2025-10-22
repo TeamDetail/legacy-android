@@ -20,5 +20,5 @@ data class SearchFriendResponse(
     val friendCode: String,
     val isAlreadyFriend: Boolean,
     val styleName: String,
-    val styleId: Int
+    val styleId: Int,
 )

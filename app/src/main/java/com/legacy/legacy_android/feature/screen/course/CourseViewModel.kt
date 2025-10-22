@@ -49,35 +49,6 @@ class CourseViewModel @Inject constructor(
         uiState = uiState.copy(createCourseDescription = description)
     }
 
-    fun getFilteredCourses(): List<SearchCourseResponse> {
-        val courses = uiState.searchCourse.ifEmpty { uiState.allCourse }
-        return courses
-            .filter { course ->
-                when (uiState.selectedEvent) {
-                    "전체" -> true
-                    "이벤트" -> course.eventId != 0
-                    "일반" -> course.eventId == 0
-                    else -> true
-                }
-            }
-            .filter { course ->
-                when (uiState.selectedStatus) {
-                    "전체" -> true
-                    "완료" -> course.clear
-                    "미완료" -> !course.clear
-                    else -> true
-                }
-            }
-            .let { filteredList ->
-                when (uiState.selectedNew) {
-                    "최신" -> filteredList
-                    "인기" -> filteredList.sortedByDescending { it.heartCount }
-                    "클리어 인원" -> filteredList.sortedByDescending { it.clearCount }
-                    else -> filteredList
-                }
-            }
-    }
-
     fun filterRuinElem(item: RuinsIdResponse) {
         uiState = uiState.copy(
             createSelectedRuins = uiState.createSelectedRuins
@@ -97,6 +68,8 @@ class CourseViewModel @Inject constructor(
             }
         }
     }
+
+
 
     fun loadAllCourses() = launchWithLoading {
         courseRepository.getAllCourse()

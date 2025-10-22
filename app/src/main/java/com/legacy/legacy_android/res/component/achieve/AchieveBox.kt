@@ -3,6 +3,7 @@ package com.legacy.legacy_android.res.component.achieve
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,8 +42,7 @@ fun AchieveBox(
     item: AchievementResponse,
     viewModel: AchieveViewModel,
     navHostController: NavHostController
-){
-
+) {
     val bgImageRes = AchievementMapper.getBackgroundRes(item.achievementGrade)
     val itemImageRes = AchievementMapper.getItemRes(item.achievementType)
     val achievementValueGrade = when (viewModel.uiState.achieveStatus) {
@@ -63,7 +64,7 @@ fun AchieveBox(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier.size(64.dp)
+            modifier = Modifier.size(64.dp)
         ) {
             Image(
                 painter = painterResource(id = bgImageRes),
@@ -80,75 +81,73 @@ fun AchieveBox(
             }
         }
 
-        Spacer(modifier.width(12.dp))
-        Column {
-            Text(
-                text = buildAnnotatedString {
-                    append(item.achievementName)
-                    withStyle(
-                        style = SpanStyle(
-                            color = when (achievementValueGrade) {
-                                "탐험" -> Blue_Netural
-                                "숙련" -> Yellow_Netural
-                                else -> Label_Disable
-                            },
-                            fontSize = AppTextStyles.Caption1.Medium.fontSize,
-                            fontWeight = AppTextStyles.Caption1.Medium.fontWeight,
-                            fontFamily = AppTextStyles.Caption1.Medium.fontFamily
-                        )
-                    ) {
-                        append(" #${achievementValueGrade}")
-                    }
-                },
-                style = AppTextStyles.Label.Bold
-            )
+        Spacer(modifier = Modifier.width(12.dp))
 
-
-            // 내용
-            Text(
-                text = item.achievementContent,
-                style = AppTextStyles.Caption2.Medium,
-                color = Label_Alternative
-            )
-
-            Spacer(modifier.height(4.dp))
-
-            // 목표 및 진행률
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                val progressText = when {
-                    item.receive -> "수령 완료"
-                    item.currentRate >= item.goalRate -> "미수령"
-                    else -> "${item.currentRate} / ${item.goalRate}"
-                }
-
-                // 목표 텍스트
+        BoxWithConstraints {
+            Column {
                 Text(
                     text = buildAnnotatedString {
-                        append("목표 ")
+                        append(item.achievementName)
                         withStyle(
                             style = SpanStyle(
-                                color = Label,
-                                fontSize = AppTextStyles.Caption1.ExtraBold.fontSize,
-                                fontWeight = AppTextStyles.Caption1.ExtraBold.fontWeight,
-                                fontFamily = AppTextStyles.Caption1.ExtraBold.fontFamily
+                                color = when (achievementValueGrade) {
+                                    "탐험" -> Blue_Netural
+                                    "숙련" -> Yellow_Netural
+                                    else -> Label_Disable
+                                },
+                                fontSize = AppTextStyles.Caption1.Medium.fontSize,
+                                fontWeight = AppTextStyles.Caption1.Medium.fontWeight,
+                                fontFamily = AppTextStyles.Caption1.Medium.fontFamily
                             )
                         ) {
-                            append(item.achievementGradeText)
+                            append(" #${achievementValueGrade}")
                         }
                     },
-                    style = AppTextStyles.Caption1.regular,
-                    color = Label_Netural
+                    style = AppTextStyles.Label.Bold
                 )
 
-                Spacer(modifier.width(12.dp))
-
-                // 진행 상태
                 Text(
-                    text = progressText,
-                    style = AppTextStyles.Caption1.ExtraBold,
-                    color = if (item.receive) Red_Normal else Label_Netural
+                    text = item.achievementContent,
+                    style = AppTextStyles.Caption2.Medium,
+                    color = Label_Alternative
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val progressText = when {
+                        item.receive -> "수령 완료"
+                        item.currentRate >= item.goalRate -> "미수령"
+                        else -> "${item.currentRate} / ${item.goalRate}"
+                    }
+
+                    Text(
+                        text = buildAnnotatedString {
+                            append("목표 ")
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Label,
+                                    fontSize = AppTextStyles.Caption1.ExtraBold.fontSize,
+                                    fontWeight = AppTextStyles.Caption1.ExtraBold.fontWeight,
+                                    fontFamily = AppTextStyles.Caption1.ExtraBold.fontFamily
+                                )
+                            ) {
+                                append(item.achievementGradeText)
+                            }
+                        },
+                        style = AppTextStyles.Caption1.regular,
+                        color = Label_Netural,
+                        modifier = Modifier.widthIn(max = this@BoxWithConstraints.maxWidth * 0.6f)
+                    )
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = progressText,
+                        style = AppTextStyles.Caption1.ExtraBold,
+                        color = if (item.receive) Red_Normal else Label_Netural
+                    )
+                }
             }
         }
     }

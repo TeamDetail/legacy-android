@@ -3,8 +3,11 @@
 
 package com.legacy.legacy_android.res.component.quiz
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -460,7 +463,7 @@ fun ShareView(
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(52.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Background_Normal, shape = RoundedCornerShape(20.dp))
@@ -469,43 +472,48 @@ fun ShareView(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(vertical = 27.dp, horizontal = 37.dp)
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.padding(vertical = 27.dp, horizontal = 37.dp).fillMaxHeight()
         ) {
-            // 캡처할 카드 영역 (배경 이미지 포함)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .fillMaxHeight(0.4f)
-                    .capturable(captureController)
-            ) {
+            Column (
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                // 캡처할 카드 영역 (배경 이미지 포함)
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(12.dp))
+                        .fillMaxWidth(0.6f)
+                        .fillMaxHeight(0.4f)
+                        .capturable(captureController)
                 ) {
-                    // 배경 이미지
-                    Image(
-                        painter = painterResource(R.drawable.cardbg),
-                        contentDescription = "card background",
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    // 카드 이미지
-                    RuinImage(
-                        image = data!!.ruinsImage,
-                        name = data.name,
-                        nationAttributeName = data.card!!.nationAttributeName,
-                        regionAttributeName = data.card.regionAttributeName,
-                        lineAttributeName = data.card.lineAttributeName,
-                        height = 400,
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        // 배경 이미지
+                        Image(
+                            painter = painterResource(R.drawable.cardbg),
+                            contentDescription = "card background",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        // 카드 이미지
+                        RuinImage(
+                            image = data!!.ruinsImage,
+                            name = data.name,
+                            nationAttributeName = data.card!!.nationAttributeName,
+                            regionAttributeName = data.card.regionAttributeName,
+                            lineAttributeName = data.card.lineAttributeName,
+                            height = 400,
+                        )
+                    }
                 }
-            }
 
-            Text(
-                text = "카드를 획득했어요!",
-                style = AppTextStyles.Title2.bold
-            )
+                Text(
+                    text = "카드를 획득했어요!",
+                    style = AppTextStyles.Title2.bold
+                )
+            }
         }
     }
 
@@ -581,12 +589,19 @@ private fun saveBitmapToCache(context: Context, bitmap: android.graphics.Bitmap)
     }
 }
 
-private fun shareToInstagramStory(context: Context, imageUri: Uri) {
+private fun shareToInstagramStory(context: Context, cardUri: Uri) {
+    val bgBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.cardbg)
+    val bgUri = saveBitmapToCache(context, bgBitmap) ?: return
+
     val instaIntent = Intent("com.instagram.share.ADD_TO_STORY").apply {
-        setDataAndType(imageUri, "image/*")
+        setType("image/*")
+        putExtra("interactive_asset_uri", cardUri) // 카드 스티커
+        putExtra("background_image", bgUri)        // 뒤 배경
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        putExtra("interactive_asset_uri", imageUri)
     }
+
+    context.grantUriPermission("com.instagram.android", cardUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    context.grantUriPermission("com.instagram.android", bgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
     if (instaIntent.resolveActivity(context.packageManager) != null) {
         context.startActivity(instaIntent)
@@ -594,6 +609,8 @@ private fun shareToInstagramStory(context: Context, imageUri: Uri) {
         redirectToPlayStoreForInstagram(context)
     }
 }
+
+
 
 private fun redirectToPlayStoreForInstagram(context: Context) {
     val appStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"))

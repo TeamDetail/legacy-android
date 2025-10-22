@@ -35,14 +35,16 @@
         <!-- API Keys -->
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}" />
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="${KAKAO_API_KEY}" />
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"
+            tools:ignore="MissingApplicationMetadata" />
 
         <!-- Services -->
         <service android:name=".service.MusicService" android:exported="false"/>
-        <service android:name=".service.MyFirebaseMessageService" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <service android:name=".service.MyFirebaseMessageService"
+            android:exported="false"
+            tools:ignore="ExportedService" />
 
         <!-- Kakao Login -->
         <activity

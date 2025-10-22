@@ -102,6 +102,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.compose.ui.util)
+    implementation(libs.androidx.compose.foundation.layout)
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
 
@@ -146,6 +147,9 @@ dependencies {
     // Glide / Coil
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
+
 
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:$nav_version")

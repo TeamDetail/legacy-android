@@ -34,7 +34,17 @@ fun AchieveScreen(
 
     val statusList = listOf("탐험", "숙련", "히든")
     LaunchedEffect(Unit) {
-        viewModel.fetchAllAchieveList()
+        when (viewModel.uiState.achieveStatus){
+            0 -> {
+                viewModel.fetchAchieveListByType("EXPLORE")
+            }
+            1->{
+                viewModel.fetchAchieveListByType("LEVEL")
+            }
+            else -> {
+                viewModel.fetchAchieveListByType("HIDDEN")
+            }
+        }
         viewModel.updateCurrentAchieve(null)
     }
 

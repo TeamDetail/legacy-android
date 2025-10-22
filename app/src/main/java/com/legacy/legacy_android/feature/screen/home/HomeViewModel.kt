@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.legacy.legacy_android.domain.repository.UserRepository
 import com.legacy.legacy_android.domain.repository.home.*
 import com.legacy.legacy_android.feature.network.ruins.id.RuinsIdResponse
 import com.legacy.legacy_android.feature.screen.home.helper.RuinsAnimationHelper
@@ -16,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.mutable.MutableInt
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +27,7 @@ class HomeViewModel @Inject constructor(
     private val blockRepository: BlockRepository,
     private val quizRepository: QuizRepository,
     private val animationHelper: RuinsAnimationHelper,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
@@ -35,6 +38,13 @@ class HomeViewModel @Inject constructor(
 
     fun setMapLoaded() {
         isMapLoaded = true
+    }
+
+    fun fetchProfile(){
+        viewModelScope.launch {
+            userRepository.clearProfile()
+            userRepository.fetchProfile()
+        }
     }
 
     var cameraPosition by mutableStateOf(
@@ -256,6 +266,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadQuiz(ruinsId: Int?) {
         uiState = uiState.copy(quizData = null)
+        uiState = uiState.copy(wrongAnswers = emptyList())
+        uiState = uiState.copy(quizNum = mutableIntStateOf(0))
         uiState = uiState.copy(hintData = MutableList(3) { null })
         if (ruinsId == null) return
         loadQuizJob?.cancel()
@@ -275,6 +287,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             quizRepository.getQuiz(quizId)
                 .onSuccess { hint ->
+                    fetchProfile()
                     val newHintData = uiState.hintData.toMutableList()
                     newHintData[uiState.quizNum.value] = hint
 

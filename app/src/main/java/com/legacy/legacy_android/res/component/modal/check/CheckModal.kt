@@ -141,7 +141,7 @@ fun CheckModal(
 
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .size(36.dp)
                                     .background(backgroundColor, RoundedCornerShape(8.dp))
                                     .border(1.dp, Line_Alternative, RoundedCornerShape(8.dp))
                                     .clickable {
@@ -159,7 +159,7 @@ fun CheckModal(
                         }
 
                         repeat(7 - rowItems.size) {
-                            Box(Modifier.size(40.dp).alpha(0f))
+                            Box(Modifier.size(36.dp).alpha(0f))
                         }
                     }
                 }

@@ -74,7 +74,14 @@ fun SearchFriendBar(viewModel: FriendViewModel, data: SearchFriendResponse) {
                     style = AppTextStyles.Label.Medium,
                     color = Label_Alternative
                 )
-                TitleBar(title = "ㅇㅇ", modifier = Modifier.height(20.dp), styleId = 4)
+                if (!data.styleName.isNullOrEmpty()) { // 손대지 않기
+                    TitleBar(
+                        title = data.styleName,
+                        modifier = Modifier.height(20.dp),
+                        styleId = data.styleId
+                    )
+                }
+
             }
         }
         Column (

@@ -46,7 +46,6 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
             .fillMaxWidth()
             .height(200.dp)
             .clip(RoundedCornerShape(12.dp))
-            .padding(5.dp)
             .clickable{
                 viewModel.setCurrentCourse(course)
                 navHostController.navigate("course_info")
@@ -80,7 +79,7 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                 .clip(RoundedCornerShape(12.dp))
         ) {
             Column(
-                modifier = Modifier.padding(start = 12.dp).fillMaxHeight().clip(RoundedCornerShape(12.dp)),
+                modifier = Modifier.padding(start = 16.dp).fillMaxHeight().clip(RoundedCornerShape(12.dp)),
                 verticalArrangement = Arrangement.Center
             ) {
                 Column(modifier = Modifier.fillMaxWidth(0.7f)) {
@@ -90,9 +89,9 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                             style = AppTextStyles.Caption2.Medium,
                             fontSize = 8.sp,
                             modifier = Modifier
-                                .padding(horizontal = 0.dp, vertical = 4.dp)
+                                .padding(horizontal = 0.dp, vertical = 12.dp)
                                 .background(Red_Netural, RoundedCornerShape(999.dp))
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .padding(horizontal = 12.dp, vertical = 12.dp)
                         )
                     }
 
@@ -105,7 +104,8 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                     Text(
                         text = course.description,
                         style = AppTextStyles.Label.regular,
-                        color = Label_Netural
+                        color = Label_Netural,
+                        maxLines = 2
                     )
                 }
                 Spacer(Modifier.height(32.dp))
@@ -152,7 +152,7 @@ fun CourseBox (course: SearchCourseResponse, viewModel: CourseViewModel, navHost
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(0.35f)
-                            .padding(vertical = 4.dp, horizontal = 8.dp)
+                            .padding(vertical = 12.dp, horizontal = 12.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(999.dp))
                             .background(Fill_Normal),

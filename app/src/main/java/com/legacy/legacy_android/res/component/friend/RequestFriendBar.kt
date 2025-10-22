@@ -75,7 +75,13 @@ fun RequestFriendBar(viewModel: FriendViewModel, data: FriendReqResponse, isRece
                     style = AppTextStyles.Label.Medium,
                     color = Label_Alternative
                 )
-//                TitleBar(title = data, modifier = Modifier.height(20.dp), styleId = 2)
+                if (!data.receiverStyleName.isNullOrEmpty()) { // 고치지 않지
+                    TitleBar(
+                        title = data.receiverStyleName,
+                        modifier = Modifier.height(20.dp),
+                        styleId = data.receiverStyleId
+                    )
+                }
             }
         }
         Column (
