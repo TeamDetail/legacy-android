@@ -62,19 +62,19 @@ fun OptionBar(
                     onMailClick(true)
                 }
             )
-            Image(
-                painter = painterResource(R.drawable.setting), contentDescription = null,
-                modifier = iconModifier.clickable {
-                    setIsTabClicked()
-                    navHostController.navigate("setting")
-                })
-            Image(
-                painter = painterResource(R.drawable.info),
-                contentDescription = null,
-                modifier = iconModifier.clickable {
-                    setIsTabClicked()
-                }
-            )
+//            Image(
+//                painter = painterResource(R.drawable.setting), contentDescription = null,
+//                modifier = iconModifier.clickable {
+//                    setIsTabClicked()
+//                    navHostController.navigate("setting")
+//                })
+//            Image(
+//                painter = painterResource(R.drawable.info),
+//                contentDescription = null,
+//                modifier = iconModifier.clickable {
+//                    setIsTabClicked()
+//                }
+//            )
             Image(
                 painter = painterResource(R.drawable.logout),
                 contentDescription = null,

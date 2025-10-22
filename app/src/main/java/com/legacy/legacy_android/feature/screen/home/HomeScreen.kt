@@ -499,10 +499,13 @@ fun HomeScreen(
                 .padding(vertical = 40.dp, horizontal = 12.dp)
                 .zIndex(7f)
         ) {
-            if (viewModel.uiState.selectedId.isNotEmpty() && !viewModel.uiState.isCommenting) {
+            if (viewModel.uiState.selectedId.isNotEmpty()
+                && !viewModel.uiState.isCommenting
+                && viewModel.uiState.quizStatus == QuizStatus.NONE
+            ) {
                 AdventureInfo(
                     data = viewModel.uiState.ruinsDetail,
-                    viewModel
+                    viewModel = viewModel
                 )
             } else if (viewModel.uiState.selectedId.isNotEmpty() && viewModel.uiState.isCommenting) {
                 CommentModal(viewModel)

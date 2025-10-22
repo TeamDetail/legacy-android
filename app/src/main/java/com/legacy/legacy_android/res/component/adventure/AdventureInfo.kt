@@ -3,8 +3,6 @@ package com.legacy.legacy_android.res.component.adventure
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
@@ -45,9 +43,14 @@ fun AdventureInfo(
     val scrollStates = remember(data?.size) {
         List(data?.size ?: 1) { ScrollState(0) }
     }
-    val scaffoldState = rememberBottomSheetScaffoldState()
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false
+    )
     val pagerState = rememberPagerState(pageCount = { data?.size ?: 1 })
-    val interactionSource = remember { MutableInteractionSource() }
+    val coroutineScope = rememberCoroutineScope()
+
+    var showSheet by remember { mutableStateOf(true) }
 
     LaunchedEffect(data?.firstOrNull()?.ruinsId) {
         data?.firstOrNull()?.let {
@@ -66,92 +69,89 @@ fun AdventureInfo(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .clickable(
-                indication = null,
-                interactionSource = interactionSource
-            ) {
-                if (!isLoading) {
-                    viewModel.updateSelectedId(emptyList())
-                }
+    if (showSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                viewModel.updateSelectedId(emptyList())
+                viewModel.fetchRuinsDetail(emptyList())
+                viewModel.initRuinsDetail()
+                viewModel.updateIsCommenting(false)
+                showSheet = false
             },
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        BottomSheetScaffold(
-            scaffoldState = scaffoldState,
-            sheetPeekHeight = 302.dp,
-            sheetShape = RoundedCornerShape(16.dp),
-            sheetDragHandle = { },
-            sheetContent = {
-                Column(
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = Background_Netural,
+            dragHandle = {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 200.dp, max = 600.dp)
-                        .background(
-                            Background_Netural,
-                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                        )
-                        .padding(12.dp)
-                        .clickable(
-                            indication = null,
-                            interactionSource = interactionSource
-                        ) {}
-                ) {
-                    PagerIndicator(data, pagerState)
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (isLoading) {
-                        RuinsDetailPage(
-                            currentData = null,
-                            viewModel = viewModel,
-                            scrollState = rememberScrollState(),
-                            scale = 1f,
-                            alpha = 1f
-                        )
-                    } else {
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.weight(1f)
-                        ) { page ->
-                            val currentData = data.getOrNull(page)
-                            val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
-
-                            val pageOffset =
-                                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                            val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
-                            val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
-
-                            RuinsDetailPage(
-                                currentData = currentData,
-                                viewModel = viewModel,
-                                scrollState = scrollState,
-                                scale = scale,
-                                alpha = alpha
-                            )
-                        }
-                    }
-                }
+                        .padding(top = 8.dp)
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Fill_Alternative)
+                )
             }
-        ) {}
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            ) {
+                PagerIndicator(data, pagerState)
+                Spacer(modifier = Modifier.height(8.dp))
 
-        CustomButton(
-            onClick = {
-                if (!isLoading) {
-                    data.getOrNull(pagerState.currentPage)?.ruinsId?.let {
-                        viewModel.loadQuiz(it)
+                if (isLoading) {
+                    RuinsDetailPage(
+                        currentData = null,
+                        viewModel = viewModel,
+                        scrollState = rememberScrollState(),
+                        scale = 1f,
+                        alpha = 1f
+                    )
+                } else {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 200.dp, max = 600.dp)
+                    ) { page ->
+                        val currentData = data.getOrNull(page)
+                        val scrollState = scrollStates.getOrNull(page) ?: rememberScrollState()
+
+                        val pageOffset =
+                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                        val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+                        val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+
+                        RuinsDetailPage(
+                            currentData = currentData,
+                            viewModel = viewModel,
+                            scrollState = scrollState,
+                            scale = scale,
+                            alpha = alpha
+                        )
                     }
                 }
-            },
-            text = if (isLoading) "로딩 중..." else "퀴즈 풀고 탐험하기!",
-            modifier = Modifier.fillMaxWidth(),
-            borderColor = Blue_Netural,
-            textColor = Blue_Netural,
-            backgroundColor = Fill_Normal,
-            contentPadding = PaddingValues(vertical = 12.dp),
-            fontSize = AppTextStyles.Body1.bold.fontSize
-        )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CustomButton(
+                    onClick = {
+                        if (!isLoading) {
+                            data?.getOrNull(pagerState.currentPage)?.ruinsId?.let {
+                                viewModel.loadQuiz(it)
+                            }
+                        }
+                    },
+                    text = if (isLoading) "로딩 중..." else "퀴즈 풀고 탐험하기!",
+                    modifier = Modifier.fillMaxWidth(),
+                    borderColor = Blue_Netural,
+                    textColor = Blue_Netural,
+                    backgroundColor = Fill_Normal,
+                    contentPadding = PaddingValues(vertical = 12.dp),
+                    fontSize = AppTextStyles.Body1.bold.fontSize
+                )
+            }
+        }
     }
 }
 
@@ -164,14 +164,6 @@ private fun PagerIndicator(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.1f)
-                .background(Fill_Alternative, shape = RoundedCornerShape(8.dp))
-                .height(8.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
         if (data != null && data.size > 1) {
             Row(
                 modifier = Modifier
@@ -437,7 +429,6 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
             }
 
             currentData.card == null -> {
-                // card가 null일 때 처리
                 RuinImage(
                     image = currentData.ruinsImage,
                     name = currentData.name,
@@ -450,7 +441,6 @@ private fun RuinsImage(currentData: RuinsIdResponse?) {
             }
 
             else -> {
-                // card가 있을 때만 실행
                 RuinImage(
                     image = currentData.ruinsImage,
                     name = currentData.name,

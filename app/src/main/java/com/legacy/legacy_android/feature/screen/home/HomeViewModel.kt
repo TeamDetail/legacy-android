@@ -17,7 +17,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.mutable.MutableInt
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,9 +162,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private var submitJob: Job? = null  // 클래스 최상단에 추가
+
     fun submitQuizAnswers() {
-        viewModelScope.launch {
+        // 이미 제출 중이면 무시
+        if (submitJob?.isActive == true) {
+            return
+        }
+
+        submitJob = viewModelScope.launch {
             uiState = uiState.copy(quizStatus = QuizStatus.LOADING)
+
             quizRepository.submitAnswer(quizAnswers.toList())
                 .onSuccess { response ->
                     val wrongIndices = response?.results
@@ -179,7 +186,22 @@ class HomeViewModel @Inject constructor(
                     )
                     clearQuizAnswers()
                 }
-                .onFailure {
+                .onFailure { exception ->
+                    println("퀴즈 제출 실패: $exception")
+
+                    uiState = when {
+                        exception.message?.contains("409") == true -> {
+                            uiState.copy(
+                                quizStatus = QuizStatus.SUCCESS,
+                                wrongAnswers = emptyList()
+                            )
+                        }
+
+                        else -> {
+                            uiState.copy(quizStatus = QuizStatus.WORKING)
+                        }
+                    }
+                    clearQuizAnswers()
                 }
         }
     }
@@ -269,16 +291,29 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(wrongAnswers = emptyList())
         uiState = uiState.copy(quizNum = mutableIntStateOf(0))
         uiState = uiState.copy(hintData = MutableList(3) { null })
-        if (ruinsId == null) return
+
+        if (ruinsId == null) {
+            uiState = uiState.copy(quizStatus = QuizStatus.NONE)
+            return
+        }
+
         loadQuizJob?.cancel()
         loadQuizJob = viewModelScope.launch {
+            uiState = uiState.copy(quizStatus = QuizStatus.LOADING)
+
             quizRepository.getQuizById(ruinsId)
                 .onSuccess { quiz ->
-                    uiState = uiState.copy(quizData = quiz)
-                    updateQuizStatus(QuizStatus.WORKING)
+                    if (!quiz.isNullOrEmpty()) {
+                        uiState = uiState.copy(quizData = quiz)
+                        updateQuizStatus(QuizStatus.WORKING)
+                    } else {
+                        println("퀴즈 데이터가 없습니다")
+                        uiState = uiState.copy(quizStatus = QuizStatus.NONE)
+                    }
                 }
-                .onFailure {
-                    println("퀴즈 실패")
+                .onFailure { exception ->
+                    println("퀴즈 로드 실패: $exception")
+                    uiState = uiState.copy(quizStatus = QuizStatus.NONE)
                 }
         }
     }

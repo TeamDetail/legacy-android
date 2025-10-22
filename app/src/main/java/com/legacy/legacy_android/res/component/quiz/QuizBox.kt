@@ -3,10 +3,8 @@
 
 package com.legacy.legacy_android.res.component.quiz
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
@@ -43,6 +41,8 @@ import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.CaptureController
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.zIndex
+import androidx.core.net.toUri
 
 @Composable
 fun QuizBox(
@@ -55,8 +55,27 @@ fun QuizBox(
     val selectedOption = remember { mutableStateOf<String?>(null) }
     val showCollection = remember { mutableStateOf(false) }
 
+    if (data.isEmpty() || viewModel.uiState.quizNum.value >= data.size) {
+        when (quizStatus) {
+            QuizStatus.WORKING, QuizStatus.LOADING -> {
+                LoadingView()
+            }
+            else -> {
+            }
+        }
+        return
+    }
+
     when (quizStatus) {
         QuizStatus.WORKING -> {
+            val currentQuiz = data.getOrNull(viewModel.uiState.quizNum.value)
+
+            // currentQuiz가 null이면 로딩 표시
+            if (currentQuiz == null) {
+                LoadingView()
+                return
+            }
+
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,6 +83,7 @@ fun QuizBox(
                     .background(Background_Normal, shape = RoundedCornerShape(20.dp))
                     .fillMaxWidth(0.9f)
                     .fillMaxHeight(0.8f)
+                    .zIndex(500f)
             ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceBetween,
@@ -98,7 +118,7 @@ fun QuizBox(
                             style = AppTextStyles.Title2.bold
                         )
                         Text(
-                            text = data[viewModel.uiState.quizNum.value].ruinsName,
+                            text = currentQuiz.ruinsName,  // ← 안전하게 접근
                             color = Label_Alternative,
                             style = AppTextStyles.Body1.medium,
                             textAlign = TextAlign.Center,
@@ -107,7 +127,7 @@ fun QuizBox(
                     }
 
                     Text(
-                        text = data[viewModel.uiState.quizNum.value].quizProblem,
+                        text = currentQuiz.quizProblem,  // ← 안전하게 접근
                         style = AppTextStyles.Title3.bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -118,7 +138,7 @@ fun QuizBox(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            data[viewModel.uiState.quizNum.value].optionValue.forEach { option ->
+                            currentQuiz.optionValue.forEach { option ->  // ← 안전하게 접근
                                 Box(
                                     modifier = Modifier
                                         .border(
@@ -183,14 +203,23 @@ fun QuizBox(
 
                                     CustomButton(
                                         onClick = {
-                                            if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) viewModel.updateHintStatus(
-                                                HintStatus.CREDIT
-                                            )
+                                            if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) {
+                                                viewModel.updateHintStatus(HintStatus.CREDIT)
+                                            }
                                         },
-                                        text = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) "300크레딧으로 힌트 확인" else "힌트: ${viewModel.uiState.hintData[viewModel.uiState.quizNum.value]}",
+                                        text = if (viewModel.uiState.hintData.getOrNull(viewModel.uiState.quizNum.value) == null)
+                                            "300크레딧으로 힌트 확인"
+                                        else
+                                            "힌트: ${viewModel.uiState.hintData[viewModel.uiState.quizNum.value]}",
                                         modifier = Modifier.weight(3f),
-                                        borderColor = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) Blue_Netural else Line_Normal,
-                                        textColor = if (viewModel.uiState.hintData[viewModel.uiState.quizNum.value] == null) Blue_Netural else Line_Normal,
+                                        borderColor = if (viewModel.uiState.hintData.getOrNull(viewModel.uiState.quizNum.value) == null)
+                                            Blue_Netural
+                                        else
+                                            Line_Normal,
+                                        textColor = if (viewModel.uiState.hintData.getOrNull(viewModel.uiState.quizNum.value) == null)
+                                            Blue_Netural
+                                        else
+                                            Line_Normal,
                                         backgroundColor = Fill_Normal,
                                         contentPadding = PaddingValues(
                                             vertical = 12.dp,
@@ -205,7 +234,7 @@ fun QuizBox(
                                         onClick = {
                                             selectedOption.value?.let { selected ->
                                                 viewModel.addQuizAnswer(
-                                                    data[viewModel.uiState.quizNum.value].quizId,
+                                                    currentQuiz.quizId,  // ← 안전하게 접근
                                                     selected
                                                 )
                                                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
@@ -473,12 +502,14 @@ fun ShareView(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.padding(vertical = 27.dp, horizontal = 37.dp).fillMaxHeight()
+            modifier = Modifier
+                .padding(vertical = 27.dp, horizontal = 37.dp)
+                .fillMaxHeight()
         ) {
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 // 캡처할 카드 영역 (배경 이미지 포함)
                 Box(
                     modifier = Modifier
@@ -513,59 +544,58 @@ fun ShareView(
                     text = "카드를 획득했어요!",
                     style = AppTextStyles.Title2.bold
                 )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(horizontal = 37.dp)
+                ) {
+                    CustomButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                val imageBitmap = captureController.captureAsync().await()
+                                val androidBitmap = imageBitmap.asAndroidBitmap()
+                                val imageUri = saveBitmapToCache(context, androidBitmap)
+
+                                imageUri?.let { uri ->
+                                    shareToInstagramStory(context, uri)
+                                }
+                            }
+                        },
+                        text = "스토리 업로드",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.9f),
+                        borderColor = Blue_Netural,
+                        textColor = Blue_Netural,
+                        backgroundColor = Fill_Normal,
+                        contentPadding = PaddingValues(
+                            vertical = 12.dp,
+                            horizontal = 10.dp
+                        ),
+                        fontSize = AppTextStyles.Caption1.Bold.fontSize
+                    )
+
+                    CustomButton(
+                        onClick = {
+                            viewModel.clearQuizAnswers()
+                            viewModel.updateQuizStatus(QuizStatus.NONE)
+                        },
+                        text = "나가기",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.9f),
+                        borderColor = Line_Netural,
+                        textColor = Label_Alternative,
+                        backgroundColor = Fill_Normal,
+                        contentPadding = PaddingValues(
+                            vertical = 12.dp,
+                            horizontal = 10.dp
+                        ),
+                        fontSize = AppTextStyles.Caption1.Bold.fontSize
+                    )
+                }
             }
         }
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.padding(horizontal = 37.dp)
-    ) {
-        CustomButton(
-            onClick = {
-                coroutineScope.launch {
-                    val imageBitmap = captureController.captureAsync().await()
-                    val androidBitmap = imageBitmap.asAndroidBitmap()
-                    val imageUri = saveBitmapToCache(context, androidBitmap)
-
-                    imageUri?.let { uri ->
-                        shareToInstagramStory(context, uri)
-                    }
-                }
-            },
-            text = "스토리 업로드",
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.9f),
-            borderColor = Blue_Netural,
-            textColor = Blue_Netural,
-            backgroundColor = Fill_Normal,
-            contentPadding = PaddingValues(
-                vertical = 12.dp,
-                horizontal = 10.dp
-            ),
-            fontSize = AppTextStyles.Caption1.Bold.fontSize
-        )
-
-        CustomButton(
-            onClick = {
-                viewModel.clearQuizAnswers()
-                viewModel.updateQuizStatus(QuizStatus.NONE)
-            },
-            text = "나가기",
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.9f),
-            borderColor = Line_Netural,
-            textColor = Label_Alternative,
-            backgroundColor = Fill_Normal,
-            contentPadding = PaddingValues(
-                vertical = 12.dp,
-                horizontal = 10.dp
-            ),
-            fontSize = AppTextStyles.Caption1.Bold.fontSize
-        )
     }
 }
 
@@ -600,8 +630,16 @@ private fun shareToInstagramStory(context: Context, cardUri: Uri) {
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
-    context.grantUriPermission("com.instagram.android", cardUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    context.grantUriPermission("com.instagram.android", bgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    context.grantUriPermission(
+        "com.instagram.android",
+        cardUri,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION
+    )
+    context.grantUriPermission(
+        "com.instagram.android",
+        bgUri,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION
+    )
 
     if (instaIntent.resolveActivity(context.packageManager) != null) {
         context.startActivity(instaIntent)
@@ -611,9 +649,11 @@ private fun shareToInstagramStory(context: Context, cardUri: Uri) {
 }
 
 
-
 private fun redirectToPlayStoreForInstagram(context: Context) {
-    val appStoreIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"))
+    val appStoreIntent = Intent(
+        Intent.ACTION_VIEW,
+        "https://play.google.com/store/apps/details?id=com.instagram.android".toUri()
+    )
     appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(appStoreIntent)
 }
