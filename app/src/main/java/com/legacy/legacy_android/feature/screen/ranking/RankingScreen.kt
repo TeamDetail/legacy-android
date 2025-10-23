@@ -127,10 +127,14 @@ fun RankingScreen(
                 }
             }
             Column(modifier.offset(0.dp, (-120).dp)) {
-                RankingTable(
-                    modifier,
-                    rankingData = viewModel.uiState.rankingData ?: emptyList()
-                )
+                viewModel.uiState.rankingData?.size?.let {
+                    if (it > 3) {
+                        RankingTable(
+                            modifier,
+                            rankingData = viewModel.uiState.rankingData ?: emptyList()
+                        )
+                    }
+                }
             }
         }
     }

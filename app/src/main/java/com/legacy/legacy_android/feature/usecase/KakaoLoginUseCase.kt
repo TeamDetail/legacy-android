@@ -41,6 +41,8 @@ class KakaoLoginUseCase @Inject constructor(
                 response.data.refreshToken
             )
 
+            println(response.data.accessToken)
+
             try {
                 friendRepository.friendKakao(kakaoLogin.accessToken)
                 Log.d("LoginUseCase", "카카오 친구 추가 성공")

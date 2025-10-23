@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.dagger.hilt.android") version "2.52"
-    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.kapt")
     id("com.google.gms.google-services")
 }
 
@@ -13,24 +13,11 @@ android {
     namespace = "com.legacy.legacy_android"
     compileSdk = 35
 
-    // local.properties 로드
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localProperties.load(localPropertiesFile.inputStream())
-    }
-
-    val MAPS_API_KEY = localProperties.getProperty("MAPS_API_KEY") ?: ""
-    val KAKAO_API_KEY = localProperties.getProperty("KAKAO_API_KEY") ?: ""
-    val SERVER_API_KEY = localProperties.getProperty("SERVER_API_KEY") ?: ""
-    val ANDROID_WEBCLIENT_KEY = localProperties.getProperty("ANDROID_WEBCLIENT_KEY") ?: ""
-    val auth0Domain = localProperties.getProperty("AUTH0_DOMAIN") ?: ""
-    val auth0Scheme = localProperties.getProperty("AUTH0_SCHEME") ?: ""
-    val appleClientId = localProperties.getProperty("APPLE_CLIENT_ID") ?: ""
-    val appleKeyId = localProperties.getProperty("APPLE_KEY_ID") ?: ""
-    val appleTeamId = localProperties.getProperty("APPLE_TEAM_ID") ?: ""
-    val appleRedirectUrl = localProperties.getProperty("APPLE_REDIRECT_URL") ?: ""
-
+    // app/gradle.properties 또는 project gradle.properties에서 읽기
+    val mapsApiKey = project.findProperty("MAPS_API_KEY") as String? ?: ""
+    val kakaoApiKey = project.findProperty("KAKAO_API_KEY") as String? ?: ""
+    val serverApiKey = project.findProperty("SERVER_API_KEY") as String? ?: ""
+    val androidWebclientKey = project.findProperty("ANDROID_WEBCLIENT_KEY") as String? ?: ""
 
     defaultConfig {
         applicationId = "com.legacy.legacy_android"
@@ -41,27 +28,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // BuildConfigField
-        buildConfigField("String", "MAPS_API_KEY", "\"$MAPS_API_KEY\"")
-        buildConfigField("String", "KAKAO_API_KEY", "\"$KAKAO_API_KEY\"")
-        buildConfigField("String", "SERVER_API_KEY", "\"$SERVER_API_KEY\"")
-        buildConfigField("String", "ANDROID_WEBCLIENT_KEY", "\"$ANDROID_WEBCLIENT_KEY\"")
-        buildConfigField ("String", "APPLE_CLIENT_ID", "\"${localProperties.getProperty("APPLE_CLIENT_ID")}\"")
-        buildConfigField ("String", "APPLE_KEY_ID", "\"${localProperties.getProperty("APPLE_KEY_ID")}\"")
-        buildConfigField ("String", "APPLE_TEAM_ID", "\"${localProperties.getProperty("APPLE_TEAM_ID")}\"")
-        buildConfigField ("String", "APPLE_REDIRECT_URL", "\"${localProperties.getProperty("APPLE_REDIRECT_URL")}\"")
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
+        buildConfigField("String", "KAKAO_API_KEY", "\"$kakaoApiKey\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"$serverApiKey\"")
+        buildConfigField("String", "ANDROID_WEBCLIENT_KEY", "\"$androidWebclientKey\"")
 
         // Manifest placeholders
         manifestPlaceholders += mapOf(
-            "MAPS_API_KEY" to MAPS_API_KEY,
-            "KAKAO_API_KEY" to KAKAO_API_KEY,
-            "SERVER_API_KEY" to SERVER_API_KEY,
-            "ANDROID_WEBCLIENT_KEY" to ANDROID_WEBCLIENT_KEY,
-            "auth0Domain" to auth0Domain,
-            "auth0Scheme" to auth0Scheme,
-            "appleClientId" to appleClientId,
-            "appleKeyId" to appleKeyId,
-            "appleTeamId" to appleTeamId,
-            "appleRedirectUrl" to appleRedirectUrl
+            "MAPS_API_KEY" to mapsApiKey,
+            "KAKAO_API_KEY" to kakaoApiKey,
+            "SERVER_API_KEY" to serverApiKey,
+            "ANDROID_WEBCLIENT_KEY" to androidWebclientKey
         )
     }
 
@@ -99,7 +76,7 @@ android {
     }
 }
 
-
+// dependencies는 그대로 유지
 dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.foundation.layout)

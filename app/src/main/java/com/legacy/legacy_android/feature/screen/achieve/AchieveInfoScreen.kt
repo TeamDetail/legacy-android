@@ -163,7 +163,7 @@ fun AchieveInfoScreen(
                                     }
                                 )
                             ) {
-                                append(" #$achievementValueGrade")
+                                append("   #$achievementValueGrade")
                             }
                         },
                         style = AppTextStyles.Title3.medium,
@@ -176,6 +176,7 @@ fun AchieveInfoScreen(
                         color = Label_Alternative,
                     )
 
+                    Spacer(modifier = Modifier.height(12.dp))
                     // 목표 / 상태 / 달성자 비율
                     Column(
                         modifier = modifier.fillMaxWidth(0.9f),
