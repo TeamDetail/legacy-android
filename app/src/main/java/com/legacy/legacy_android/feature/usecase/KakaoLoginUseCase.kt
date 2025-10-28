@@ -24,9 +24,7 @@ class KakaoLoginUseCase @Inject constructor(
     suspend fun execute(context: Context): LoginResult {
         return try {
             val kakaoResult = kakaoLoginManager.login(context)
-            if (kakaoResult.isFailure) {
-                return LoginResult(false, kakaoResult.exceptionOrNull())
-            }
+            if (kakaoResult.isFailure) return LoginResult(false, kakaoResult.exceptionOrNull())
 
             val kakaoLogin = kakaoResult.getOrThrow()
             dataStoreManager.saveKakaoToken(kakaoLogin.accessToken)
@@ -35,13 +33,9 @@ class KakaoLoginUseCase @Inject constructor(
                 accessToken = kakaoLogin.accessToken,
                 refreshToken = kakaoLogin.refreshToken
             )
-            val response = loginService.login(request)
-            tokenRepository.saveTokens(
-                response.data.accessToken,
-                response.data.refreshToken
-            )
 
-            println(response.data.accessToken)
+            val response = loginService.login(request)
+            tokenRepository.saveTokens(response.data.accessToken, response.data.refreshToken)
 
             try {
                 friendRepository.friendKakao(kakaoLogin.accessToken)
@@ -57,4 +51,3 @@ class KakaoLoginUseCase @Inject constructor(
         }
     }
 }
-

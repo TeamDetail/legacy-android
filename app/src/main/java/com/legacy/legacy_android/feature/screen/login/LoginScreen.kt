@@ -1,19 +1,10 @@
 package com.legacy.legacy_android.feature.screen.login
 
-import android.util.Log
+import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,14 +14,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.legacy.legacy_android.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.legacy.legacy_android.R
 import com.legacy.legacy_android.res.component.button.LoginButton
-import com.legacy.legacy_android.ui.theme.AppTextStyles
-import com.legacy.legacy_android.ui.theme.Black
-import com.legacy.legacy_android.ui.theme.Label_Alternative
-import com.legacy.legacy_android.ui.theme.White
+import com.legacy.legacy_android.ui.theme.*
 
 @Composable
 fun LoginScreen(
@@ -38,18 +26,22 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
-
+    val activity = LocalContext.current as Activity
     val context = LocalContext.current
-    val activity = context as? android.app.Activity
 
+    // 뒤로가기 방지
     BackHandler(enabled = true) {}
+
     Box(modifier = modifier.fillMaxSize()) {
+        // 배경 이미지
         Image(
             modifier = modifier.fillMaxSize(),
             painter = painterResource(R.drawable.bg),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
         )
+
+        // 메인 콘텐츠
         Column(
             modifier = modifier
                 .align(Alignment.Center)
@@ -59,7 +51,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -74,24 +66,22 @@ fun LoginScreen(
                     style = AppTextStyles.Headline.medium
                 )
             }
+
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            )
-            {
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = "소셜 로그인하고 곧바로 뛰어드세요!",
                     style = AppTextStyles.Body2.bold
                 )
+
                 LoginButton(
                     onClick = {
                         if (!viewModel.loadingState.value) {
                             viewModel.loginWithKakao(
-                                context = context,
-                                navHostController = navHostController,
-                                onFailure = { error ->
-                                    Log.e("LoginScreen", "카카오 로그인 실패", error)
-                                }
+                                context = activity,
+                                navController = navHostController
                             )
                         }
                     },
@@ -101,27 +91,21 @@ fun LoginScreen(
                     color = Black,
                     viewModel = viewModel
                 )
+
                 LoginButton(
                     onClick = {
                         if (!viewModel.loadingState.value) {
-                            activity?.let {
-                                viewModel.loginWithGoogle(
-                                    activity = it, navHostController = navHostController,
-                                    onFailure = { error ->
-                                        Toast.makeText(
-                                            context,
-                                            "Google 로그인 실패: ${error.message}",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                )
-                            } ?: run {
-                                Toast.makeText(
-                                    context,
-                                    "Activity를 찾을 수 없습니다",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            viewModel.loginWithGoogle(
+                                activity = activity,
+                                navHostController = navHostController,
+                                onFailure = { error ->
+                                    Toast.makeText(
+                                        context,
+                                        "Google 로그인 실패: ${error.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            )
                         }
                     },
                     icon = painterResource(R.drawable.google),
@@ -133,13 +117,15 @@ fun LoginScreen(
             }
         }
     }
+
+    // 하단 서비스 약관 / 개인정보처리방침
     Column(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = modifier
-                .padding(bottom = 48.dp)
+            modifier = modifier.padding(bottom = 48.dp)
         ) {
             Text(
                 text = "서비스 약관",

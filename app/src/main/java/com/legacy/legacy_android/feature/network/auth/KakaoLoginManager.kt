@@ -6,11 +6,10 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.legacy.legacy_android.feature.network.login.LoginResponse
 import com.legacy.legacy_android.feature.network.login.TokenData
-import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 private const val TAG = "KakaoLoginManager"
 
@@ -32,7 +31,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
             token?.let {
                 ensureEmailPermission(context)
                 Result.success(TokenData(it.accessToken, it.refreshToken))
-            } ?: Result.failure(Exception("로그인 토큰을 받지 못했습니다"))
+            } ?: Result.failure(Exception("로그인 토큰을 받지 못했습니다."))
 
         } catch (e: Exception) {
             Log.e(TAG, "카카오 로그인 실패", e)
@@ -41,7 +40,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
     }
 
     private suspend fun loginWithKakaoTalk(context: Context): OAuthToken? {
-        return suspendCancellableCoroutine { continuation ->
+        return suspendCoroutine { continuation ->
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                 when {
                     error != null -> {
@@ -49,7 +48,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             continuation.resume(null)
                         } else {
-                            continuation.resume(null) // fallback to account login
+                            continuation.resume(null)
                         }
                     }
                     token != null -> {
@@ -63,7 +62,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
     }
 
     private suspend fun loginWithKakaoAccount(context: Context): OAuthToken? {
-        return suspendCancellableCoroutine { continuation ->
+        return suspendCoroutine { continuation ->
             UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
                 when {
                     error != null -> {
@@ -81,7 +80,7 @@ class KakaoLoginManagerImpl @Inject constructor() : KakaoLoginManager {
     }
 
     private suspend fun ensureEmailPermission(context: Context) {
-        suspendCancellableCoroutine { continuation ->
+        suspendCoroutine { continuation ->
             UserApiClient.instance.me { user, error ->
                 if (error != null) {
                     Log.e(TAG, "사용자 정보 요청 실패", error)

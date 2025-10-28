@@ -1,90 +1,123 @@
-import org.jetbrains.kotlin.konan.properties.Properties
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.kapt")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+}
+
+// local.properties 로드
+val localProps = rootProject.file("local.properties")
+val props = Properties().apply { load(localProps.inputStream()) }
+
+// 👇 keystore.properties 로드
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
     namespace = "com.legacy.legacy_android"
     compileSdk = 35
 
-    // app/gradle.properties 또는 project gradle.properties에서 읽기
-    val mapsApiKey = project.findProperty("MAPS_API_KEY") as String? ?: ""
-    val kakaoApiKey = project.findProperty("KAKAO_API_KEY") as String? ?: ""
-    val serverApiKey = project.findProperty("SERVER_API_KEY") as String? ?: ""
-    val androidWebclientKey = project.findProperty("ANDROID_WEBCLIENT_KEY") as String? ?: ""
-
     defaultConfig {
         applicationId = "com.legacy.legacy_android"
-        minSdk = 28
+        minSdk = 24
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        versionCode = 11
+        versionName = "1.0.4"
+        multiDexEnabled = true
 
-        // BuildConfigField
-        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
-        buildConfigField("String", "KAKAO_API_KEY", "\"$kakaoApiKey\"")
-        buildConfigField("String", "SERVER_API_KEY", "\"$serverApiKey\"")
-        buildConfigField("String", "ANDROID_WEBCLIENT_KEY", "\"$androidWebclientKey\"")
+        buildConfigField("String", "MAPS_API_KEY", "\"${props.getProperty("MAPS_API_KEY", "")}\"")
+        buildConfigField("String", "KAKAO_API_KEY", "\"${props.getProperty("KAKAO_API_KEY", "")}\"")
+        buildConfigField("String", "GOOGLE_WEBCLIENT_KEY", "\"${props.getProperty("ANDROID_WEBCLIENT_KEY", "")}\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"${props.getProperty("SERVER_API_KEY", "")}\"")
 
-        // Manifest placeholders
-        manifestPlaceholders += mapOf(
-            "MAPS_API_KEY" to mapsApiKey,
-            "KAKAO_API_KEY" to kakaoApiKey,
-            "SERVER_API_KEY" to serverApiKey,
-            "ANDROID_WEBCLIENT_KEY" to androidWebclientKey
-        )
+        manifestPlaceholders["MAPS_API_KEY"] = props.getProperty("MAPS_API_KEY", "")
+        manifestPlaceholders["KAKAO_API_KEY"] = props.getProperty("KAKAO_API_KEY", "")
+        manifestPlaceholders["GOOGLE_WEBCLIENT_KEY"] = props.getProperty("ANDROID_WEBCLIENT_KEY", "")
+        manifestPlaceholders["SERVER_API_KEY"] = props.getProperty("SERVER_API_KEY", "")
+    }
+
+    // 👇 서명 설정
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+            }
+        }
     }
 
     buildTypes {
+        debug {
+            isDebuggable = true
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")  // 👈 릴리즈 서명 적용
         }
     }
 
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlin.RequiresOptIn"
-        )
-        freeCompilerArgs += listOf(
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_metrics",
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.buildDir.absolutePath}/compose_metrics"
-        )
+        jvmTarget = "17"
     }
 
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/NOTICE",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE.txt"
+            )
+        }
+    }
 }
 
-// dependencies는 그대로 유지
 dependencies {
-    implementation(libs.androidx.compose.ui.util)
-    implementation(libs.androidx.compose.foundation.layout)
+    // ... 기존 dependencies 그대로 ...
+}
+
+dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
+    val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
 
-    // Kotlin Immutable Collections
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
+    // Google Credential Manager
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
@@ -92,18 +125,21 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-process:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Room
     implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
-    // Kakao SDK (v2-all만 사용)
+    kapt("androidx.room:room-compiler:$room_version")
+
+    // Kakao SDK
     implementation("com.kakao.sdk:v2-all:2.20.1")
 
     // DataStore
@@ -115,59 +151,42 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    // Compose - 👇 BOM을 먼저 선언하고 모든 Compose 라이브러리에 적용
+    implementation(composeBom)
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.foundation:foundation")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
     // Accompanist
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.0")
-    implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
     implementation("com.google.accompanist:accompanist-pager:0.36.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
 
-    // Glide / Coil
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    // Capturable
+    implementation("dev.shreyaspatil:capturable:2.1.0")
 
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
-
-
-    // Navigation Compose
+    // Navigation
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    // Coroutines + Play Services
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    // Google OAuth
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
-    // Credentials & Google Identity
-    implementation("com.auth0.android:auth0:2.1.0")
-    implementation("androidx.credentials:credentials:1.2.2")
-    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.compose.material3:material3:1.3.0")
-
-    // Maps & Location
-    implementation("com.google.maps.android:maps-compose:4.2.0")
+    // Google Maps - 👇 BOM 강제 적용
+    implementation("com.google.maps.android:maps-compose:4.2.0") {
+        exclude(group = "androidx.compose", module = "compose-bom")
+    }
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // Security
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // Image Loading
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
-    // Captureable
-    implementation("dev.shreyaspatil:capturable:2.1.0")
-
-    // Compose (BOM 사용)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    // Tests
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

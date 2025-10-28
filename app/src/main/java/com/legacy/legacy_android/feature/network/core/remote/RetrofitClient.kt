@@ -81,8 +81,4 @@ object LegacyRetrofitClient {
             .build()
     }
 
-    private fun getRetrofit(): Retrofit {
-        return retrofit ?: throw IllegalStateException("BeepRetrofitClient is not initialized")
-    }
-
 }

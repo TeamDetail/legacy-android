@@ -19,7 +19,7 @@ class GoogleSignInRepositoryImpl @Inject constructor(
         return try {
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.ANDROID_WEBCLIENT_KEY)
+                .setServerClientId(BuildConfig.GOOGLE_WEBCLIENT_KEY)
                 .setAutoSelectEnabled(true)
                 .build()
 

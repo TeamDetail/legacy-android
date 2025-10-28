@@ -15,7 +15,9 @@ import com.legacy.legacy_android.feature.network.Nav
 import com.legacy.legacy_android.feature.usecase.GoogleLoginUseCase
 import com.legacy.legacy_android.feature.usecase.KakaoLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,63 +39,6 @@ class LoginViewModel @Inject constructor(
 
     val context: Context = application.applicationContext
 
-    fun fetchProfile(){
-        viewModelScope.launch {
-            userRepository.clearProfile()
-            userRepository.fetchProfile()
-        }
-    }
-
-    fun loginWithGoogle(
-        activity: Activity,
-        navHostController: NavHostController,
-        onFailure: (Throwable) -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                loadingState.value = true
-                val result = googleLoginUseCase.execute(activity)
-                if (result.isSuccess) {
-                    fetchProfile()
-                    Log.d(TAG, "Google 로그인 성공")
-                    navigateToHome(navHostController)
-                } else {
-                    Log.d(TAG, "Google 로그인 실패")
-                    result.error?.let { onFailure(it) }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Google 로그인 처리 중 오류", e)
-                onFailure(e)
-            } finally {
-                loadingState.value = false
-            }
-        }
-    }
-
-    fun loginWithKakao(
-        context: Context,
-        navHostController: NavHostController,
-        onFailure: (Throwable) -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                loadingState.value = true
-                val result = kakaoLoginUseCase.execute(context)
-                if (result.isSuccess) {
-                    fetchProfile()
-                    navigateToHome(navHostController)
-                } else {
-                    result.error?.let { onFailure(it) }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "카카오 로그인 처리 중 오류", e)
-                onFailure(e)
-            } finally {
-                loadingState.value = false
-            }
-        }
-    }
-
     private suspend fun navigateToHome(navHostController: NavHostController) {
         withContext(Dispatchers.Main) {
             try {
@@ -109,6 +54,67 @@ class LoginViewModel @Inject constructor(
                 }
             } catch (navError: Exception) {
                 Log.e(TAG, "로그인 화면 전환 중 오류", navError)
+            }
+        }
+    }
+
+    fun fetchProfile() {
+        viewModelScope.launch {
+            userRepository.clearProfile()
+            userRepository.fetchProfile()
+        }
+    }
+
+    fun loginWithGoogle(
+        activity: Activity,
+        navHostController: NavHostController,
+        onFailure: (Throwable) -> Unit
+    ) {
+        if (loadingState.value) return
+        viewModelScope.launch {
+            try {
+                loadingState.value = true
+                val result = googleLoginUseCase.execute(activity)
+                if (result.isSuccess) {
+                    fetchProfile()
+                    Log.d(TAG, "Google 로그인 성공")
+                    navigateToHome(navHostController)
+                } else {
+                    Log.d(TAG, "Google 로그인 실패")
+                    result.error?.let { onFailure(it) }
+                }
+            } catch (e: Exception) {
+                if (e is CancellationException) {
+                    Log.w(TAG, "Google 로그인 취소됨(자연스러운 취소)")
+                    return@launch
+                }
+                Log.e(TAG, "Google 로그인 처리 중 오류", e)
+                onFailure(e)
+            } finally {
+                loadingState.value = false
+            }
+        }
+    }
+
+    fun loginWithKakao(context: Context, navController: NavHostController) {
+        viewModelScope.launch {
+            try {
+                loadingState.value = true
+                val tokenResult = kakaoLoginUseCase.execute(context)
+
+                if (tokenResult.isSuccess) {
+                    fetchProfile()
+                    navigateToHome(navController)
+                } else {
+                    Log.e(TAG, "카카오 로그인 실패: ${tokenResult.error?.message}")
+                }
+            } catch (e: CancellationException) {
+                Log.w(TAG, "카카오 로그인 취소 또는 화면 종료 (정상 흐름)")
+                return@launch
+            } catch (e: Exception) {
+                Log.e(TAG, "카카오 로그인 중 예외 발생", e)
+            } finally {
+                loadingState.value = false
             }
         }
     }
