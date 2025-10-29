@@ -76,9 +76,8 @@ object LegacyRetrofitClient {
         retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.SERVER_API_KEY)
             .client(client)
-            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(ScalarsConverterFactory.create())
             .build()
     }
-
 }

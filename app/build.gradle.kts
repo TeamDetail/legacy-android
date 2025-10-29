@@ -29,8 +29,8 @@ android {
         applicationId = "com.legacy.legacy_android"
         minSdk = 24
         targetSdk = 35
-        versionCode = 11
-        versionName = "1.0.4"
+        versionCode = 15
+        versionName = "1.0.5"
         multiDexEnabled = true
 
         buildConfigField("String", "MAPS_API_KEY", "\"${props.getProperty("MAPS_API_KEY", "")}\"")
@@ -67,7 +67,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")  // 👈 릴리즈 서명 적용
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

@@ -37,12 +37,12 @@ class GoogleLoginUseCase @Inject constructor(
 
             val response = loginService.googleLogin(request)
 
-            Log.d("GoogleLogin", "서버 응답 성공: ${response.data}")
+            Log.d("GoogleLogin", "서버 응답 성공: ${response}")
 
             // 토큰 저장
             tokenRepository.saveTokens(
-                response.data.accessToken,
-                response.data.refreshToken
+                response.data?.accessToken ?: "",
+                response.data?.refreshToken ?: ""
             )
 
             Log.d("GoogleLoginUseCase", "구글 로그인 성공")

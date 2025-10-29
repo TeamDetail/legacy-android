@@ -3,11 +3,13 @@ package com.legacy.legacy_android
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
@@ -62,6 +64,7 @@ import com.legacy.legacy_android.feature.screen.setting.SettingScreen
 import com.legacy.legacy_android.feature.screen.setting.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
 import javax.inject.Inject
 
 enum class ScreenNavigate {
@@ -128,6 +131,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        printKeyHash()
+
         // Retrofit 초기화
         RetrofitClient.init(this)
 
@@ -159,22 +164,26 @@ class MainActivity : AppCompatActivity() {
                     route = "course_graph"
                 ) {
                     composable(ScreenNavigate.COURSE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
                         val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
                         CourseScreen(Modifier, courseViewModel, navController)
                     }
                     composable(ScreenNavigate.COURSE_CATEGORY.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
                         val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
                         CourseCategory(Modifier, courseViewModel, navController)
                     }
                     composable(ScreenNavigate.CREATE_COURSE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
                         val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
                         CreateCourse(Modifier, courseViewModel, navController)
                     }
                     composable(ScreenNavigate.COURSE_INFO.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("course_graph") }
                         val courseViewModel: CourseViewModel = hiltViewModel(parentEntry)
                         CourseInfo(Modifier, courseViewModel, navController)
                     }
@@ -186,12 +195,14 @@ class MainActivity : AppCompatActivity() {
                     route = "profile_graph"
                 ) {
                     composable(ScreenNavigate.PROFILE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
                         val profileViewModel: ProfileViewModel = hiltViewModel(parentEntry)
                         ProfileScreen(Modifier, profileViewModel, navController)
                     }
                     composable(ScreenNavigate.PROFILE_EDIT.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("profile_graph") }
                         val profileViewModel: ProfileViewModel = hiltViewModel(parentEntry)
                         ProfileEditScreen(Modifier, profileViewModel, navController)
                     }
@@ -201,14 +212,16 @@ class MainActivity : AppCompatActivity() {
                 navigation(
                     startDestination = ScreenNavigate.ACHIEVE.name,
                     route = "achieve_graph"
-                ){
+                ) {
                     composable(ScreenNavigate.ACHIEVE.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
                         val achieveViewModel: AchieveViewModel = hiltViewModel(parentEntry)
                         AchieveScreen(Modifier, achieveViewModel, navController)
                     }
                     composable(ScreenNavigate.ACHIEVE_INFO.name) { backStackEntry ->
-                        val parentEntry = remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
+                        val parentEntry =
+                            remember(backStackEntry) { navController.getBackStackEntry("achieve_graph") }
                         val achieveViewModel: AchieveViewModel = hiltViewModel(parentEntry)
                         AchieveInfoScreen(Modifier, achieveViewModel, navController)
                     }
@@ -223,7 +236,13 @@ class MainActivity : AppCompatActivity() {
                     val homeViewModel: HomeViewModel = hiltViewModel(backStackEntry)
                     val profileViewModel: ProfileViewModel = hiltViewModel(backStackEntry)
                     val locationViewModel: LocationViewModel = hiltViewModel(backStackEntry)
-                    HomeScreen(Modifier, homeViewModel, profileViewModel, locationViewModel, navController)
+                    HomeScreen(
+                        Modifier,
+                        homeViewModel,
+                        profileViewModel,
+                        locationViewModel,
+                        navController
+                    )
                 }
                 composable(ScreenNavigate.MARKET.name) {
                     val marketViewModel: MarketViewModel = hiltViewModel()
@@ -375,6 +394,50 @@ class MainActivity : AppCompatActivity() {
             soundPool.release()
         } catch (e: Exception) {
             Log.e("MainActivity", "리소스 해제 중 오류 발생: ${e.message}")
+        }
+    }
+
+    private fun printKeyHash() {
+        try {
+            val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNING_CERTIFICATES
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNATURES
+                )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info.signingInfo?.let { signingInfo ->
+                    val signatures = if (signingInfo.hasMultipleSigners()) {
+                        signingInfo.apkContentsSigners
+                    } else {
+                        signingInfo.signingCertificateHistory
+                    }
+
+                    signatures?.forEach { signature ->
+                        val md = MessageDigest.getInstance("SHA")
+                        md.update(signature.toByteArray())
+                        val keyHash = Base64.encodeToString(md.digest(), Base64.NO_WRAP)
+                        Log.e("KAKAO_KEYHASH", "★★★ Current KeyHash: $keyHash ★★★")
+                    }
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                info.signatures?.forEach { signature ->
+                    val md = MessageDigest.getInstance("SHA")
+                    md.update(signature.toByteArray())
+                    val keyHash = Base64.encodeToString(md.digest(), Base64.NO_WRAP)
+                    Log.e("KAKAO_KEYHASH", "★★★ Current KeyHash: $keyHash ★★★")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("KAKAO_KEYHASH", "키 해시 생성 실패: ${e.message}", e)
         }
     }
 }

@@ -35,7 +35,7 @@ class KakaoLoginUseCase @Inject constructor(
             )
 
             val response = loginService.login(request)
-            tokenRepository.saveTokens(response.data.accessToken, response.data.refreshToken)
+            tokenRepository.saveTokens(response.data?.accessToken ?: "", response.data?.refreshToken ?: "")
 
             try {
                 friendRepository.friendKakao(kakaoLogin.accessToken)
