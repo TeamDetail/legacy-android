@@ -49,6 +49,7 @@ import com.legacy.legacy_android.res.component.adventure.PolygonStyle
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
 import com.legacy.legacy_android.res.component.modal.CreditModal
+import com.legacy.legacy_android.res.component.modal.InfoModal
 import com.legacy.legacy_android.res.component.modal.mail.MailModal
 import com.legacy.legacy_android.res.component.modal.QuizModal
 import com.legacy.legacy_android.res.component.modal.RateModal
@@ -218,9 +219,6 @@ fun HomeScreen(
                 }
             }
         }
-
-        if (overlapping.isNotEmpty()) {
-        }
     }
 
     Box(
@@ -229,304 +227,311 @@ fun HomeScreen(
         if (viewModel.uiState.isMailOpen) {
             MailModal(onMailClick = { show -> viewModel.updateIsMailOpen(false) })
         }
-        if (viewModel.uiState.isCheckOpen){
-            CheckModal(onCheckClick = { show -> viewModel.updateIsCheckOpen(false)})
+        if (viewModel.uiState.isCheckOpen) {
+            CheckModal(onCheckClick = { show -> viewModel.updateIsCheckOpen(false) })
         }
         if (viewModel.uiState.isCommentModalOpen) {
             RateModal(viewModel)
         }
+        if (viewModel.uiState.isInfoOpen) {
+            InfoModal({ show -> viewModel.updateIsInfoOpen(false) })
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .absoluteOffset(0.dp, 10.dp)
-                .zIndex(5f)
-        ) {
-            InfoBar(
-                navHostController,
-                onMailClick = { show -> viewModel.updateIsMailOpen(true) },
-                onCheckClick = {show -> viewModel.updateIsCheckOpen(true)}
-            )
-        }
-
-        if (!mapLoaded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(1500f)
-                    .background(Black.copy(alpha = 0.75f))
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { },
-                contentAlignment = Alignment.Center
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .absoluteOffset(0.dp, 10.dp)
+                    .zIndex(5f)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    var scale by remember { mutableFloatStateOf(1f) }
+                InfoBar(
+                    navHostController,
+                    onMailClick = { show -> viewModel.updateIsMailOpen(true) },
+                    onCheckClick = { show -> viewModel.updateIsCheckOpen(true) },
+                    onInfoClick = { show -> viewModel.updateIsInfoOpen(true) }
+                )
+            }
 
-                    LaunchedEffect(Unit) {
-                        while (true) {
-                            scale = 1.2f
-                            delay(300)
-                            scale = 1f
-                            delay(300)
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+            if (!mapLoaded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(1500f)
+                        .background(Black.copy(alpha = 0.75f))
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        repeat(3) {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .scale(scale)
-                                    .background(Primary, shape = CircleShape)
+                        var scale by remember { mutableFloatStateOf(1f) }
+
+                        LaunchedEffect(Unit) {
+                            while (true) {
+                                scale = 1.2f
+                                delay(300)
+                                scale = 1f
+                                delay(300)
+                            }
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            repeat(3) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .scale(scale)
+                                        .background(Primary, shape = CircleShape)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = "지도를 불러오는 중...",
+                            color = Label,
+                            style = AppTextStyles.Caption1.Bold,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+            }
+
+            if (viewModel.uiState.quizStatus != QuizStatus.NONE) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .fillMaxSize()
+                        .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
+                        .zIndex(500f)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {}
+                ) {
+                    QuizBox(
+                        data = viewModel.uiState.quizData ?: emptyList(),
+                        quizStatus = viewModel.uiState.quizStatus,
+                        viewModel = viewModel,
+                        ruin = viewModel.uiState.selectedRuinsDetail
+                    )
+                    if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
+                        CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {
+                            viewModel.loadHint(quizId = viewModel.uiState.quizData!![viewModel.uiState.quizNum.value].quizId)
+                        }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
+                    } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
+                        QuizModal(
+                            hint = viewModel.uiState.hintData[viewModel.uiState.quizNum.value],
+                            onConfirm = { viewModel.updateHintStatus(HintStatus.NO) }
+                        )
+                    }
+                }
+            }
+
+            IconButton(
+                onClick = {
+                    currentLocation?.let {
+                        coroutineScope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(it.latitude, it.longitude),
+                                    18f
+                                ),
+                                durationMs = 500
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "지도를 불러오는 중...",
-                        color = Label,
-                        style = AppTextStyles.Caption1.Bold,
-                        fontSize = 20.sp
-                    )
-                }
-            }
-        }
-
-        if (viewModel.uiState.quizStatus != QuizStatus.NONE) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .fillMaxSize()
-                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
-                    .zIndex(500f)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {}
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .zIndex(50f)
+                    .padding(start = 12.dp, top = 120.dp)
+                    .size(48.dp)
+                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
             ) {
-                QuizBox(
-                    data = viewModel.uiState.quizData ?: emptyList(),
-                    quizStatus = viewModel.uiState.quizStatus,
-                    viewModel = viewModel,
-                    ruin = viewModel.uiState.selectedRuinsDetail
+                Icon(
+                    imageVector = Icons.Default.Place,
+                    contentDescription = "내 위치로 이동",
+                    tint = White
                 )
-                if (viewModel.uiState.hintStatus == HintStatus.CREDIT) {
-                    CreditModal(title = "정말 힌트를 확인하시겠습니까?", credit = 300, onConfirm = {
-                        viewModel.loadHint(quizId = viewModel.uiState.quizData!![viewModel.uiState.quizNum.value].quizId)
-                    }, onDismiss = { viewModel.updateHintStatus(HintStatus.NO) })
-                } else if (viewModel.uiState.hintStatus == HintStatus.HINT) {
-                    QuizModal(
-                        hint = viewModel.uiState.hintData[viewModel.uiState.quizNum.value],
-                        onConfirm = { viewModel.updateHintStatus(HintStatus.NO) }
-                    )
-                }
             }
-        }
 
-        IconButton(
-            onClick = {
-                currentLocation?.let {
-                    coroutineScope.launch {
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(it.latitude, it.longitude),
-                                18f
-                            ),
-                            durationMs = 500
+            IconButton(
+                onClick = {
+                    viewModel.updateSearchStatus(true)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .zIndex(50f)
+                    .padding(start = 72.dp, top = 120.dp)
+                    .size(48.dp)
+                    .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "내 위치로 이동",
+                    tint = White
+                )
+            }
+
+            AnimatedVisibility(
+                visible = showWarning,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 12.dp, top = 180.dp)
+                    .zIndex(50f)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Red_Netural.copy(alpha = 0.75f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "info",
+                            tint = Color.White
+                        )
+                        Text(
+                            text = "데이터를 불러오려면\n지도를 더 확대시켜주세요.",
+                            style = AppTextStyles.Caption2.Bold,
+                            color = Color.White
                         )
                     }
                 }
-            },
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .zIndex(50f)
-                .padding(start = 12.dp, top = 120.dp)
-                .size(48.dp)
-                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-        ) {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "내 위치로 이동",
-                tint = White
-            )
-        }
+            }
 
-        IconButton(
-            onClick = {
-                viewModel.updateSearchStatus(true)
-            },
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .zIndex(50f)
-                .padding(start = 72.dp, top = 120.dp)
-                .size(48.dp)
-                .background(Fill_Normal, shape = RoundedCornerShape(12.dp))
-        ) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "내 위치로 이동",
-                tint = White
-            )
-        }
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                onMapLoaded = { viewModel.setMapLoaded() },
+                onMapClick = {
+                    viewModel.updateSelectedId(emptyList())
+                    viewModel.fetchRuinsDetail(emptyList())
+                    viewModel.initRuinsDetail()
+                    viewModel.updateIsCommenting(false)
+                },
+                properties = MapProperties(
+                    isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
+                    minZoomPreference = 8f,
+                    mapStyleOptions = MapStyle().mapStyle
+                ),
+                uiSettings = MapUiSettings(
+                    myLocationButtonEnabled = false,
+                    zoomControlsEnabled = false,
+                    compassEnabled = false
+                )
+            ) {
+                val zoom = cameraPositionState.position.zoom
+                if (zoom >= 14f) {
+                    val mapBounds = viewModel.uiState.mapBounds
 
-        AnimatedVisibility(
-            visible = showWarning,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(start = 12.dp, top = 180.dp)
-                .zIndex(50f)
-        ) {
+                    val visibleRuins = remember(ruins, mapBounds) {
+                        ruins.filter { ruin ->
+                            ruin.latitude in mapBounds.minLat..mapBounds.maxLat &&
+                                    ruin.longitude in mapBounds.minLng..mapBounds.maxLng
+                        }
+                    }
+
+                    val groupedRuins = remember(visibleRuins) {
+                        visibleRuins.groupBy { "${it.latitude}_${it.longitude}" }
+                    }
+
+                    val visibleBlocks = remember(blocks, mapBounds) {
+                        blocks.filter { block ->
+                            block.latitude in mapBounds.minLat..mapBounds.maxLat &&
+                                    block.longitude in mapBounds.minLng..mapBounds.maxLng
+                        }
+                    }
+
+                    groupedRuins.forEach { (location, ruinsAtLocation) ->
+                        key(location) {
+                            val mainRuin = ruinsAtLocation.first()
+                            Polygon(
+                                zIndex = 55f,
+                                tag = mainRuin.ruinsId,
+                                points = remember(mainRuin.ruinsId) {
+                                    PolygonCache.getPoints(mainRuin.latitude, mainRuin.longitude)
+                                },
+                                strokeColor = RUIN_STROKE_COLOR,
+                                strokeWidth = if (ruinsAtLocation.size > 1) 2f else 1f,
+                                fillColor = RUIN_FILL_COLOR,
+                                clickable = true,
+                                onClick = {
+                                    viewModel.initRuinsDetail()
+                                    val ids = ruinsAtLocation.map { it.ruinsId }
+                                    viewModel.updateSelectedId(ids)
+                                    viewModel.fetchRuinsDetail(ids)
+                                }
+                            )
+                        }
+                    }
+
+                    visibleBlocks.forEachIndexed { index, block ->
+                        key(block.blockId) {
+                            Polygon(
+                                zIndex = (56f + index * 0.01f),
+                                tag = block.blockId,
+                                points = remember(block.blockId) {
+                                    PolygonCache.getPoints(block.latitude, block.longitude)
+                                },
+                                strokeWidth = 1f,
+                                strokeColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_STROKE_COLOR else SPECIAL_BLOCK_STROKE_COLOR,
+                                fillColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_FILL_COLOR else SPECIAL_BLOCK_FILL_COLOR
+                            )
+                        }
+                    }
+                }
+            }
+
             Box(
                 modifier = Modifier
-                    .background(Red_Netural.copy(alpha = 0.75f), shape = RoundedCornerShape(12.dp))
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .align(Alignment.BottomCenter)
+                    .padding(vertical = 40.dp, horizontal = 12.dp)
+                    .zIndex(7f)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                if (viewModel.uiState.selectedId.isNotEmpty()
+                    && !viewModel.uiState.isCommenting
+                    && viewModel.uiState.quizStatus == QuizStatus.NONE
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "info",
-                        tint = Color.White
+                    AdventureInfo(
+                        data = viewModel.uiState.ruinsDetail,
+                        viewModel = viewModel
                     )
-                    Text(
-                        text = "데이터를 불러오려면\n지도를 더 확대시켜주세요.",
-                        style = AppTextStyles.Caption2.Bold,
-                        color = Color.White
-                    )
+                } else if (viewModel.uiState.selectedId.isNotEmpty() && viewModel.uiState.isCommenting) {
+                    CommentModal(viewModel)
+                } else {
+                    NavBar(navHostController = navHostController)
                 }
             }
-        }
 
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            onMapLoaded = { viewModel.setMapLoaded() },
-            onMapClick = {
-                viewModel.updateSelectedId(emptyList())
-                viewModel.fetchRuinsDetail(emptyList())
-                viewModel.initRuinsDetail()
-                viewModel.updateIsCommenting(false)
-            },
-            properties = MapProperties(
-                isMyLocationEnabled = allRequiredPermission && locationPermissionState.status.isGranted,
-                minZoomPreference = 8f,
-                mapStyleOptions = MapStyle().mapStyle
-            ),
-            uiSettings = MapUiSettings(
-                myLocationButtonEnabled = false,
-                zoomControlsEnabled = false,
-                compassEnabled = false
-            )
-        ) {
-            val zoom = cameraPositionState.position.zoom
-            if (zoom >= 14f) {
-                val mapBounds = viewModel.uiState.mapBounds
-
-                val visibleRuins = remember(ruins, mapBounds) {
-                    ruins.filter { ruin ->
-                        ruin.latitude in mapBounds.minLat..mapBounds.maxLat &&
-                                ruin.longitude in mapBounds.minLng..mapBounds.maxLng
-                    }
+            if (viewModel.uiState.isSearchRuinOpen) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = modifier
+                        .fillMaxSize()
+                        .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
+                        .zIndex(500f)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {}
+                ) {
+                    RuinSearchModal(viewModel, cameraPositionState)
                 }
-
-                val groupedRuins = remember(visibleRuins) {
-                    visibleRuins.groupBy { "${it.latitude}_${it.longitude}" }
-                }
-
-                val visibleBlocks = remember(blocks, mapBounds) {
-                    blocks.filter { block ->
-                        block.latitude in mapBounds.minLat..mapBounds.maxLat &&
-                                block.longitude in mapBounds.minLng..mapBounds.maxLng
-                    }
-                }
-
-                groupedRuins.forEach { (location, ruinsAtLocation) ->
-                    key(location) {
-                        val mainRuin = ruinsAtLocation.first()
-                        Polygon(
-                            zIndex = 55f,
-                            tag = mainRuin.ruinsId,
-                            points = remember(mainRuin.ruinsId) {
-                                PolygonCache.getPoints(mainRuin.latitude, mainRuin.longitude)
-                            },
-                            strokeColor = RUIN_STROKE_COLOR,
-                            strokeWidth = if (ruinsAtLocation.size > 1) 2f else 1f,
-                            fillColor = RUIN_FILL_COLOR,
-                            clickable = true,
-                            onClick = {
-                                viewModel.initRuinsDetail()
-                                val ids = ruinsAtLocation.map { it.ruinsId }
-                                viewModel.updateSelectedId(ids)
-                                viewModel.fetchRuinsDetail(ids)
-                            }
-                        )
-                    }
-                }
-
-                visibleBlocks.forEachIndexed { index, block ->
-                    key(block.blockId) {
-                        Polygon(
-                            zIndex = (56f + index * 0.01f),
-                            tag = block.blockId,
-                            points = remember(block.blockId) {
-                                PolygonCache.getPoints(block.latitude, block.longitude)
-                            },
-                            strokeWidth = 1f,
-                            strokeColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_STROKE_COLOR else SPECIAL_BLOCK_STROKE_COLOR,
-                            fillColor = if (block.blockType == "NORMAL") NORMAL_BLOCK_FILL_COLOR else SPECIAL_BLOCK_FILL_COLOR
-                        )
-                    }
-                }
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(vertical = 40.dp, horizontal = 12.dp)
-                .zIndex(7f)
-        ) {
-            if (viewModel.uiState.selectedId.isNotEmpty()
-                && !viewModel.uiState.isCommenting
-                && viewModel.uiState.quizStatus == QuizStatus.NONE
-            ) {
-                AdventureInfo(
-                    data = viewModel.uiState.ruinsDetail,
-                    viewModel = viewModel
-                )
-            } else if (viewModel.uiState.selectedId.isNotEmpty() && viewModel.uiState.isCommenting) {
-                CommentModal(viewModel)
-            } else {
-                NavBar(navHostController = navHostController)
-            }
-        }
-
-        if (viewModel.uiState.isSearchRuinOpen) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(color = Color(0xFF2A2B2C).copy(alpha = 0.75f))
-                    .zIndex(500f)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {}
-            ) {
-                RuinSearchModal(viewModel, cameraPositionState)
             }
         }
     }

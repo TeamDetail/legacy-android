@@ -2,6 +2,7 @@ package com.legacy.legacy_android.feature.network.auth
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -12,7 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class GoogleSignInRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val appContext: Context
 ) : GoogleSignInRepository {
 
     override suspend fun signIn(activity: Activity): Result<Credential> {
@@ -20,14 +21,13 @@ class GoogleSignInRepositoryImpl @Inject constructor(
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(BuildConfig.GOOGLE_WEBCLIENT_KEY)
-                .setAutoSelectEnabled(true)
                 .build()
 
             val request = GetCredentialRequest.Builder()
                 .addCredentialOption(googleIdOption)
                 .build()
 
-            val credentialManager = CredentialManager.create(context)
+            val credentialManager = CredentialManager.create(activity)
             val result = credentialManager.getCredential(
                 request = request,
                 context = activity
@@ -35,6 +35,7 @@ class GoogleSignInRepositoryImpl @Inject constructor(
 
             Result.success(result.credential)
         } catch (e: Exception) {
+            Log.e("GoogleLogin", "Google 로그인 실패", e)
             Result.failure(e)
         }
     }

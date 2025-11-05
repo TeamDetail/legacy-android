@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,7 @@ fun LoginScreen(
 ) {
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
+    val showDialog by viewModel.showLoginErrorDialog
 
     // 뒤로가기 방지
     BackHandler(enabled = true) {}
@@ -40,6 +42,25 @@ fun LoginScreen(
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
         )
+        if (showDialog) {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { viewModel.dismissLoginErrorDialog() },
+                confirmButton = {
+                    androidx.compose.material3.TextButton(
+                        onClick = { viewModel.dismissLoginErrorDialog() }
+                    ) {
+                        androidx.compose.material3.Text("확인")
+                    }
+                },
+                title = { androidx.compose.material3.Text("로그인 실패") },
+                text = {
+                    androidx.compose.material3.Text(
+                        "Google 로그인에 실패했습니다.\n계정이 연결되어 있는지 확인해주세요."
+                    )
+                }
+            )
+        }
+
 
         // 메인 콘텐츠
         Column(

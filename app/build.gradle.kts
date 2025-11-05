@@ -29,8 +29,8 @@ android {
         applicationId = "com.legacy.legacy_android"
         minSdk = 24
         targetSdk = 35
-        versionCode = 15
-        versionName = "1.0.5"
+        versionCode = 16
+        versionName = "1.0.6"
         multiDexEnabled = true
 
         buildConfigField("String", "MAPS_API_KEY", "\"${props.getProperty("MAPS_API_KEY", "")}\"")
@@ -79,6 +79,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -150,6 +152,8 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // Compose - 👇 BOM을 먼저 선언하고 모든 Compose 라이브러리에 적용
     implementation(composeBom)

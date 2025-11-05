@@ -33,7 +33,8 @@ import java.util.*
 fun InfoBar(
     navHostController: NavHostController,
     onMailClick: (Boolean) -> Unit,
-    onCheckClick: (Boolean) -> Unit
+    onCheckClick: (Boolean) -> Unit,
+    onInfoClick: (Boolean) -> Unit
 ) {
     val viewModel: InfoBarViewModel = hiltViewModel()
     val profile by viewModel.profileFlow.collectAsState()
@@ -202,7 +203,8 @@ fun InfoBar(
                             viewModel.setIsTabClicked()
                         },
                         onMailClick = { show -> onMailClick(show) },
-                        onCheckClick = {show -> onCheckClick(show)}
+                        onCheckClick = {show -> onCheckClick(show)},
+                        onInfoClick = {show -> onInfoClick(show)}
                     )
                 }
             }

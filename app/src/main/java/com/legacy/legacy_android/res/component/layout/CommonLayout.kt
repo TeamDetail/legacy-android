@@ -24,6 +24,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.legacy.legacy_android.res.component.bars.NavBar
 import com.legacy.legacy_android.res.component.bars.infobar.InfoBar
+import com.legacy.legacy_android.res.component.modal.InfoModal
 import com.legacy.legacy_android.res.component.modal.check.CheckModal
 import com.legacy.legacy_android.res.component.modal.mail.MailModal
 import com.legacy.legacy_android.ui.theme.Background_Alternative
@@ -37,12 +38,17 @@ fun CommonScreenLayout(
 ) {
     var isMailModalVisible by remember { mutableStateOf(false) }
     var isCheckModalVisible by remember { mutableStateOf(false) }
+    var isInfoModalVisible by remember { mutableStateOf(false) }
+
     Box(modifier = modifier.fillMaxSize().zIndex(99f)) {
         if (isMailModalVisible) {
             MailModal(onMailClick = {show -> isMailModalVisible = show })
         }
         if (isCheckModalVisible){
             CheckModal(onCheckClick = {show -> isCheckModalVisible = show})
+        }
+        if (isInfoModalVisible){
+            InfoModal (onInfoClick = {show -> isInfoModalVisible = show})
         }
         // InfoBar
         Row(
@@ -55,7 +61,8 @@ fun CommonScreenLayout(
             InfoBar(
                 navHostController,
                 onMailClick = { show -> isMailModalVisible = show },
-                onCheckClick = {show -> isCheckModalVisible = show }
+                onCheckClick = {show -> isCheckModalVisible = show },
+                onInfoClick = { show -> isInfoModalVisible = show }
             )
         }
 

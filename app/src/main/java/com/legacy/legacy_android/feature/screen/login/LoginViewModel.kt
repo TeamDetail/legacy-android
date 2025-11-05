@@ -39,6 +39,14 @@ class LoginViewModel @Inject constructor(
 
     val context: Context = application.applicationContext
 
+    var showLoginErrorDialog = mutableStateOf(false)
+        private set
+
+    fun dismissLoginErrorDialog() {
+        showLoginErrorDialog.value = false
+    }
+
+
     private suspend fun navigateToHome(navHostController: NavHostController) {
         withContext(Dispatchers.Main) {
             try {
@@ -81,20 +89,24 @@ class LoginViewModel @Inject constructor(
                     navigateToHome(navHostController)
                 } else {
                     Log.d(TAG, "Google 로그인 실패")
+                    showLoginErrorDialog.value = true
                     result.error?.let { onFailure(it) }
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) {
-                    Log.w(TAG, "Google 로그인 취소됨(자연스러운 취소)")
+                    Log.w(TAG, "Google 로그인 취소됨(정상 흐름)")
                     return@launch
                 }
-                Log.e(TAG, "Google 로그인 처리 중 오류", e)
+                Log.e(TAG, "Google 로그인 중 오류", e)
+                showLoginErrorDialog.value = true
                 onFailure(e)
             } finally {
                 loadingState.value = false
             }
         }
     }
+
+
 
     fun loginWithKakao(context: Context, navController: NavHostController) {
         viewModelScope.launch {

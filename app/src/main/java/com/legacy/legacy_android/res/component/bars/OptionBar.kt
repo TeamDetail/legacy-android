@@ -28,7 +28,8 @@ fun OptionBar(
     navHostController: NavHostController,
     setIsTabClicked: () -> Unit,
     onMailClick: (Boolean) -> Unit,
-    onCheckClick: (Boolean) -> Unit
+    onCheckClick: (Boolean) -> Unit,
+    onInfoClick: (Boolean) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -68,13 +69,14 @@ fun OptionBar(
 //                    setIsTabClicked()
 //                    navHostController.navigate("setting")
 //                })
-//            Image(
-//                painter = painterResource(R.drawable.info),
-//                contentDescription = null,
-//                modifier = iconModifier.clickable {
-//                    setIsTabClicked()
-//                }
-//            )
+            Image(
+                painter = painterResource(R.drawable.info),
+                contentDescription = null,
+                modifier = iconModifier.clickable {
+                    setIsTabClicked()
+                    onInfoClick(true)
+                }
+            )
             Image(
                 painter = painterResource(R.drawable.logout),
                 contentDescription = null,
