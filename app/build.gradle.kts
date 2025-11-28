@@ -106,10 +106,6 @@ android {
 }
 
 dependencies {
-    // ... 기존 dependencies 그대로 ...
-}
-
-dependencies {
     val room_version = "2.7.1"
     val nav_version = "2.8.9"
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
@@ -155,7 +151,7 @@ dependencies {
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    // Compose - 👇 BOM을 먼저 선언하고 모든 Compose 라이브러리에 적용
+    // Compose 
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.material3:material3")
@@ -179,7 +175,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
-    // Google Maps - 👇 BOM 강제 적용
+    // Google Maps
     implementation("com.google.maps.android:maps-compose:4.2.0") {
         exclude(group = "androidx.compose", module = "compose-bom")
     }
