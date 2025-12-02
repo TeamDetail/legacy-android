@@ -44,6 +44,12 @@ fun OptionBar(
         ) {
             val iconModifier = Modifier.size(30.dp)
             Image(
+                painter = painterResource(R.drawable.eventicon), contentDescription = null,
+                modifier = iconModifier.clickable {
+                    setIsTabClicked()
+                    navHostController.navigate("event")
+                })
+            Image(
                 painter = painterResource(R.drawable.calendar), contentDescription = null,
                 modifier = iconModifier.clickable {
                     setIsTabClicked()

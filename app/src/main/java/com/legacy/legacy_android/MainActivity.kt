@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.maps.MapsInitializer
 import com.google.firebase.messaging.FirebaseMessaging
 import com.legacy.legacy_android.feature.data.user.getAccToken
 import com.legacy.legacy_android.feature.data.user.getRefToken
@@ -47,6 +48,9 @@ import com.legacy.legacy_android.feature.screen.course.CourseInfo
 import com.legacy.legacy_android.feature.screen.course.CourseScreen
 import com.legacy.legacy_android.feature.screen.course.CourseViewModel
 import com.legacy.legacy_android.feature.screen.course.CreateCourse
+import com.legacy.legacy_android.feature.screen.event.EventInfoScreen
+import com.legacy.legacy_android.feature.screen.event.EventScreen
+import com.legacy.legacy_android.feature.screen.event.EventViewModel
 import com.legacy.legacy_android.feature.screen.friend.FriendScreen
 import com.legacy.legacy_android.feature.screen.friend.FriendViewModel
 import com.legacy.legacy_android.feature.screen.home.HomeScreen
@@ -81,7 +85,9 @@ enum class ScreenNavigate {
     CREATE_COURSE,
     COURSE_CATEGORY,
     COURSE_INFO,
-    ACHIEVE_INFO
+    ACHIEVE_INFO,
+    EVENT,
+    EVENT_INFO
 
 }
 
@@ -259,6 +265,14 @@ class MainActivity : AppCompatActivity() {
                 composable(ScreenNavigate.SETTING.name) {
                     val settingViewModel: SettingViewModel = hiltViewModel()
                     SettingScreen(Modifier, settingViewModel, navController)
+                }
+                composable(ScreenNavigate.EVENT.name){
+                    val eventViewModel: EventViewModel = hiltViewModel()
+                    EventScreen(Modifier, eventViewModel, navController)
+                }
+                composable(ScreenNavigate.EVENT_INFO.name){
+                    val eventViewModel: EventViewModel = hiltViewModel()
+                    EventInfoScreen(Modifier, eventViewModel, navController)
                 }
             }
         }

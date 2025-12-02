@@ -29,8 +29,8 @@ android {
         applicationId = "com.legacy.legacy_android"
         minSdk = 24
         targetSdk = 35
-        versionCode = 16
-        versionName = "1.0.6"
+        versionCode = 17
+        versionName = "1.0.7"
         multiDexEnabled = true
 
         buildConfigField("String", "MAPS_API_KEY", "\"${props.getProperty("MAPS_API_KEY", "")}\"")

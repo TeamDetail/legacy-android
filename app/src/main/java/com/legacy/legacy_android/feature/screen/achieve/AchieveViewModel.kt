@@ -23,20 +23,6 @@ class AchieveViewModel @Inject constructor(
         uiState = uiState.copy(achieveStatus = status)
     }
 
-    fun fetchAllAchieveList() {
-        viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true)
-            achieveRepository.fetchAllAchievement()
-                .onSuccess { achieve ->
-                    uiState = uiState.copy(achieveList = achieve)
-                }
-                .onFailure { achieve ->
-                    println("전체 달성 목록 불러오기 실패")
-                }
-            uiState = uiState.copy(isLoading = false)
-        }
-    }
-
     fun fetchAchieveListByType(type: String) {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
